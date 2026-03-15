@@ -29,8 +29,12 @@ const AuthenticatedApp = () => {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {
-      navigateToLogin();
-      return null;
+      // Show branded landing page instead of redirecting
+      return (
+        <Routes>
+          <Route path="*" element={<Landing />} />
+        </Routes>
+      );
     }
   }
 
