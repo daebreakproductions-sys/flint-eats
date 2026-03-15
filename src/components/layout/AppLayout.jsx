@@ -1,14 +1,21 @@
 import { Link, useLocation, Outlet } from "react-router-dom";
-import { MapPin, List, BookOpen, Settings, Leaf, User } from "lucide-react";
-// User icon used in navItems config below
+import { MapPin, List, BookOpen, Settings, Leaf, Flame, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import UserMenu from "@/components/layout/UserMenu";
 
 const navItems = [
+  { label: "Feed", path: "/Feed", icon: Flame },
   { label: "Map", path: "/Map", icon: MapPin },
   { label: "Directory", path: "/Directory", icon: List },
   { label: "Learn", path: "/Learn", icon: BookOpen },
   { label: "Admin", path: "/Admin", icon: Settings },
+];
+
+const mobileNav = [
+  { label: "Feed", path: "/Feed", icon: Flame },
+  { label: "Map", path: "/Map", icon: MapPin },
+  { label: "Directory", path: "/Directory", icon: List },
+  { label: "Learn", path: "/Learn", icon: BookOpen },
   { label: "Profile", path: "/Profile", icon: User },
 ];
 
@@ -18,30 +25,42 @@ export default function AppLayout() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Top Nav */}
-      <header className="bg-green-700 text-white shadow-md z-50">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          <Link to="/Map" className="flex items-center gap-2 font-bold text-xl tracking-tight">
-            <Leaf className="w-6 h-6 text-yellow-300" />
-            <span>Flint Eats</span>
+      <header className="bg-white border-b border-gray-100 shadow-sm z-50 sticky top-0">
+        <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between gap-4">
+          {/* Brand */}
+          <Link to="/Feed" className="flex items-center gap-2 font-bold text-xl tracking-tight shrink-0">
+            <div className="w-8 h-8 bg-green-700 rounded-xl flex items-center justify-center">
+              <Leaf className="w-5 h-5 text-yellow-300" />
+            </div>
+            <span className="text-green-800">Flint<span className="text-green-500">Eats</span></span>
           </Link>
-          <nav className="hidden md:flex items-center gap-1">
-            {navItems.filter(n => n.path !== "/Profile").map(({ label, path, icon: Icon }) => (
-              <Link
-                key={path}
-                to={path}
-                className={cn(
-                  "flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-                  location.pathname.startsWith(path)
-                    ? "bg-green-600 text-white"
-                    : "text-green-100 hover:bg-green-600/70"
-                )}
-              >
-                <Icon className="w-4 h-4" />
-                {label}
-              </Link>
-            ))}
+
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center gap-1 flex-1 justify-center">
+            {navItems.map(({ label, path, icon: Icon }) => {
+              const active = location.pathname.startsWith(path);
+              return (
+                <Link
+                  key={path}
+                  to={path}
+                  className={cn(
+                    "flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all",
+                    active
+                      ? "bg-green-50 text-green-700"
+                      : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+                  )}
+                >
+                  <Icon className={cn("w-4 h-4", active && "text-green-600")} />
+                  {label}
+                </Link>
+              );
+            })}
           </nav>
-          <UserMenu />
+
+          {/* User menu */}
+          <div className="shrink-0">
+            <UserMenu />
+          </div>
         </div>
       </header>
 
@@ -50,22 +69,23 @@ export default function AppLayout() {
       </main>
 
       {/* Mobile bottom nav */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 flex">
-        {navItems.map(({ label, path, icon: Icon }) => (
-          <Link
-            key={path}
-            to={path}
-            className={cn(
-              "flex-1 flex flex-col items-center py-2 gap-0.5 text-xs font-medium transition-colors",
-              location.pathname.startsWith(path)
-                ? "text-green-700"
-                : "text-gray-500"
-            )}
-          >
-            <Icon className="w-5 h-5" />
-            {label}
-          </Link>
-        ))}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-50 flex shadow-lg">
+        {mobileNav.map(({ label, path, icon: Icon }) => {
+          const active = location.pathname.startsWith(path);
+          return (
+            <Link
+              key={path}
+              to={path}
+              className={cn(
+                "flex-1 flex flex-col items-center py-2.5 gap-0.5 text-xs font-medium transition-colors",
+                active ? "text-green-700" : "text-gray-400"
+              )}
+            >
+              <Icon className={cn("w-5 h-5", active && "fill-green-100")} />
+              {label}
+            </Link>
+          );
+        })}
       </nav>
     </div>
   );
