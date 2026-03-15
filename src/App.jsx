@@ -11,6 +11,7 @@ import Directory from '@/pages/Directory';
 import Learn from '@/pages/Learn';
 import Admin from '@/pages/Admin';
 import Profile from '@/pages/Profile';
+import Feed from '@/pages/Feed';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -34,13 +35,14 @@ const AuthenticatedApp = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/Map" replace />} />
+      <Route path="/" element={<Navigate to="/Feed" replace />} />
       <Route element={<AppLayout />}>
         <Route path="/Map" element={<Map />} />
         <Route path="/Directory" element={<Directory />} />
         <Route path="/Learn" element={<Learn />} />
         <Route path="/Admin" element={<Admin />} />
         <Route path="/Profile" element={<Profile />} />
+        <Route path="/Feed" element={<Feed />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
