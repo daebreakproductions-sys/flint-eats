@@ -140,12 +140,15 @@ export default function Admin() {
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Admin Dashboard</h1>
 
       <Tabs defaultValue="resources">
-        <TabsList className="mb-4">
+        <TabsList className="mb-4 flex-wrap">
           <TabsTrigger value="resources" className="flex items-center gap-1.5">
             <MapPin className="w-4 h-4" /> Food Resources ({resources.length})
           </TabsTrigger>
           <TabsTrigger value="education" className="flex items-center gap-1.5">
             <BookOpen className="w-4 h-4" /> Education ({edResources.length})
+          </TabsTrigger>
+          <TabsTrigger value="users" className="flex items-center gap-1.5">
+            <Users className="w-4 h-4" /> Users
           </TabsTrigger>
         </TabsList>
 
