@@ -8,6 +8,7 @@ const navItems = [
   { label: "Directory", path: "/Directory", icon: List },
   { label: "Learn", path: "/Learn", icon: BookOpen },
   { label: "Admin", path: "/Admin", icon: Settings },
+  { label: "Profile", path: "/Profile", icon: User },
 ];
 
 export default function AppLayout() {
@@ -23,7 +24,7 @@ export default function AppLayout() {
             <span>Flint Eats</span>
           </Link>
           <nav className="hidden md:flex items-center gap-1">
-            {navItems.map(({ label, path, icon: Icon }) => (
+            {navItems.filter(n => n.path !== "/Profile").map(({ label, path, icon: Icon }) => (
               <Link
                 key={path}
                 to={path}
@@ -39,6 +40,7 @@ export default function AppLayout() {
               </Link>
             ))}
           </nav>
+          <UserMenu />
         </div>
       </header>
 
