@@ -12,6 +12,7 @@ import Learn from '@/pages/Learn';
 import Admin from '@/pages/Admin';
 import Profile from '@/pages/Profile';
 import Feed from '@/pages/Feed';
+import Landing from '@/pages/Landing';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
