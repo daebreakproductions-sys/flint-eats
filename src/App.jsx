@@ -10,6 +10,7 @@ import Map from '@/pages/Map';
 import Directory from '@/pages/Directory';
 import Learn from '@/pages/Learn';
 import Admin from '@/pages/Admin';
+import Profile from '@/pages/Profile';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();

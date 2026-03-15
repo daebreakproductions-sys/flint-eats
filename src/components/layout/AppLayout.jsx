@@ -1,6 +1,7 @@
 import { Link, useLocation, Outlet } from "react-router-dom";
-import { MapPin, List, BookOpen, Settings, Leaf } from "lucide-react";
+import { MapPin, List, BookOpen, Settings, Leaf, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import UserMenu from "@/components/layout/UserMenu";
 
 const navItems = [
   { label: "Map", path: "/Map", icon: MapPin },
