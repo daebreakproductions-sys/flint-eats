@@ -1,5 +1,6 @@
 import { Link, useLocation, Outlet } from "react-router-dom";
 import { MapPin, List, BookOpen, Settings, Leaf, User } from "lucide-react";
+// User icon used in navItems config below
 import { cn } from "@/lib/utils";
 import UserMenu from "@/components/layout/UserMenu";
 
