@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
-import { User, LogOut, Settings, ChevronDown } from "lucide-react";
+import { User, LogOut, Settings, ChevronDown, Flame } from "lucide-react";
 import { ROLE_CONFIG } from "@/components/admin/UsersTab";
 
 export default function UserMenu() {
@@ -58,6 +58,14 @@ export default function UserMenu() {
 
           {/* Menu items */}
           <div className="py-1">
+            <Link
+              to="/Feed"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              <Flame className="w-4 h-4 text-orange-500" />
+              Community Feed
+            </Link>
             <Link
               to="/Profile"
               onClick={() => setOpen(false)}
