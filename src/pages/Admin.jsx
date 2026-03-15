@@ -244,6 +244,10 @@ export default function Admin() {
             </CardContent>
           </Card>
         </TabsContent>
+
+        <TabsContent value="users">
+          <UsersTab />
+        </TabsContent>
       </Tabs>
     </div>
   );
