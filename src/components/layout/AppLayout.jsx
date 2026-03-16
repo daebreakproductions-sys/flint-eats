@@ -87,7 +87,10 @@ export default function AppLayout() {
       </header>
 
       {/* Mobile top bar */}
-      <header className="bg-gradient-to-r from-green-700 to-emerald-800 shadow-md sticky top-0 z-50 md:hidden flex items-center justify-between px-4 h-12">
+      <header
+        className="bg-gradient-to-r from-green-700 to-emerald-800 shadow-md sticky top-0 z-50 md:hidden flex items-center justify-between px-4 h-12"
+        style={{ paddingTop: "env(safe-area-inset-top)" }}
+      >
         <Link to="/Feed" className="flex items-center gap-1.5 select-none">
           <span className="text-xl">🌿</span>
           <span className="font-bold text-white text-base">Flint Eats</span>
