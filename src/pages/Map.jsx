@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { ChevronUp, ChevronDown } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
