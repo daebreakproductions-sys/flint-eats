@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import {
   Pencil, Save, X, Mail, Phone, Building2, LogOut, ShieldCheck,
-  MessageSquare, Calendar, BookOpen, Map, ChevronRight, Copy, Check
+  MessageSquare, Calendar, BookOpen, Map, ChevronRight, Copy, Check, Trash2, AlertTriangle
 } from "lucide-react";
 import { toast } from "sonner";
 import { ROLE_CONFIG } from "@/components/admin/UsersTab";

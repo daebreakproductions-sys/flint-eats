@@ -52,7 +52,22 @@ export default function PostCard({ post, currentUser }) {
         : [...(post.liked_by || []), currentUser.email];
       return base44.entities.Post.update(post.id, { likes: newLikedBy.length, liked_by: newLikedBy });
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["feed-posts"] }),
+    onMutate: async () => {
+      await qc.cancelQueries({ queryKey: ["feed-posts"] });
+      const prev = qc.getQueryData(["feed-posts"]);
+      qc.setQueryData(["feed-posts"], (old = []) =>
+        old.map(p => {
+          if (p.id !== post.id) return p;
+          const newLikedBy = liked
+            ? (p.liked_by || []).filter(e => e !== currentUser.email)
+            : [...(p.liked_by || []), currentUser.email];
+          return { ...p, liked_by: newLikedBy, likes: newLikedBy.length };
+        })
+      );
+      return { prev };
+    },
+    onError: (_, __, ctx) => qc.setQueryData(["feed-posts"], ctx?.prev),
+    onSettled: () => qc.invalidateQueries({ queryKey: ["feed-posts"] }),
   });
 
   const commentMutation = useMutation({
