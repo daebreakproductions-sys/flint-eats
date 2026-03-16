@@ -225,10 +225,10 @@ export default function Landing() {
 
       {/* Footer */}
       <footer className="bg-gray-900 text-gray-400 px-6 py-8 text-center text-sm">
-        <div className="flex items-center justify-center gap-2 mb-2">
-          <span className="text-lg">🌿</span>
-          <span className="text-white font-semibold">Flint Eats</span>
-        </div>
+         <div className="flex items-center justify-center gap-2 mb-2">
+           <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b73bf820481df67e8a6ca5/7eb4d4a24_IMG_8997-removebg-preview.png" alt="Flint Eats" className="h-6 w-6" />
+           <span className="text-white font-semibold">Flint Eats</span>
+         </div>
         <p>Connecting Flint &amp; Genesee County to the food they deserve.</p>
         <p className="mt-1 text-gray-600">© {new Date().getFullYear()} Flint Eats. All rights reserved.</p>
       </footer>
