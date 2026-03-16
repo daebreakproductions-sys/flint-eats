@@ -1,11 +1,14 @@
 import { useState, useMemo } from "react";
 import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import MapFilters from "@/components/map/MapFilters";
 import MapLegend, { TYPE_CONFIG } from "@/components/map/MapLegend";
 import ResourcePopup from "@/components/map/ResourcePopup";
 import "leaflet/dist/leaflet.css";
+import "react-leaflet-cluster/lib/assets/MarkerCluster.css";
+import "react-leaflet-cluster/lib/assets/MarkerCluster.Default.css";
 
 const FLINT_CENTER = [43.0125, -83.6875];
 
