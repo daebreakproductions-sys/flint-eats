@@ -4,9 +4,11 @@ import { base44 } from "@/api/base44Client";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Search, Phone, MapPin, Clock, ExternalLink, Filter } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Search, Phone, MapPin, Clock, ExternalLink, Filter, Check } from "lucide-react";
 import { TYPE_CONFIG } from "@/components/map/MapLegend";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger, DrawerClose } from "@/components/ui/drawer";
 
 const BENEFIT_BADGES = [
   { key: "ebt_accepted", label: "EBT/SNAP", cls: "bg-blue-100 text-blue-800" },
