@@ -1,10 +1,10 @@
-import { Outlet, Link, useLocation, Routes, Route, Navigate } from "react-router-dom";
+import { Outlet, Link, useLocation } from "react-router-dom";
 import { Flame, Map, BookOpen, List, MessageCircle, ShieldCheck, User } from "lucide-react";
 import UserMenu from "@/components/layout/UserMenu";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import Feed from "@/pages/Feed";
 import MapPage from "@/pages/Map";
 import Directory from "@/pages/Directory";
