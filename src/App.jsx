@@ -13,6 +13,7 @@ import Admin from '@/pages/Admin';
 import Profile from '@/pages/Profile';
 import Feed from '@/pages/Feed';
 import Landing from '@/pages/Landing';
+import AuthGateway from '@/pages/AuthGateway';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -42,6 +43,7 @@ const AuthenticatedApp = () => {
     <Routes>
       <Route path="/" element={<Navigate to="/Feed" replace />} />
       <Route path="/Landing" element={<Landing />} />
+      <Route path="/AuthGateway" element={<AuthGateway />} />
       <Route element={<AppLayout />}>
         <Route path="/Map" element={<Map />} />
         <Route path="/Directory" element={<Directory />} />
