@@ -13,6 +13,7 @@ import {
 import { toast } from "sonner";
 import { ROLE_CONFIG } from "@/components/admin/UsersTab";
 import { Link } from "react-router-dom";
+import ImageUploadField from "@/components/profile/ImageUploadField";
 
 const QUICK_LINKS = [
   { label: "Browse Map", icon: Map, to: "/Map", color: "bg-green-50 text-green-700 border-green-100" },
@@ -55,6 +56,8 @@ export default function Profile() {
       organization: user.organization || "",
       phone: user.phone || "",
       bio: user.bio || "",
+      header_image_url: user.header_image_url || "",
+      profile_image_url: user.profile_image_url || "",
     });
   }, [user]);
 
@@ -86,11 +89,21 @@ export default function Profile() {
       {/* Hero Card */}
       <div className="relative rounded-2xl overflow-hidden shadow-md">
         <div className="h-36 bg-gradient-to-br from-green-600 via-green-700 to-emerald-800"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800')", backgroundSize: "cover", backgroundPosition: "center", backgroundBlendMode: "multiply" }} />
+          style={{
+            backgroundImage: form.header_image_url ? `url('${form.header_image_url}')` : "url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundBlendMode: form.header_image_url ? "normal" : "multiply"
+          }}
+        />
         <div className="bg-white px-6 pt-0 pb-5">
           <div className="flex items-end justify-between -mt-10 mb-3">
-            <div className="w-20 h-20 rounded-full border-4 border-white bg-green-700 flex items-center justify-center shadow-lg shrink-0">
-              <span className="text-2xl font-bold text-white">{initials}</span>
+            <div className="w-20 h-20 rounded-full border-4 border-white bg-green-700 flex items-center justify-center shadow-lg shrink-0 overflow-hidden">
+              {form.profile_image_url ? (
+                <img src={form.profile_image_url} alt="Profile" className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-2xl font-bold text-white">{initials}</span>
+              )}
             </div>
             <div className="flex gap-2 mb-1">
               {!editing ? (
@@ -111,7 +124,23 @@ export default function Profile() {
           </div>
 
           {editing ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-1">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <div className="md:col-span-2">
+                <ImageUploadField
+                  label="Header Image"
+                  value={form.header_image_url}
+                  onChange={v => setForm(f => ({ ...f, header_image_url: v }))}
+                  previewClassName="w-full h-24"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <ImageUploadField
+                  label="Profile Picture"
+                  value={form.profile_image_url}
+                  onChange={v => setForm(f => ({ ...f, profile_image_url: v }))}
+                  previewClassName="w-32 h-32"
+                />
+              </div>
               <div>
                 <Label>Full Name</Label>
                 <Input value={form.full_name} onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))} />
