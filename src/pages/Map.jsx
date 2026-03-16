@@ -1,8 +1,16 @@
-import { useState, useMemo } from "react";
-import { ChevronUp, ChevronDown } from "lucide-react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { useState, useMemo, useRef } from "react";
+import { ChevronUp, ChevronDown, LocateFixed, Loader2 } from "lucide-react";
+import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from "react-leaflet";
 import L from "leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
+
+const NEARBY_RADIUS_M = 3000; // 3 km
+
+function FlyToLocation({ coords }) {
+  const map = useMap();
+  if (coords) map.flyTo(coords, 14, { animate: true, duration: 1.2 });
+  return null;
+}
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import MapFilters from "@/components/map/MapFilters";
