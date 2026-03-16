@@ -77,11 +77,26 @@ export default function PostCard({ post, currentUser }) {
       author_email: currentUser.email,
       author_name: currentUser.full_name || currentUser.email.split("@")[0],
     }),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["comments", post.id] });
-      base44.entities.Post.update(post.id, { comment_count: (post.comment_count || 0) + 1 });
-      qc.invalidateQueries({ queryKey: ["feed-posts"] });
+    onMutate: async (content) => {
+      await qc.cancelQueries({ queryKey: ["comments", post.id] });
+      const prev = qc.getQueryData(["comments", post.id]);
+      const optimistic = {
+        id: `temp-${Date.now()}`,
+        post_id: post.id,
+        content,
+        author_email: currentUser.email,
+        author_name: currentUser.full_name || currentUser.email.split("@")[0],
+        created_date: new Date().toISOString(),
+      };
+      qc.setQueryData(["comments", post.id], (old = []) => [...old, optimistic]);
       setCommentText("");
+      return { prev };
+    },
+    onError: (_, __, ctx) => qc.setQueryData(["comments", post.id], ctx?.prev),
+    onSuccess: () => {
+      base44.entities.Post.update(post.id, { comment_count: (post.comment_count || 0) + 1 });
+      qc.invalidateQueries({ queryKey: ["comments", post.id] });
+      qc.invalidateQueries({ queryKey: ["feed-posts"] });
     },
   });
 
