@@ -85,22 +85,34 @@ export default function Map() {
         </MarkerClusterGroup>
       </MapContainer>
 
-      {/* Overlay controls */}
-      <div className="absolute top-3 left-3 right-3 z-[500] max-w-sm">
-        <MapFilters
-          search={search}
-          setSearch={setSearch}
-          activeTypes={activeTypes}
-          toggleType={toggleType}
-          activeBenefits={activeBenefits}
-          toggleBenefit={toggleBenefit}
-          resultCount={filtered.length}
-        />
-      </div>
+      {/* Toggle button */}
+      <button
+        onClick={() => setPanelOpen(o => !o)}
+        className="absolute top-3 right-3 z-[600] bg-white rounded-full shadow-md p-2 hover:bg-gray-50 transition"
+        title={panelOpen ? "Hide filters" : "Show filters"}
+      >
+        {panelOpen ? <PanelLeftClose className="w-5 h-5 text-gray-600" /> : <PanelLeftOpen className="w-5 h-5 text-gray-600" />}
+      </button>
 
-      <div className="absolute bottom-16 md:bottom-4 right-3 z-[500]">
-        <MapLegend />
-      </div>
+      {/* Overlay controls */}
+      {panelOpen && (
+        <>
+          <div className="absolute top-3 left-3 z-[500] max-w-sm" style={{ right: "3.5rem" }}>
+            <MapFilters
+              search={search}
+              setSearch={setSearch}
+              activeTypes={activeTypes}
+              toggleType={toggleType}
+              activeBenefits={activeBenefits}
+              toggleBenefit={toggleBenefit}
+              resultCount={filtered.length}
+            />
+          </div>
+          <div className="absolute bottom-16 md:bottom-4 right-3 z-[500]">
+            <MapLegend />
+          </div>
+        </>
+      )}
     </div>
   );
 }
