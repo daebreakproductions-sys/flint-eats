@@ -252,6 +252,10 @@ export default function Admin() {
         <TabsContent value="users">
           <UsersTab />
         </TabsContent>
+
+        <TabsContent value="newsletter">
+          <NewsletterTab />
+        </TabsContent>
       </Tabs>
     </div>
   );
