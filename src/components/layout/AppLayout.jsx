@@ -58,9 +58,8 @@ export default function AppLayout() {
       {/* Desktop top header */}
       <header className="bg-gradient-to-r from-green-700 to-emerald-800 shadow-md sticky top-0 z-50 hidden md:block">
         <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
-          <Link to="/Feed" className="flex items-center gap-2 shrink-0 select-none">
-            <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b73bf820481df67e8a6ca5/48d1255ec_IMG_8997-removebg-preview.png" alt="Flint Eats" className="h-8 w-8 object-contain" />
-            <span className="font-bold text-white text-lg">Flint Eats</span>
+          <Link to="/Feed" className="flex items-center shrink-0 select-none">
+            <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b73bf820481df67e8a6ca5/6f4a27b5b_image.png" alt="Flint Eats" className="h-8 object-contain" />
           </Link>
 
           <nav className="flex items-center gap-1">
