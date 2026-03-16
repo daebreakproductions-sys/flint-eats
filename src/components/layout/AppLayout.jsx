@@ -4,6 +4,7 @@ import UserMenu from "@/components/layout/UserMenu";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
+import { useEffect } from "react";
 
 const NAV_LINKS = [
   { to: "/Feed", label: "Feed", icon: Flame },
