@@ -50,6 +50,19 @@ export default function AppLayout() {
                 </Link>
               );
             })}
+            {user?.role === "admin" && (
+              <Link
+                to="/Admin"
+                className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                  location.pathname === "/Admin"
+                    ? "bg-white/20 text-white"
+                    : "text-green-100 hover:bg-white/10 hover:text-white"
+                }`}
+              >
+                <ShieldCheck className="w-4 h-4" />
+                <span className="hidden sm:block">Admin</span>
+              </Link>
+            )}
           </nav>
 
           {/* User menu */}
