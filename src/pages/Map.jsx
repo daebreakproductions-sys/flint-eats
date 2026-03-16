@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
-import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
