@@ -134,12 +134,12 @@ export default function Landing() {
           <p className="text-green-100 text-lg mb-10 max-w-xl mx-auto">
             Flint Eats connects residents with local food resources, community knowledge, and the programs that make healthy eating possible for everyone.
           </p>
-          <button
-            onClick={() => base44.auth.redirectToLogin("/Feed")}
+          <a
+            href="/AuthGateway"
             className="inline-flex items-center gap-2 bg-white text-green-800 font-bold px-9 py-3.5 rounded-full shadow-lg hover:shadow-xl hover:bg-green-50 transition text-base"
           >
             Get Started <ArrowRight className="w-4 h-4" />
-          </button>
+          </a>
           <p className="text-green-200 text-sm mt-4">Free to join · No cost, ever</p>
         </div>
       </section>
