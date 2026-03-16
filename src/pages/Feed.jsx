@@ -4,8 +4,8 @@ import { base44 } from "@/api/base44Client";
 import CreatePost from "@/components/feed/CreatePost";
 import PostCard from "@/components/feed/PostCard";
 import EventsSidebar from "@/components/feed/EventsSidebar";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Flame, Clock, MapPin } from "lucide-react";
+import CommunityCalendar from "@/components/feed/CommunityCalendar";
+import { Flame, Clock, CalendarDays } from "lucide-react";
 
 const CATEGORIES = ["All", "Recipe", "Resource Tip", "Community News", "Event", "Question", "Success Story", "General"];
 
