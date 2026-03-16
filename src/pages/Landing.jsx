@@ -162,7 +162,7 @@ export default function Landing() {
         {FEATURES.map(({ icon: Icon, title, desc, color, href }) => (
           <button
             key={title}
-            onClick={() => base44.auth.redirectToLogin(href)}
+            onClick={() => window.location.href = "/AuthGateway"}
             className="text-center group cursor-pointer rounded-2xl p-6 hover:bg-green-50 transition border border-transparent hover:border-green-100"
           >
             <div className={`w-14 h-14 rounded-2xl ${color} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
@@ -187,7 +187,7 @@ export default function Landing() {
                 <p className="text-gray-500 text-sm mt-1">Join us — food, learning, and connection for everyone.</p>
               </div>
               <button
-                onClick={() => base44.auth.redirectToLogin("/Feed")}
+                onClick={() => window.location.href = "/AuthGateway"}
                 className="text-sm font-semibold text-green-700 hover:underline flex items-center gap-1"
               >
                 View all <ChevronRight className="w-4 h-4" />
