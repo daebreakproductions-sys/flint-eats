@@ -59,26 +59,28 @@ export default function Map() {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {filtered.map(resource => {
-          const cfg = TYPE_CONFIG[resource.type] || TYPE_CONFIG.Other;
-          return (
-            <CircleMarker
-              key={resource.id}
-              center={[resource.lat, resource.lng]}
-              radius={8}
-              pathOptions={{
-                fillColor: cfg.color,
-                fillOpacity: 0.85,
-                color: "#fff",
-                weight: 1.5,
-              }}
-            >
-              <Popup maxWidth={280}>
-                <ResourcePopup resource={resource} />
-              </Popup>
-            </CircleMarker>
-          );
-        })}
+        <MarkerClusterGroup chunkedLoading>
+          {filtered.map(resource => {
+            const cfg = TYPE_CONFIG[resource.type] || TYPE_CONFIG.Other;
+            return (
+              <CircleMarker
+                key={resource.id}
+                center={[resource.lat, resource.lng]}
+                radius={8}
+                pathOptions={{
+                  fillColor: cfg.color,
+                  fillOpacity: 0.85,
+                  color: "#fff",
+                  weight: 1.5,
+                }}
+              >
+                <Popup maxWidth={280}>
+                  <ResourcePopup resource={resource} />
+                </Popup>
+              </CircleMarker>
+            );
+          })}
+        </MarkerClusterGroup>
       </MapContainer>
 
       {/* Overlay controls */}
