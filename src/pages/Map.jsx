@@ -28,6 +28,9 @@ export default function Map() {
   const [activeBenefits, setActiveBenefits] = useState([]);
   const [filtersOpen, setFiltersOpen] = useState(true);
   const [legendOpen, setLegendOpen] = useState(true);
+  const [userLocation, setUserLocation] = useState(null);
+  const [locating, setLocating] = useState(false);
+  const [locError, setLocError] = useState(null);
 
   const { data: resources = [], isLoading } = useQuery({
     queryKey: ["food-resources"],
