@@ -150,7 +150,7 @@ export default function Directory() {
     <div className="max-w-4xl mx-auto px-4 py-6 pb-20 md:pb-6">
       <h1 className="text-2xl font-bold text-gray-900 mb-4">Food Resource Directory</h1>
 
-      <div className="flex flex-col sm:flex-row gap-2 mb-4">
+      <div className="flex gap-2 mb-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
           <Input
@@ -160,28 +160,35 @@ export default function Directory() {
             className="pl-9"
           />
         </div>
-        <Select value={typeFilter} onValueChange={setTypeFilter}>
-          <SelectTrigger className="w-full sm:w-44">
-            <SelectValue placeholder="All Types" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Types</SelectItem>
-            {Object.entries(TYPE_CONFIG).map(([type, { label }]) => (
-              <SelectItem key={type} value={type}>{label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={benefitFilter} onValueChange={setBenefitFilter}>
-          <SelectTrigger className="w-full sm:w-44">
-            <SelectValue placeholder="All Benefits" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Benefits</SelectItem>
-            <SelectItem value="ebt_accepted">EBT/SNAP</SelectItem>
-            <SelectItem value="dufb_offered">Double Up $</SelectItem>
-            <SelectItem value="wic_accepted">WIC</SelectItem>
-          </SelectContent>
-        </Select>
+        {/* Mobile: Drawer filter sheet */}
+        <div className="sm:hidden">
+          <MobileFilterDrawer typeFilter={typeFilter} setTypeFilter={setTypeFilter} benefitFilter={benefitFilter} setBenefitFilter={setBenefitFilter} />
+        </div>
+        {/* Desktop: inline selects */}
+        <div className="hidden sm:flex gap-2">
+          <Select value={typeFilter} onValueChange={setTypeFilter}>
+            <SelectTrigger className="w-44">
+              <SelectValue placeholder="All Types" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              {Object.entries(TYPE_CONFIG).map(([type, { label }]) => (
+                <SelectItem key={type} value={type}>{label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={benefitFilter} onValueChange={setBenefitFilter}>
+            <SelectTrigger className="w-44">
+              <SelectValue placeholder="All Benefits" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Benefits</SelectItem>
+              <SelectItem value="ebt_accepted">EBT/SNAP</SelectItem>
+              <SelectItem value="dufb_offered">Double Up $</SelectItem>
+              <SelectItem value="wic_accepted">WIC</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <p className="text-sm text-gray-500 mb-3">{filtered.length} locations found</p>
