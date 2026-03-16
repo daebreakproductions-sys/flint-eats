@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Flame, Map, BookOpen, List, MessageCircle, ShieldCheck, User } from "lucide-react";
+import { Flame, Map, BookOpen, List, ShieldCheck, User } from "lucide-react";
 import UserMenu from "@/components/layout/UserMenu";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
@@ -9,17 +9,15 @@ import Feed from "@/pages/Feed";
 import MapPage from "@/pages/Map";
 import Directory from "@/pages/Directory";
 import Learn from "@/pages/Learn";
-import Messages from "@/pages/Messages";
 
 const NAV_LINKS = [
   { to: "/Feed", label: "Feed", icon: Flame },
   { to: "/Map", label: "Map", icon: Map },
   { to: "/Directory", label: "Directory", icon: List },
   { to: "/Learn", label: "Learn", icon: BookOpen },
-  { to: "/Messages", label: "Messages", icon: MessageCircle },
 ];
 
-const TAB_ROUTES = ["/Feed", "/Map", "/Directory", "/Learn", "/Messages"];
+const TAB_ROUTES = ["/Feed", "/Map", "/Directory", "/Learn"];
 
 const pageVariants = {
   initial: { x: 24, opacity: 0 },
@@ -114,7 +112,6 @@ export default function AppLayout() {
             {route === "/Map" && <MapPage />}
             {route === "/Directory" && <Directory />}
             {route === "/Learn" && <Learn />}
-            {route === "/Messages" && <Messages />}
           </div>
         ))}
 
