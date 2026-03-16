@@ -107,18 +107,32 @@ export default function AppLayout() {
 
       {/* Page content */}
       <main className="flex-1 pb-20 md:pb-0">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={location.pathname}
-            variants={pageVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            className="h-full"
-          >
-            <Outlet />
-          </motion.div>
-        </AnimatePresence>
+        {/* Persistent tab pages — kept mounted to preserve scroll & state */}
+        {TAB_ROUTES.map(route => (
+          <div key={route} style={{ display: location.pathname === route ? "block" : "none" }} className="h-full">
+            {route === "/Feed" && <Feed />}
+            {route === "/Map" && <MapPage />}
+            {route === "/Directory" && <Directory />}
+            {route === "/Learn" && <Learn />}
+            {route === "/Messages" && <Messages />}
+          </div>
+        ))}
+
+        {/* Non-tab routes (Admin, Profile, etc.) get animated transition */}
+        {!TAB_ROUTES.includes(location.pathname) && (
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={location.pathname}
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="h-full"
+            >
+              <Outlet />
+            </motion.div>
+          </AnimatePresence>
+        )}
       </main>
 
       {/* Mobile bottom tab bar */}
