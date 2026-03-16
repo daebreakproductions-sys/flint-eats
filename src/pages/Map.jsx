@@ -88,34 +88,49 @@ export default function Map() {
         </MarkerClusterGroup>
       </MapContainer>
 
-      {/* Toggle button */}
-      <button
-        onClick={() => setPanelOpen(o => !o)}
-        className="absolute top-3 right-3 z-[600] bg-white rounded-full shadow-md p-2 hover:bg-gray-50 transition"
-        title={panelOpen ? "Hide filters" : "Show filters"}
-      >
-        {panelOpen ? <PanelLeftClose className="w-5 h-5 text-gray-600" /> : <PanelLeftOpen className="w-5 h-5 text-gray-600" />}
-      </button>
+      {/* Filters panel */}
+      <div className="absolute top-3 left-3 z-[500] max-w-sm" style={{ maxWidth: "360px" }}>
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+          <button
+            onClick={() => setFiltersOpen(o => !o)}
+            className="w-full flex items-center justify-between px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition"
+          >
+            <span>Filters</span>
+            {filtersOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </button>
+          {filtersOpen && (
+            <div className="border-t border-gray-100">
+              <MapFilters
+                search={search}
+                setSearch={setSearch}
+                activeTypes={activeTypes}
+                toggleType={toggleType}
+                activeBenefits={activeBenefits}
+                toggleBenefit={toggleBenefit}
+                resultCount={filtered.length}
+              />
+            </div>
+          )}
+        </div>
+      </div>
 
-      {/* Overlay controls */}
-      {panelOpen && (
-        <>
-          <div className="absolute top-3 left-3 z-[500] max-w-sm" style={{ right: "3.5rem" }}>
-            <MapFilters
-              search={search}
-              setSearch={setSearch}
-              activeTypes={activeTypes}
-              toggleType={toggleType}
-              activeBenefits={activeBenefits}
-              toggleBenefit={toggleBenefit}
-              resultCount={filtered.length}
-            />
-          </div>
-          <div className="absolute bottom-16 md:bottom-4 right-3 z-[500]">
-            <MapLegend />
-          </div>
-        </>
-      )}
+      {/* Legend panel */}
+      <div className="absolute bottom-16 md:bottom-4 right-3 z-[500]">
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+          <button
+            onClick={() => setLegendOpen(o => !o)}
+            className="w-full flex items-center justify-between px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition"
+          >
+            <span>Legend</span>
+            {legendOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </button>
+          {legendOpen && (
+            <div className="border-t border-gray-100">
+              <MapLegend />
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
