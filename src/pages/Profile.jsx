@@ -35,6 +35,8 @@ export default function Profile() {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({});
   const [copied, setCopied] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteInput, setDeleteInput] = useState("");
 
   const { data: user, isLoading } = useQuery({
     queryKey: ["me"],
