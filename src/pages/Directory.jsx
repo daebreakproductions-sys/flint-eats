@@ -67,6 +67,63 @@ function ResourceCard({ resource }) {
   );
 }
 
+const BENEFIT_OPTIONS = [
+  { value: "all", label: "All Benefits" },
+  { value: "ebt_accepted", label: "EBT/SNAP" },
+  { value: "dufb_offered", label: "Double Up $" },
+  { value: "wic_accepted", label: "WIC" },
+];
+
+function MobileFilterDrawer({ typeFilter, setTypeFilter, benefitFilter, setBenefitFilter }) {
+  const activeCount = (typeFilter !== "all" ? 1 : 0) + (benefitFilter !== "all" ? 1 : 0);
+  return (
+    <Drawer>
+      <DrawerTrigger asChild>
+        <Button variant="outline" className="relative shrink-0">
+          <Filter className="w-4 h-4 mr-1.5" /> Filters
+          {activeCount > 0 && (
+            <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-green-700 text-white text-[10px] rounded-full flex items-center justify-center font-bold">{activeCount}</span>
+          )}
+        </Button>
+      </DrawerTrigger>
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>Filter Resources</DrawerTitle>
+        </DrawerHeader>
+        <div className="px-4 pb-8 space-y-5">
+          <div>
+            <p className="text-sm font-semibold text-gray-700 mb-2">Resource Type</p>
+            <div className="space-y-1">
+              <button onClick={() => setTypeFilter("all")} className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-colors ${typeFilter === "all" ? "bg-green-50 text-green-800 font-medium" : "hover:bg-gray-50 text-gray-700"}`}>
+                All Types {typeFilter === "all" && <Check className="w-4 h-4 text-green-700" />}
+              </button>
+              {Object.entries(TYPE_CONFIG).map(([type, { label, emoji }]) => (
+                <button key={type} onClick={() => setTypeFilter(type)} className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-colors ${typeFilter === type ? "bg-green-50 text-green-800 font-medium" : "hover:bg-gray-50 text-gray-700"}`}>
+                  <span>{emoji} {label}</span>
+                  {typeFilter === type && <Check className="w-4 h-4 text-green-700" />}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-gray-700 mb-2">Benefits Accepted</p>
+            <div className="space-y-1">
+              {BENEFIT_OPTIONS.map(({ value, label }) => (
+                <button key={value} onClick={() => setBenefitFilter(value)} className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-colors ${benefitFilter === value ? "bg-green-50 text-green-800 font-medium" : "hover:bg-gray-50 text-gray-700"}`}>
+                  {label} {benefitFilter === value && <Check className="w-4 h-4 text-green-700" />}
+                </button>
+              ))}
+            </div>
+          </div>
+          <DrawerClose asChild>
+            <Button className="w-full bg-green-700 hover:bg-green-800">Apply Filters</Button>
+          </DrawerClose>
+        </div>
+      </DrawerContent>
+    </Drawer>
+  );
+}
+
 export default function Directory() {
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
