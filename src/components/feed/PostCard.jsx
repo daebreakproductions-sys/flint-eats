@@ -160,14 +160,14 @@ export default function PostCard({ post, currentUser }) {
       <div className="px-4 py-2 border-t border-gray-50 flex items-center gap-4">
         <button
           onClick={() => likeMutation.mutate()}
-          className={`flex items-center gap-1.5 text-sm transition-colors ${liked ? "text-red-500" : "text-gray-500 hover:text-red-400"}`}
+          className={`flex items-center gap-1.5 text-sm transition-colors active:scale-90 ${liked ? "text-red-500" : "text-gray-500 hover:text-red-400"}`}
         >
           <Heart className={`w-4 h-4 ${liked ? "fill-current" : ""}`} />
           <span>{post.likes || 0}</span>
         </button>
         <button
           onClick={() => setShowComments(v => !v)}
-          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-green-600 transition-colors"
+          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-green-600 transition-colors active:scale-90"
         >
           <MessageCircle className="w-4 h-4" />
           <span>{post.comment_count || 0}</span>

@@ -146,7 +146,7 @@ export default function AppLayout() {
             <Link
               key={to}
               to={to}
-              className={`flex-1 flex flex-col items-center justify-center min-h-[56px] gap-0.5 text-[10px] font-medium transition-colors select-none ${
+              className={`flex-1 flex flex-col items-center justify-center min-h-[56px] gap-0.5 text-[10px] font-medium transition-all select-none active:bg-gray-100 dark:active:bg-gray-800 rounded-lg ${
                 active ? "text-green-700 dark:text-green-400" : "text-gray-400 dark:text-gray-500"
               }`}
             >
