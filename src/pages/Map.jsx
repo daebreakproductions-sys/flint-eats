@@ -8,7 +8,9 @@ const NEARBY_RADIUS_M = 3000; // 3 km
 
 function FlyToLocation({ coords }) {
   const map = useMap();
-  if (coords) map.flyTo(coords, 14, { animate: true, duration: 1.2 });
+  if (coords && Array.isArray(coords) && coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
+    map.flyTo(coords, 14, { animate: true, duration: 1.2 });
+  }
   return null;
 }
 import { useQuery } from "@tanstack/react-query";
