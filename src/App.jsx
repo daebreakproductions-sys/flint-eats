@@ -18,6 +18,13 @@ import AuthGateway from '@/pages/AuthGateway';
 import GeocodingTool from '@/pages/GeocodingTool';
 import Messages from '@/pages/Messages';
 
+const AdminRoute = () => {
+  const { data: user, isLoading } = useQuery({ queryKey: ["me"], queryFn: () => base44.auth.me() });
+  if (isLoading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-4 border-green-200 border-t-green-700 rounded-full animate-spin" /></div>;
+  if (user?.role !== "admin") return <Navigate to="/Feed" replace />;
+  return <Admin />;
+};
+
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
