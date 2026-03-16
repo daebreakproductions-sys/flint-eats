@@ -209,6 +209,52 @@ export default function Profile() {
         </Button>
       </div>
 
+      {/* Delete Account */}
+      <div className="rounded-xl border border-red-100 p-4">
+        {!showDeleteConfirm ? (
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-semibold text-gray-800">Delete Account</p>
+              <p className="text-xs text-gray-500 mt-0.5">Permanently remove your account and all data.</p>
+            </div>
+            <Button variant="outline" size="sm" className="text-red-500 border-red-200 hover:bg-red-50 shrink-0"
+              onClick={() => setShowDeleteConfirm(true)}>
+              <Trash2 className="w-3.5 h-3.5 mr-1" /> Delete
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <div className="flex items-start gap-2 p-3 bg-red-50 rounded-lg">
+              <AlertTriangle className="w-4 h-4 text-red-600 mt-0.5 shrink-0" />
+              <div>
+                <p className="text-sm font-semibold text-red-800">This action cannot be undone.</p>
+                <p className="text-xs text-red-700 mt-0.5">All your posts, messages, and account data will be permanently deleted.</p>
+              </div>
+            </div>
+            <div>
+              <Label className="text-xs text-gray-600">Type <strong>DELETE</strong> to confirm</Label>
+              <Input
+                value={deleteInput}
+                onChange={e => setDeleteInput(e.target.value)}
+                placeholder="DELETE"
+                className="mt-1 border-red-200 focus-visible:ring-red-400"
+              />
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" className="flex-1" onClick={() => { setShowDeleteConfirm(false); setDeleteInput(""); }}>
+                Cancel
+              </Button>
+              <Button size="sm"
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                disabled={deleteInput !== "DELETE"}
+                onClick={() => { toast.info("Account deletion requested. Please contact support to complete this process."); setShowDeleteConfirm(false); setDeleteInput(""); }}>
+                <Trash2 className="w-3.5 h-3.5 mr-1" /> Permanently Delete
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
+
     </div>
   );
 }
