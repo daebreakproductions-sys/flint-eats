@@ -59,7 +59,7 @@ export default function AppLayout() {
       <header className="bg-gradient-to-r from-green-700 to-emerald-800 shadow-md sticky top-0 z-50 hidden md:block">
         <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
           <Link to="/Feed" className="flex items-center gap-2 shrink-0 select-none">
-            <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b73bf820481df67e8a6ca5/7eb4d4a24_IMG_8997-removebg-preview.png" alt="Flint Eats" className="h-8 w-8" />
+            <span className="text-2xl">🌿</span>
             <span className="font-bold text-white text-lg">Flint Eats</span>
           </Link>
 
@@ -97,7 +97,7 @@ export default function AppLayout() {
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
         <Link to="/Feed" className="flex items-center gap-1.5 select-none">
-          <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b73bf820481df67e8a6ca5/7eb4d4a24_IMG_8997-removebg-preview.png" alt="Flint Eats" className="h-7 w-7" />
+          <span className="text-xl">🌿</span>
           <span className="font-bold text-white text-base">Flint Eats</span>
         </Link>
         <UserMenu />
