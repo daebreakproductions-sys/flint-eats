@@ -15,6 +15,7 @@ import Feed from '@/pages/Feed';
 import Landing from '@/pages/Landing';
 import AuthGateway from '@/pages/AuthGateway';
 import GeocodingTool from '@/pages/GeocodingTool';
+import Messages from '@/pages/Messages';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();

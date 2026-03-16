@@ -34,7 +34,7 @@ export default function AppLayout() {
                 <Link
                   key={to}
                   to={to}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                  className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
                     active
                       ? "bg-white/20 text-white"
                       : "text-green-100 hover:bg-white/10 hover:text-white"
