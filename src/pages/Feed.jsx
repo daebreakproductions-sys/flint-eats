@@ -10,6 +10,7 @@ import { Flame, Clock, CalendarDays } from "lucide-react";
 const CATEGORIES = ["All", "Recipe", "Resource Tip", "Community News", "Event", "Question", "Success Story", "General"];
 
 export default function Feed() {
+  const [tab, setTab] = useState("feed"); // feed | calendar
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [sortBy, setSortBy] = useState("newest");
 
