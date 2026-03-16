@@ -43,6 +43,30 @@ export default function Map() {
   const toggleBenefit = (benefit) =>
     setActiveBenefits(prev => prev.includes(benefit) ? prev.filter(b => b !== benefit) : [...prev, benefit]);
 
+  const handleLocate = () => {
+    if (!navigator.geolocation) { setLocError("Geolocation not supported by your browser."); return; }
+    setLocating(true);
+    setLocError(null);
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        setUserLocation([pos.coords.latitude, pos.coords.longitude]);
+        setLocating(false);
+      },
+      () => {
+        setLocError("Could not get your location.");
+        setLocating(false);
+      }
+    );
+  };
+
+  const distanceMeter = (lat1, lng1, lat2, lng2) => {
+    const R = 6371000;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  };
+
   const filtered = useMemo(() => {
     return resources.filter(r => {
       if (!r.lat || !r.lng) return false;
@@ -55,6 +79,15 @@ export default function Map() {
       return true;
     });
   }, [resources, activeTypes, activeBenefits, search]);
+
+  const nearbyIds = useMemo(() => {
+    if (!userLocation) return null;
+    return new Set(
+      resources
+        .filter(r => r.lat && r.lng && distanceMeter(userLocation[0], userLocation[1], r.lat, r.lng) <= NEARBY_RADIUS_M)
+        .map(r => r.id)
+    );
+  }, [userLocation, resources]);
 
   return (
     <div className="relative h-[calc(100vh-64px)] md:h-[calc(100vh-64px)]">
