@@ -15,6 +15,11 @@ const NAV_LINKS = [
 export default function AppLayout() {
   const location = useLocation();
 
+  const { data: user } = useQuery({
+    queryKey: ["me"],
+    queryFn: () => base44.auth.me(),
+  });
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
