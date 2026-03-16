@@ -216,7 +216,7 @@ export default function Landing() {
         <h2 className="text-2xl font-bold mb-3">Ready to join the community?</h2>
         <p className="text-green-200 mb-8">Create a free account and start exploring resources today.</p>
         <button
-          onClick={() => base44.auth.redirectToLogin("/Feed")}
+          onClick={() => window.location.href = "/AuthGateway"}
           className="inline-flex items-center gap-2 bg-white text-green-800 font-bold px-9 py-3.5 rounded-full shadow-lg hover:shadow-xl hover:bg-green-50 transition"
         >
           Join Flint Eats <ArrowRight className="w-4 h-4" />
