@@ -19,6 +19,8 @@ const NAV_LINKS = [
   { to: "/Messages", label: "Messages", icon: MessageCircle },
 ];
 
+const TAB_ROUTES = ["/Feed", "/Map", "/Directory", "/Learn", "/Messages"];
+
 const pageVariants = {
   initial: { x: 24, opacity: 0 },
   animate: { x: 0, opacity: 1, transition: { duration: 0.22, ease: "easeOut" } },
