@@ -22,8 +22,15 @@ export default function ResourcePopup({ resource }) {
 
       {resource.address && (
         <div className="flex gap-1.5 text-gray-600 mt-1">
-          <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0" />
-          <span>{resource.address}</span>
+          <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0 text-green-700" />
+          <a
+            href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(resource.address)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-green-700 hover:underline"
+          >
+            {resource.address}
+          </a>
         </div>
       )}
       {resource.hours && (
