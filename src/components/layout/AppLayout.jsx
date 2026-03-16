@@ -116,7 +116,7 @@ export default function AppLayout() {
 
       {/* Mobile bottom tab bar */}
       <nav
-        className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 flex"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 flex select-none"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         {allLinks.map(({ to, label, icon: Icon }) => {
