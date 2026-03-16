@@ -62,8 +62,25 @@ export default function Feed() {
       return new Date(b.created_date) - new Date(a.created_date);
     });
 
+  const showPullIndicator = pullDistance > 10 || isPulling || (isFetching && pullDistance > 0);
+
   return (
-    <div className="max-w-6xl mx-auto px-4 py-6 pb-24 md:pb-8">
+    <div
+      className="max-w-6xl mx-auto px-4 py-6 pb-24 md:pb-8"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* Pull-to-refresh indicator */}
+      {showPullIndicator && (
+        <div
+          className="flex justify-center items-center gap-2 text-sm text-green-700 overflow-hidden transition-all duration-200"
+          style={{ height: isPulling || isFetching ? 40 : pullDistance * 0.55 }}
+        >
+          <RefreshCw className={`w-4 h-4 ${isPulling || isFetching ? "animate-spin" : ""}`} />
+          <span>{isPulling || isFetching ? "Refreshing…" : pullDistance >= 60 ? "Release to refresh" : "Pull to refresh"}</span>
+        </div>
+      )}
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Main Feed */}
         <div className="flex-1 min-w-0 space-y-4">
