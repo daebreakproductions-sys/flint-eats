@@ -65,22 +65,23 @@ export default function Map() {
         <MarkerClusterGroup chunkedLoading>
           {filtered.map(resource => {
             const cfg = TYPE_CONFIG[resource.type] || TYPE_CONFIG.Other;
+            const icon = L.divIcon({
+              html: `<span style="font-size:22px;line-height:1;">${cfg.emoji}</span>`,
+              className: "",
+              iconSize: [28, 28],
+              iconAnchor: [14, 14],
+              popupAnchor: [0, -14],
+            });
             return (
-              <CircleMarker
+              <Marker
                 key={resource.id}
-                center={[resource.lat, resource.lng]}
-                radius={8}
-                pathOptions={{
-                  fillColor: cfg.color,
-                  fillOpacity: 0.85,
-                  color: "#fff",
-                  weight: 1.5,
-                }}
+                position={[resource.lat, resource.lng]}
+                icon={icon}
               >
                 <Popup maxWidth={280}>
                   <ResourcePopup resource={resource} />
                 </Popup>
-              </CircleMarker>
+              </Marker>
             );
           })}
         </MarkerClusterGroup>
