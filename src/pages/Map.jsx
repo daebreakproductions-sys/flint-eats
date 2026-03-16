@@ -18,7 +18,8 @@ export default function Map() {
   const [search, setSearch] = useState("");
   const [activeTypes, setActiveTypes] = useState([]);
   const [activeBenefits, setActiveBenefits] = useState([]);
-  const [panelOpen, setPanelOpen] = useState(true);
+  const [filtersOpen, setFiltersOpen] = useState(true);
+  const [legendOpen, setLegendOpen] = useState(true);
 
   const { data: resources = [], isLoading } = useQuery({
     queryKey: ["food-resources"],
