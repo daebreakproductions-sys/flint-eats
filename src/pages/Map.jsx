@@ -107,11 +107,29 @@ export default function Map() {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         />
+        {userLocation && <FlyToLocation coords={userLocation} />}
+        {userLocation && (
+          <>
+            <Circle center={userLocation} radius={NEARBY_RADIUS_M} pathOptions={{ color: "#16a34a", fillColor: "#16a34a", fillOpacity: 0.08, weight: 1.5, dashArray: "6 4" }} />
+            <Marker
+              position={userLocation}
+              icon={L.divIcon({
+                html: `<div style="width:14px;height:14px;background:#16a34a;border:3px solid white;border-radius:50%;box-shadow:0 0 0 3px #16a34a55;"></div>`,
+                className: "",
+                iconSize: [14, 14],
+                iconAnchor: [7, 7],
+              })}
+            >
+              <Popup>📍 Your location</Popup>
+            </Marker>
+          </>
+        )}
         <MarkerClusterGroup chunkedLoading>
           {filtered.map(resource => {
             const cfg = TYPE_CONFIG[resource.type] || TYPE_CONFIG.Other;
+            const isNearby = nearbyIds && nearbyIds.has(resource.id);
             const icon = L.divIcon({
-              html: `<span style="font-size:22px;line-height:1;">${cfg.emoji}</span>`,
+              html: `<span style="font-size:22px;line-height:1;${isNearby ? "filter:drop-shadow(0 0 4px #16a34a);" : "opacity:${nearbyIds ? 0.45 : 1};"}">${cfg.emoji}</span>`,
               className: "",
               iconSize: [28, 28],
               iconAnchor: [14, 14],
@@ -131,6 +149,26 @@ export default function Map() {
           })}
         </MarkerClusterGroup>
       </MapContainer>
+
+      {/* Find My Location button */}
+      <div className="absolute top-3 right-3 z-[500]">
+        <button
+          onClick={handleLocate}
+          disabled={locating}
+          className="flex items-center gap-2 bg-white rounded-xl shadow-lg px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition disabled:opacity-60"
+        >
+          {locating
+            ? <Loader2 className="w-4 h-4 animate-spin text-green-700" />
+            : <LocateFixed className="w-4 h-4 text-green-700" />}
+          {locating ? "Locating…" : "Find My Location"}
+        </button>
+        {locError && <p className="mt-1 text-xs text-red-500 bg-white rounded-lg px-2 py-1 shadow">{locError}</p>}
+        {userLocation && !locating && (
+          <p className="mt-1 text-xs text-green-700 bg-white rounded-lg px-2 py-1 shadow">
+            {nearbyIds?.size ?? 0} resources within 3 km
+          </p>
+        )}
+      </div>
 
       {/* Filters panel */}
       <div className="absolute top-3 left-3 z-[500] max-w-sm" style={{ maxWidth: "360px" }}>
