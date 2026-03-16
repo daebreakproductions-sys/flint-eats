@@ -13,6 +13,7 @@ import { Pencil, Trash2, Plus, MapPin, BookOpen, Save, X, Users } from "lucide-r
 import { TYPE_CONFIG } from "@/components/map/MapLegend";
 import { toast } from "sonner";
 import UsersTab from "@/components/admin/UsersTab";
+import NewsletterTab from "@/components/admin/NewsletterTab";
 
 const EMPTY_RESOURCE = {
   name: "", address: "", phone: "", lat: "", lng: "",
