@@ -1,12 +1,15 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Flame, Map, BookOpen, List } from "lucide-react";
+import { Flame, Map, BookOpen, List, MessageCircle } from "lucide-react";
 import UserMenu from "@/components/layout/UserMenu";
+import { useQuery } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
 
 const NAV_LINKS = [
   { to: "/Feed", label: "Feed", icon: Flame },
   { to: "/Map", label: "Map", icon: Map },
   { to: "/Directory", label: "Directory", icon: List },
   { to: "/Learn", label: "Learn", icon: BookOpen },
+  { to: "/Messages", label: "Messages", icon: MessageCircle },
 ];
 
 export default function AppLayout() {

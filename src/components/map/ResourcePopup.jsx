@@ -1,9 +1,17 @@
-import { Phone, MapPin, Clock, Globe, Tag } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Phone, MapPin, Clock, Globe, MessageCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { TYPE_CONFIG } from "./MapLegend";
+import { base44 } from "@/api/base44Client";
+import StartMessageModal from "@/components/messages/StartMessageModal";
 
 export default function ResourcePopup({ resource }) {
   const cfg = TYPE_CONFIG[resource.type] || TYPE_CONFIG.Other;
+  const [user, setUser] = useState(null);
+  const [showMsg, setShowMsg] = useState(false);
+
+  useEffect(() => { base44.auth.me().then(setUser).catch(() => {}); }, []);
 
   return (
     <div className="w-64 text-sm">
@@ -60,6 +68,22 @@ export default function ResourcePopup({ resource }) {
 
       {resource.notes && (
         <p className="mt-2 text-xs text-gray-500 border-t pt-1">{resource.notes}</p>
+      )}
+
+      {user && (
+        <div className="mt-3 pt-2 border-t">
+          <Button
+            size="sm"
+            className="w-full bg-green-700 hover:bg-green-800 h-8 text-xs"
+            onClick={() => setShowMsg(true)}
+          >
+            <MessageCircle className="w-3.5 h-3.5 mr-1.5" /> Message this Organization
+          </Button>
+        </div>
+      )}
+
+      {showMsg && user && (
+        <StartMessageModal resource={resource} user={user} open={showMsg} onClose={() => setShowMsg(false)} />
       )}
     </div>
   );
