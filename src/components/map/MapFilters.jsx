@@ -20,7 +20,7 @@ export default function MapFilters({ search, setSearch, activeTypes, toggleType,
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-3 space-y-2">
+    <div className="p-3 space-y-2">
       <div className="relative">
         <Search className="absolute left-2.5 top-2.5 w-4 h-4 text-gray-400" />
         <Input
