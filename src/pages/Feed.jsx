@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState, useRef, useCallback } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import CreatePost from "@/components/feed/CreatePost";
 import PostCard from "@/components/feed/PostCard";
 import EventsSidebar from "@/components/feed/EventsSidebar";
 import CommunityCalendar from "@/components/feed/CommunityCalendar";
-import { Flame, Clock, CalendarDays } from "lucide-react";
+import { Flame, Clock, CalendarDays, RefreshCw } from "lucide-react";
 
 const CATEGORIES = ["All", "Recipe", "Resource Tip", "Community News", "Event", "Question", "Success Story", "General"];
 
