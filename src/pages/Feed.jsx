@@ -38,60 +38,71 @@ export default function Feed() {
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Main Feed */}
         <div className="flex-1 min-w-0 space-y-4">
-          {/* Feed header */}
+          {/* Tab switcher */}
           <div className="flex items-center justify-between flex-wrap gap-2">
-            <h1 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-              <Flame className="w-5 h-5 text-orange-500" /> Community Feed
-            </h1>
-            <div className="flex items-center gap-2">
+            <div className="flex gap-1 bg-gray-100 rounded-xl p-1">
               <button
-                onClick={() => setSortBy("newest")}
-                className={`flex items-center gap-1 text-xs px-3 py-1.5 rounded-full border transition-colors ${sortBy === "newest" ? "bg-green-700 text-white border-green-700" : "bg-white text-gray-600 border-gray-200 hover:border-green-400"}`}
+                onClick={() => setTab("feed")}
+                className={`flex items-center gap-1.5 text-sm px-4 py-1.5 rounded-lg font-medium transition-colors ${tab === "feed" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
               >
-                <Clock className="w-3 h-3" /> New
+                <Flame className="w-4 h-4 text-orange-500" /> Feed
               </button>
               <button
-                onClick={() => setSortBy("popular")}
-                className={`flex items-center gap-1 text-xs px-3 py-1.5 rounded-full border transition-colors ${sortBy === "popular" ? "bg-green-700 text-white border-green-700" : "bg-white text-gray-600 border-gray-200 hover:border-green-400"}`}
+                onClick={() => setTab("calendar")}
+                className={`flex items-center gap-1.5 text-sm px-4 py-1.5 rounded-lg font-medium transition-colors ${tab === "calendar" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
               >
-                <Flame className="w-3 h-3" /> Hot
+                <CalendarDays className="w-4 h-4 text-pink-500" /> Calendar
               </button>
             </div>
+
+            {tab === "feed" && (
+              <div className="flex items-center gap-2">
+                <button onClick={() => setSortBy("newest")} className={`flex items-center gap-1 text-xs px-3 py-1.5 rounded-full border transition-colors ${sortBy === "newest" ? "bg-green-700 text-white border-green-700" : "bg-white text-gray-600 border-gray-200 hover:border-green-400"}`}>
+                  <Clock className="w-3 h-3" /> New
+                </button>
+                <button onClick={() => setSortBy("popular")} className={`flex items-center gap-1 text-xs px-3 py-1.5 rounded-full border transition-colors ${sortBy === "popular" ? "bg-green-700 text-white border-green-700" : "bg-white text-gray-600 border-gray-200 hover:border-green-400"}`}>
+                  <Flame className="w-3 h-3" /> Hot
+                </button>
+              </div>
+            )}
           </div>
 
-          {/* Category pills */}
-          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-            {CATEGORIES.map(cat => (
-              <button
-                key={cat}
-                onClick={() => setCategoryFilter(cat)}
-                className={`shrink-0 text-xs px-3 py-1.5 rounded-full border font-medium transition-colors ${categoryFilter === cat ? "bg-green-700 text-white border-green-700" : "bg-white text-gray-600 border-gray-200 hover:border-green-400"}`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-
-          {/* Create post */}
-          {user && <CreatePost user={user} />}
-
-          {/* Posts */}
-          {isLoading ? (
-            <div className="flex justify-center py-16">
-              <div className="w-8 h-8 border-4 border-green-200 border-t-green-700 rounded-full animate-spin" />
-            </div>
-          ) : filtered.length === 0 ? (
-            <div className="bg-white rounded-2xl border border-gray-100 py-16 text-center">
-              <p className="text-4xl mb-3">🥦</p>
-              <p className="text-gray-500 font-medium">No posts yet in this category.</p>
-              <p className="text-sm text-gray-400 mt-1">Be the first to share something!</p>
-            </div>
+          {tab === "calendar" ? (
+            <CommunityCalendar currentUser={user} />
           ) : (
-            <div className="space-y-4">
-              {filtered.map(post => (
-                <PostCard key={post.id} post={post} currentUser={user} />
-              ))}
-            </div>
+            <>
+              {/* Category pills */}
+              <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                {CATEGORIES.map(cat => (
+                  <button key={cat} onClick={() => setCategoryFilter(cat)}
+                    className={`shrink-0 text-xs px-3 py-1.5 rounded-full border font-medium transition-colors ${categoryFilter === cat ? "bg-green-700 text-white border-green-700" : "bg-white text-gray-600 border-gray-200 hover:border-green-400"}`}>
+                    {cat}
+                  </button>
+                ))}
+              </div>
+
+              {/* Create post */}
+              {user && <CreatePost user={user} />}
+
+              {/* Posts */}
+              {isLoading ? (
+                <div className="flex justify-center py-16">
+                  <div className="w-8 h-8 border-4 border-green-200 border-t-green-700 rounded-full animate-spin" />
+                </div>
+              ) : filtered.length === 0 ? (
+                <div className="bg-white rounded-2xl border border-gray-100 py-16 text-center">
+                  <p className="text-4xl mb-3">🥦</p>
+                  <p className="text-gray-500 font-medium">No posts yet in this category.</p>
+                  <p className="text-sm text-gray-400 mt-1">Be the first to share something!</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {filtered.map(post => (
+                    <PostCard key={post.id} post={post} currentUser={user} />
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
 
