@@ -19,7 +19,7 @@ const BENEFIT_BADGES = [
 function ResourceCard({ resource }) {
   const cfg = TYPE_CONFIG[resource.type] || TYPE_CONFIG.Other;
   return (
-    <Card className="p-4 hover:shadow-md transition-shadow">
+    <Card className="p-4 hover:shadow-md transition-shadow active:bg-gray-50 active:scale-[0.99] transition-all cursor-pointer">
       <div className="flex items-start gap-3">
         <span className="text-2xl mt-0.5">{cfg.emoji}</span>
         <div className="flex-1 min-w-0">
