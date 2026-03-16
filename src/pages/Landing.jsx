@@ -111,12 +111,12 @@ export default function Landing() {
           <span className="text-2xl">🌿</span>
           <span className="text-white font-bold text-xl">Flint Eats</span>
         </div>
-        <button
-          onClick={() => base44.auth.redirectToLogin("/Feed")}
+        <a
+          href="/AuthGateway"
           className="text-sm font-medium text-white border border-white/40 rounded-full px-5 py-2 hover:bg-white/10 transition"
         >
           Sign In
-        </button>
+        </a>
       </header>
 
       {/* Hero */}
