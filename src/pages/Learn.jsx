@@ -165,33 +165,40 @@ export default function Learn() {
         <p className="text-gray-600 mt-1">Videos, guides, and articles about nutrition, food programs, and healthy eating.</p>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-2 mb-6">
+      <div className="flex gap-2 mb-6">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
           <Input placeholder="Search resources..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
         </div>
-        <Select value={category} onValueChange={setCategory}>
-          <SelectTrigger className="w-full sm:w-44">
-            <SelectValue placeholder="Category" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
-            {["Nutrition", "Cooking", "Food Safety", "Benefits & Programs", "Community", "Other"].map(c => (
-              <SelectItem key={c} value={c}>{c}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={contentType} onValueChange={setContentType}>
-          <SelectTrigger className="w-full sm:w-36">
-            <SelectValue placeholder="Type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Types</SelectItem>
-            {["Video", "Article", "Guide", "Infographic"].map(t => (
-              <SelectItem key={t} value={t}>{t}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        {/* Mobile: Drawer filter sheet */}
+        <div className="sm:hidden">
+          <MobileFilterDrawer category={category} setCategory={setCategory} contentType={contentType} setContentType={setContentType} />
+        </div>
+        {/* Desktop: inline selects */}
+        <div className="hidden sm:flex gap-2">
+          <Select value={category} onValueChange={setCategory}>
+            <SelectTrigger className="w-44">
+              <SelectValue placeholder="Category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              {CATEGORIES_LIST.map(c => (
+                <SelectItem key={c} value={c}>{c}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={contentType} onValueChange={setContentType}>
+            <SelectTrigger className="w-36">
+              <SelectValue placeholder="Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              {CONTENT_TYPES_LIST.map(t => (
+                <SelectItem key={t} value={t}>{t}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {featured.length > 0 && (
