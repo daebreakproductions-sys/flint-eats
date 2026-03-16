@@ -76,7 +76,7 @@ const SAMPLE_RESOURCES = [
   { id: "s3", title: "Healthy Eating on a Budget", category: "Cooking", content_type: "Article", description: "Simple, nutritious recipes using affordable and local ingredients.", url: "https://cdn.realfood.gov/DGA.pdf", thumbnail_url: "https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=400&h=250&fit=crop" },
   { id: "s4", title: "WIC Program Guide for Families", category: "Benefits & Programs", content_type: "Guide", description: "Everything you need to know about WIC eligibility and benefits for mothers and children.", url: "https://www.michigan.gov/mdhhs/assistance-programs/wic" },
   { id: "s5", title: "Safe Food Storage Tips", category: "Food Safety", content_type: "Article", description: "Keep your family safe by learning proper food handling and storage practices.", url: "https://www.foodsafety.gov/food-safety-charts/cold-food-storage-charts" },
-  { id: "s6", title: "Growing Your Own Vegetables", category: "Nutrition", content_type: "Guide", description: "Community garden basics for beginners — grow fresh produce even in small spaces.", url: "https://extension.msu.edu/topic-areas/food-health/", thumbnail_url: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=250&fit=crop" },
+  { id: "s6", title: "Growing Your Own Vegetables", category: "Nutrition", content_type: "Guide", description: "Community garden basics for beginners — grow fresh produce even in small spaces.", url: "https://www.canr.msu.edu/outreach/", thumbnail_url: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=250&fit=crop" },
 ];
 
 export default function Learn() {
