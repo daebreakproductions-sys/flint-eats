@@ -11,8 +11,7 @@ export const TYPE_CONFIG = {
 
 export default function MapLegend() {
   return (
-    <div className="bg-white rounded-xl shadow-lg p-3 text-xs">
-      <p className="font-bold text-gray-700 mb-2">Legend</p>
+    <div className="p-3 text-xs">
       <div className="grid grid-cols-2 gap-1">
         {Object.entries(TYPE_CONFIG).map(([type, { emoji, label }]) => (
           <div key={type} className="flex items-center gap-1.5">
