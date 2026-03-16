@@ -1,0 +1,7 @@
+button,
+a,
+[role="button"],
+svg {
+  user-select: none;
+  -webkit-user-select: none;
+}
