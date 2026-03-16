@@ -95,9 +95,8 @@ export default function AppLayout() {
         className="bg-gradient-to-r from-green-700 to-emerald-800 shadow-md sticky top-0 z-50 md:hidden flex items-center justify-between px-4 h-12"
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
-        <Link to="/Feed" className="flex items-center gap-1.5 select-none">
-          <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b73bf820481df67e8a6ca5/51414b592_IMG_8997.jpg" alt="Flint Eats" className="h-7 w-7 object-contain" />
-          <span className="font-bold text-white text-base">Flint Eats</span>
+        <Link to="/Feed" className="flex items-center select-none">
+          <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b73bf820481df67e8a6ca5/6f4a27b5b_image.png" alt="Flint Eats" className="h-7 object-contain" />
         </Link>
         <UserMenu />
       </header>
