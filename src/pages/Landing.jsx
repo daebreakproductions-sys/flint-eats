@@ -108,7 +108,7 @@ export default function Landing() {
       {/* Nav */}
       <header className="bg-gradient-to-r from-green-700 to-emerald-800 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-2">
-          <span className="text-2xl">🌿</span>
+          <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69b73bf820481df67e8a6ca5/7eb4d4a24_IMG_8997-removebg-preview.png" alt="Flint Eats" className="h-8 w-8" />
           <span className="text-white font-bold text-xl">Flint Eats</span>
         </div>
         <a
