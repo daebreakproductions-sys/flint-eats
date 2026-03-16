@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Flame, Map, BookOpen, List, MessageCircle } from "lucide-react";
+import { Flame, Map, BookOpen, List, MessageCircle, ShieldCheck } from "lucide-react";
 import UserMenu from "@/components/layout/UserMenu";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
