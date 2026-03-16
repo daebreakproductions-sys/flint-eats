@@ -13,16 +13,45 @@ export default function Feed() {
   const [tab, setTab] = useState("feed"); // feed | calendar
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [sortBy, setSortBy] = useState("newest");
+  const [isPulling, setIsPulling] = useState(false);
+  const [pullDistance, setPullDistance] = useState(0);
+  const touchStartY = useRef(null);
+  const qc = useQueryClient();
 
   const { data: user } = useQuery({
     queryKey: ["me"],
     queryFn: () => base44.auth.me(),
   });
 
-  const { data: posts = [], isLoading } = useQuery({
+  const { data: posts = [], isLoading, isFetching } = useQuery({
     queryKey: ["feed-posts"],
     queryFn: () => base44.entities.Post.filter({ is_published: true }, "-created_date", 100),
   });
+
+  const handleTouchStart = useCallback((e) => {
+    if (window.scrollY === 0) {
+      touchStartY.current = e.touches[0].clientY;
+    }
+  }, []);
+
+  const handleTouchMove = useCallback((e) => {
+    if (touchStartY.current === null) return;
+    const delta = e.touches[0].clientY - touchStartY.current;
+    if (delta > 0 && window.scrollY === 0) {
+      setPullDistance(Math.min(delta * 0.4, 72));
+    }
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    if (pullDistance >= 60) {
+      setIsPulling(true);
+      qc.invalidateQueries({ queryKey: ["feed-posts"] }).then(() => {
+        setIsPulling(false);
+      });
+    }
+    touchStartY.current = null;
+    setPullDistance(0);
+  }, [pullDistance, qc]);
 
   const filtered = posts
     .filter(p => categoryFilter === "All" || p.category === categoryFilter)
