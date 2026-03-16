@@ -81,6 +81,61 @@ const SAMPLE_RESOURCES = [
   { id: "s6", title: "Growing Your Own Vegetables", category: "Nutrition", content_type: "Guide", description: "Community garden basics for beginners — grow fresh produce even in small spaces.", url: "https://www.canr.msu.edu/outreach/", thumbnail_url: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=250&fit=crop" },
 ];
 
+const CATEGORIES_LIST = ["Nutrition", "Cooking", "Food Safety", "Benefits & Programs", "Community", "Other"];
+const CONTENT_TYPES_LIST = ["Video", "Article", "Guide", "Infographic"];
+
+function MobileFilterDrawer({ category, setCategory, contentType, setContentType }) {
+  const activeCount = (category !== "all" ? 1 : 0) + (contentType !== "all" ? 1 : 0);
+  return (
+    <Drawer>
+      <DrawerTrigger asChild>
+        <Button variant="outline" className="relative shrink-0">
+          <Filter className="w-4 h-4 mr-1.5" /> Filters
+          {activeCount > 0 && (
+            <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-green-700 text-white text-[10px] rounded-full flex items-center justify-center font-bold">{activeCount}</span>
+          )}
+        </Button>
+      </DrawerTrigger>
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>Filter Resources</DrawerTitle>
+        </DrawerHeader>
+        <div className="px-4 pb-8 space-y-5">
+          <div>
+            <p className="text-sm font-semibold text-gray-700 mb-2">Category</p>
+            <div className="space-y-1">
+              <button onClick={() => setCategory("all")} className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-colors ${category === "all" ? "bg-green-50 text-green-800 font-medium" : "hover:bg-gray-50 text-gray-700"}`}>
+                All Categories {category === "all" && <Check className="w-4 h-4 text-green-700" />}
+              </button>
+              {CATEGORIES_LIST.map(c => (
+                <button key={c} onClick={() => setCategory(c)} className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-colors ${category === c ? "bg-green-50 text-green-800 font-medium" : "hover:bg-gray-50 text-gray-700"}`}>
+                  {c} {category === c && <Check className="w-4 h-4 text-green-700" />}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-gray-700 mb-2">Content Type</p>
+            <div className="space-y-1">
+              <button onClick={() => setContentType("all")} className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-colors ${contentType === "all" ? "bg-green-50 text-green-800 font-medium" : "hover:bg-gray-50 text-gray-700"}`}>
+                All Types {contentType === "all" && <Check className="w-4 h-4 text-green-700" />}
+              </button>
+              {CONTENT_TYPES_LIST.map(t => (
+                <button key={t} onClick={() => setContentType(t)} className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-colors ${contentType === t ? "bg-green-50 text-green-800 font-medium" : "hover:bg-gray-50 text-gray-700"}`}>
+                  {t} {contentType === t && <Check className="w-4 h-4 text-green-700" />}
+                </button>
+              ))}
+            </div>
+          </div>
+          <DrawerClose asChild>
+            <Button className="w-full bg-green-700 hover:bg-green-800">Apply Filters</Button>
+          </DrawerClose>
+        </div>
+      </DrawerContent>
+    </Drawer>
+  );
+}
+
 export default function Learn() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
