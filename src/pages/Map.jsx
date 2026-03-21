@@ -45,7 +45,14 @@ export default function Map() {
 
   const { data: resources = [], isLoading } = useQuery({
     queryKey: ["food-resources"],
-    queryFn: () => base44.entities.FoodResource.filter({ is_active: true }, "name", 1000),
+    queryFn: async () => {
+      try {
+        return await base44.entities.FoodResource.filter({ is_active: true }, "name", 1000);
+      } catch (error) {
+        console.error("Failed to load resources:", error);
+        return [];
+      }
+    },
   });
 
   const toggleType = (type) =>
