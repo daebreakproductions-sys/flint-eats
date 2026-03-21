@@ -39,10 +39,21 @@ const AuthenticatedApp = () => {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {
+      // Allow public access to map, directory, and learn - auth only required for posting/interaction
       return (
         <Routes>
+          <Route path="/" element={<Navigate to="/Map" replace />} />
+          <Route path="/Landing" element={<Landing />} />
           <Route path="/AuthGateway" element={<AuthGateway />} />
-          <Route path="*" element={<Landing />} />
+          <Route element={<AppLayout />}>
+            <Route path="/Map" element={<Map />} />
+            <Route path="/Directory" element={<Directory />} />
+            <Route path="/Learn" element={<Learn />} />
+            <Route path="/Feed" element={<Landing />} />
+            <Route path="/Profile" element={<Landing />} />
+            <Route path="/Admin" element={<Landing />} />
+          </Route>
+          <Route path="*" element={<Navigate to="/Map" replace />} />
         </Routes>
       );
     }

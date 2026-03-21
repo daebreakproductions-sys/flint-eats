@@ -20,7 +20,7 @@ export default function Feed() {
 
   const { data: user } = useQuery({
     queryKey: ["me"],
-    queryFn: () => base44.auth.me(),
+    queryFn: () => base44.auth.me().catch(() => null),
   });
 
   const { data: posts = [], isLoading, isFetching } = useQuery({

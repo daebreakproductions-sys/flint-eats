@@ -78,6 +78,7 @@ function formatExtraContent(category, extra) {
 }
 
 export default function CreatePost({ user }) {
+  if (!user) return null;
   const qc = useQueryClient();
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("General");
