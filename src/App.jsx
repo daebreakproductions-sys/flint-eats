@@ -16,6 +16,7 @@ import Feed from '@/pages/Feed';
 import Landing from '@/pages/Landing';
 import AuthGateway from '@/pages/AuthGateway';
 import GeocodingTool from '@/pages/GeocodingTool';
+import DiagnosticTest from '@/pages/DiagnosticTest';
 
 const AdminRoute = () => {
   const { data: user, isLoading } = useQuery({ queryKey: ["me"], queryFn: () => base44.auth.me() });
@@ -65,6 +66,7 @@ const AuthenticatedApp = () => {
       <Route path="/Landing" element={<Landing />} />
       <Route path="/AuthGateway" element={<AuthGateway />} />
       <Route path="/GeocodingTool" element={<GeocodingTool />} />
+      <Route path="/DiagnosticTest" element={<DiagnosticTest />} />
       <Route element={<AppLayout />}>
         <Route path="/Map" element={<Map />} />
         <Route path="/Directory" element={<Directory />} />
