@@ -152,12 +152,10 @@ export default function Directory() {
       return true;
     });
 
-    // Remove duplicates based on normalized name + address
+    // Remove duplicates based on name + address
     const seen = new Set();
     return results.filter(r => {
-      // Normalize: lowercase, remove extra spaces/punctuation
-      const normalize = (str = "") => str.toLowerCase().replace(/[^\w\s]/g, "").replace(/\s+/g, " ").trim();
-      const key = `${normalize(r.name)}||${normalize(r.address)}`;
+      const key = `${r.name}||${r.address}`.toLowerCase();
       if (seen.has(key)) return false;
       seen.add(key);
       return true;
