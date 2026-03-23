@@ -142,13 +142,22 @@ export default function Directory() {
   });
 
   const filtered = useMemo(() => {
-    return resources.filter(r => {
+    const results = resources.filter(r => {
       if (typeFilter !== "all" && r.type !== typeFilter) return false;
       if (benefitFilter !== "all" && !r[benefitFilter]) return false;
       if (search) {
         const q = search.toLowerCase();
         if (!r.name?.toLowerCase().includes(q) && !r.address?.toLowerCase().includes(q)) return false;
       }
+      return true;
+    });
+
+    // Remove duplicates based on name + address
+    const seen = new Set();
+    return results.filter(r => {
+      const key = `${r.name}||${r.address}`.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
       return true;
     });
   }, [resources, typeFilter, benefitFilter, search]);
