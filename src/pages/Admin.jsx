@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
-import { Pencil, Trash2, Plus, MapPin, BookOpen, Save, X, Users, Mail, AlertTriangle } from "lucide-react";
+import { Pencil, Trash2, Plus, MapPin, BookOpen, Save, X, Users, Mail } from "lucide-react";
 import { TYPE_CONFIG } from "@/components/map/MapLegend";
 import { toast } from "sonner";
 import UsersTab from "@/components/admin/UsersTab";
@@ -132,30 +132,6 @@ export default function Admin() {
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["food-resources-admin"] }); qc.invalidateQueries({ queryKey: ["food-resources"] }); toast.success("Location deleted."); }
   });
 
-  const removeDuplicatesMutation = useMutation({
-    mutationFn: async () => {
-      const duplicates = new Map();
-      const toDelete = [];
-      
-      resources.forEach(r => {
-        const key = `${r.name?.toLowerCase().trim()}|${r.address?.toLowerCase().trim()}`;
-        if (duplicates.has(key)) {
-          toDelete.push(r.id);
-        } else {
-          duplicates.set(key, r.id);
-        }
-      });
-
-      await Promise.all(toDelete.map(id => base44.entities.FoodResource.delete(id)));
-      return toDelete.length;
-    },
-    onSuccess: (count) => {
-      qc.invalidateQueries({ queryKey: ["food-resources-admin"] });
-      qc.invalidateQueries({ queryKey: ["food-resources"] });
-      toast.success(`Removed ${count} duplicate locations.`);
-    }
-  });
-
   const filteredResources = resources.filter(r =>
     !resourceSearch || r.name?.toLowerCase().includes(resourceSearch.toLowerCase()) || r.address?.toLowerCase().includes(resourceSearch.toLowerCase())
   );
@@ -182,23 +158,11 @@ export default function Admin() {
 
         <TabsContent value="resources">
           <Card>
-            <CardHeader className="pb-3">
-              <div className="flex flex-row items-center justify-between">
-                <CardTitle className="text-lg">Manage Locations</CardTitle>
-                <div className="flex gap-2">
-                  <Button 
-                    onClick={() => removeDuplicatesMutation.mutate()} 
-                    variant="outline"
-                    size="sm"
-                    disabled={removeDuplicatesMutation.isPending}
-                  >
-                    <AlertTriangle className="w-4 h-4 mr-1" /> Remove Duplicates
-                  </Button>
-                  <Button onClick={() => setShowNewForm(true)} className="bg-green-700 hover:bg-green-800" size="sm">
-                    <Plus className="w-4 h-4 mr-1" /> Add Location
-                  </Button>
-                </div>
-              </div>
+            <CardHeader className="flex flex-row items-center justify-between pb-3">
+              <CardTitle className="text-lg">Manage Locations</CardTitle>
+              <Button onClick={() => setShowNewForm(true)} className="bg-green-700 hover:bg-green-800" size="sm">
+                <Plus className="w-4 h-4 mr-1" /> Add Location
+              </Button>
             </CardHeader>
             <CardContent>
               {showNewForm && (
