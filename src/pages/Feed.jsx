@@ -6,6 +6,7 @@ import PostCard from "@/components/feed/PostCard";
 import EventsSidebar from "@/components/feed/EventsSidebar";
 import CommunityCalendar from "@/components/feed/CommunityCalendar";
 import { Flame, Clock, CalendarDays, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const CATEGORIES = ["All", "Recipe", "Resource Tip", "Community News", "Event", "Question", "Success Story", "General"];
 
@@ -23,9 +24,15 @@ export default function Feed() {
     queryFn: () => base44.auth.me().catch(() => null),
   });
 
+  const { data: isAuthenticated } = useQuery({
+    queryKey: ["isAuthenticated"],
+    queryFn: () => base44.auth.isAuthenticated(),
+  });
+
   const { data: posts = [], isLoading, isFetching } = useQuery({
     queryKey: ["feed-posts"],
     queryFn: () => base44.entities.Post.filter({ is_published: true }, "-created_date", 100),
+    enabled: isAuthenticated,
   });
 
   const handleTouchStart = useCallback((e) => {
@@ -63,6 +70,28 @@ export default function Feed() {
     });
 
   const showPullIndicator = pullDistance > 10 || isPulling || (isFetching && pullDistance > 0);
+
+  if (isAuthenticated === false) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 text-center">
+          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-3xl">🌱</span>
+          </div>
+          <h2 className="text-2xl font-bold text-slate-900 mb-3">Join Our Community!</h2>
+          <p className="text-slate-600 mb-6">
+            Sign in to share recipes, discover community events, connect with neighbors, and stay updated on food resources in Genesee County.
+          </p>
+          <Button
+            onClick={() => base44.auth.redirectToLogin(window.location.pathname)}
+            className="w-full bg-green-700 hover:bg-green-800 text-white"
+          >
+            Sign In or Sign Up
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
