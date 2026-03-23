@@ -41,7 +41,12 @@ export default function Profile() {
 
   const { data: user, isLoading } = useQuery({
     queryKey: ["me"],
-    queryFn: () => base44.auth.me(),
+    queryFn: () => base44.auth.me().catch(() => null),
+  });
+
+  const { data: isAuthenticated } = useQuery({
+    queryKey: ["isAuthenticated"],
+    queryFn: () => base44.auth.isAuthenticated(),
   });
 
   const { data: myPosts = [] } = useQuery({
@@ -77,6 +82,28 @@ export default function Profile() {
       <div className="w-8 h-8 border-4 border-green-200 border-t-green-700 rounded-full animate-spin" />
     </div>
   );
+
+  if (isAuthenticated === false) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 text-center">
+          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-3xl">👤</span>
+          </div>
+          <h2 className="text-2xl font-bold text-slate-900 mb-3">Create Your Profile</h2>
+          <p className="text-slate-600 mb-6">
+            Sign in to personalize your experience, save favorite resources, and connect with the Flint Eats community.
+          </p>
+          <Button
+            onClick={() => base44.auth.redirectToLogin(window.location.pathname)}
+            className="w-full bg-green-700 hover:bg-green-800 text-white"
+          >
+            Sign In or Sign Up
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   const roleCfg = ROLE_CONFIG[user?.role] || ROLE_CONFIG.user;
   const initials = (user?.full_name || user?.email || "?").split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
