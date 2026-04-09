@@ -86,7 +86,7 @@ export default function Map() {
   };
 
   const filtered = useMemo(() => {
-    return resources.filter(r => {
+    const results = resources.filter(r => {
       if (!r.lat || !r.lng) return false;
       if (activeTypes.length > 0 && !activeTypes.includes(r.type)) return false;
       if (activeBenefits.length > 0 && !activeBenefits.every(b => r[b])) return false;
@@ -94,6 +94,14 @@ export default function Map() {
         const q = search.toLowerCase();
         if (!r.name?.toLowerCase().includes(q) && !r.address?.toLowerCase().includes(q) && !r.notes?.toLowerCase().includes(q)) return false;
       }
+      return true;
+    });
+    // Deduplicate by normalized name + address
+    const seen = new Set();
+    return results.filter(r => {
+      const key = `${(r.name||'').toLowerCase().replace(/[^a-z0-9]/g,'')}||${(r.address||'').toLowerCase().replace(/[^a-z0-9]/g,'')}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
       return true;
     });
   }, [resources, activeTypes, activeBenefits, search]);
