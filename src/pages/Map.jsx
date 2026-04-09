@@ -19,8 +19,10 @@ function MapInitializer() {
 function FlyToLocation({ coords }) {
   const map = useMap();
   useEffect(() => {
-    if (coords && Array.isArray(coords) && coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
-      map.flyTo(coords, 14, { animate: true, duration: 1.2 });
+    if (!coords) return;
+    const [lat, lng] = coords;
+    if (typeof lat === 'number' && typeof lng === 'number' && isFinite(lat) && isFinite(lng)) {
+      map.flyTo([lat, lng], 14, { animate: true, duration: 1.2 });
     }
   }, [coords, map]);
   return null;
