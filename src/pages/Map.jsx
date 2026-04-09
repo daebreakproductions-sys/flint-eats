@@ -139,7 +139,7 @@ export default function Map() {
         center={FLINT_CENTER}
         zoom={12}
         className="w-full h-full z-0"
-        style={{ height: "100%" }}
+        style={{ height: "100%", width: "100%" }}
       >
         <MapInitializer />
         <TileLayer
