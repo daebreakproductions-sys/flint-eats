@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Image, Send, X, ChevronDown } from "lucide-react";
+import { Image, Send, X } from "lucide-react";
 import { toast } from "sonner";
 import {
   RecipeFields, EventFields, ResourceTipFields,
@@ -41,7 +41,6 @@ const TYPE_FIELDS = {
   "Community News": CommunityNewsFields,
 };
 
-// Format extra metadata into content appendage
 function formatExtraContent(category, extra) {
   if (!extra || Object.keys(extra).length === 0) return "";
   const lines = [];
@@ -78,18 +77,12 @@ function formatExtraContent(category, extra) {
 }
 
 export default function CreatePost({ user }) {
-  if (!user) return null;
   const qc = useQueryClient();
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("General");
   const [imageUrl, setImageUrl] = useState("");
   const [showImageInput, setShowImageInput] = useState(false);
-  const [showPicker, setShowPicker] = useState(false);
   const [extra, setExtra] = useState({});
-
-  const initials = (user?.full_name || user?.email || "?").split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
-  const activeCat = CATEGORIES.find(c => c.value === category) || CATEGORIES[6];
-  const ExtraFields = TYPE_FIELDS[category] || null;
 
   const mutation = useMutation({
     mutationFn: (data) => base44.entities.Post.create(data),
@@ -100,6 +93,12 @@ export default function CreatePost({ user }) {
       toast.success("Posted!");
     },
   });
+
+  if (!user) return null;
+
+  const initials = (user?.full_name || user?.email || "?").split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
+  const activeCat = CATEGORIES.find(c => c.value === category) || CATEGORIES[6];
+  const ExtraFields = TYPE_FIELDS[category] || null;
 
   const handlePost = () => {
     if (!content.trim()) return;

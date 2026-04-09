@@ -108,7 +108,7 @@ export default function Map() {
   }, [userLocation, resources]);
 
   return (
-    <div className="relative h-[calc(100vh-64px)] md:h-[calc(100vh-64px)]">
+    <div className="relative h-[calc(100vh-128px)] md:h-[calc(100vh-64px)]">
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-white/70 z-[1000]">
           <div className="w-8 h-8 border-4 border-green-200 border-t-green-700 rounded-full animate-spin" />
