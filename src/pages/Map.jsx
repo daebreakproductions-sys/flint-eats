@@ -6,6 +6,14 @@ import MarkerClusterGroup from "react-leaflet-cluster";
 
 const NEARBY_RADIUS_M = 3000; // 3 km
 
+function MapInitializer() {
+  const map = useMap();
+  useEffect(() => {
+    setTimeout(() => map.invalidateSize(), 100);
+  }, [map]);
+  return null;
+}
+
 function FlyToLocation({ coords }) {
   const map = useMap();
   useEffect(() => {
@@ -131,6 +139,7 @@ export default function Map() {
         className="w-full h-full z-0"
         style={{ height: "100%" }}
       >
+        <MapInitializer />
         <TileLayer
           key={isDark ? "dark" : "light"}
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
