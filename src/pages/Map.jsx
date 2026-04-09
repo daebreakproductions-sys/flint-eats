@@ -10,6 +10,8 @@ function MapInitializer() {
   const map = useMap();
   useEffect(() => {
     setTimeout(() => map.invalidateSize(), 100);
+    setTimeout(() => map.invalidateSize(), 500);
+    setTimeout(() => map.invalidateSize(), 1000);
   }, [map]);
   return null;
 }
