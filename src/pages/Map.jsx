@@ -68,7 +68,7 @@ export default function Map() {
     queryKey: ["food-resources"],
     queryFn: async () => {
       try {
-        return await base44.entities.FoodResource.filter({ is_active: true }, "name", 1000);
+        return await base44.entities.FoodResource.filter({ is_active: true }, "name", 2000);
       } catch (error) {
         console.error("Failed to load resources:", error);
         return [];
@@ -117,14 +117,7 @@ export default function Map() {
       }
       return true;
     });
-    // Deduplicate by normalized name + address
-    const seen = new Set();
-    return results.filter(r => {
-      const key = `${(r.name||'').toLowerCase().replace(/[^a-z0-9]/g,'')}||${(r.address||'').toLowerCase().replace(/[^a-z0-9]/g,'')}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
+    return results;
   }, [resources, activeTypes, activeBenefits, search]);
 
   const nearbyIds = useMemo(() => {
