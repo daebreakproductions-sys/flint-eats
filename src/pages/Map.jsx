@@ -21,7 +21,14 @@ function FlyToLocation({ coords }) {
   useEffect(() => {
     if (!coords) return;
     const [lat, lng] = coords;
-    if (typeof lat === 'number' && typeof lng === 'number' && isFinite(lat) && isFinite(lng)) {
+    if (typeof lat !== 'number' || typeof lng !== 'number' || !isFinite(lat) || !isFinite(lng)) return;
+    const size = map.getSize();
+    if (!size || size.x === 0 || size.y === 0) {
+      setTimeout(() => {
+        map.invalidateSize();
+        map.flyTo([lat, lng], 14, { animate: true, duration: 1.2 });
+      }, 300);
+    } else {
       map.flyTo([lat, lng], 14, { animate: true, duration: 1.2 });
     }
   }, [coords, map]);
