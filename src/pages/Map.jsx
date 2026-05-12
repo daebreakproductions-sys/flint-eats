@@ -106,8 +106,20 @@ export default function Map() {
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   };
 
+  // Deduplicate by source_id, keeping the most recently created record
+  const deduped = useMemo(() => {
+    const seen = new Map();
+    for (const r of resources) {
+      const key = r.source_id || r.id;
+      if (!seen.has(key) || r.created_date > seen.get(key).created_date) {
+        seen.set(key, r);
+      }
+    }
+    return Array.from(seen.values());
+  }, [resources]);
+
   const filtered = useMemo(() => {
-    const results = resources.filter(r => {
+    const results = deduped.filter(r => {
       if (!r.lat || !r.lng) return false;
       if (activeTypes.length > 0 && !activeTypes.includes(r.type)) return false;
       if (activeBenefits.length > 0 && !activeBenefits.every(b => r[b])) return false;
@@ -118,16 +130,16 @@ export default function Map() {
       return true;
     });
     return results;
-  }, [resources, activeTypes, activeBenefits, search]);
+  }, [deduped, activeTypes, activeBenefits, search]);
 
   const nearbyIds = useMemo(() => {
     if (!userLocation) return null;
     return new Set(
-      resources
+      deduped
         .filter(r => r.lat && r.lng && distanceMeter(userLocation[0], userLocation[1], r.lat, r.lng) <= NEARBY_RADIUS_M)
         .map(r => r.id)
     );
-  }, [userLocation, resources]);
+  }, [userLocation, deduped]);
 
   return (
     <div className="relative h-[calc(100vh-128px)] md:h-[calc(100vh-64px)]">
