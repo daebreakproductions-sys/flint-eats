@@ -106,12 +106,12 @@ export default function Map() {
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   };
 
-  // Deduplicate by source_id, keeping the most recently created record
+  // Deduplicate by source_id, keeping one record per unique source
   const deduped = useMemo(() => {
     const seen = new Map();
     for (const r of resources) {
       const key = r.source_id || r.id;
-      if (!seen.has(key) || r.created_date > seen.get(key).created_date) {
+      if (!seen.has(key)) {
         seen.set(key, r);
       }
     }
