@@ -72,9 +72,31 @@ export default function Map() {
     return () => observer.disconnect();
   }, []);
 
-  const { data: resources, isLoading, error } = useQuery({
+  const { data: resources, isLoading } = useQuery({
     queryKey: ["food-resources"],
-    queryFn: () => base44.entities.FoodResource.filter({ is_active: true }, "name", 2000),
+    queryFn: async () => {
+      const raw = await base44.entities.FoodResource.filter({ is_active: true }, "name", 2000);
+      // Sanitize to plain objects to avoid circular reference issues with React Query serialization
+      return raw.map(r => ({
+        id: r.id,
+        name: r.name,
+        address: r.address,
+        phone: r.phone,
+        lat: r.lat,
+        lng: r.lng,
+        type: r.type,
+        hours: r.hours,
+        notes: r.notes,
+        ebt_accepted: r.ebt_accepted,
+        dufb_offered: r.dufb_offered,
+        wic_accepted: r.wic_accepted,
+        email: r.email,
+        url: r.url,
+        image_url: r.image_url,
+        source_id: r.source_id,
+        is_active: r.is_active,
+      }));
+    },
     staleTime: 5 * 60 * 1000,
   });
 
