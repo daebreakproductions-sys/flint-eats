@@ -72,9 +72,10 @@ export default function Map() {
     return () => observer.disconnect();
   }, []);
 
-  const { data: resources, isLoading } = useQuery({
+  const { data: resources, isLoading, error } = useQuery({
     queryKey: ["food-resources"],
     queryFn: () => base44.entities.FoodResource.filter({ is_active: true }, "name", 2000),
+    staleTime: 5 * 60 * 1000,
   });
 
   const toggleType = (type) =>
