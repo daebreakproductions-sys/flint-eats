@@ -34,11 +34,15 @@ function MapInitializer() {
 function FlyToLocation({ coords }) {
   const map = useMap();
   useEffect(() => {
-    if (!Array.isArray(coords) || coords.length < 2) return;
+    if (!map || !Array.isArray(coords) || coords.length < 2) return;
     const lat = Number(coords[0]);
     const lng = Number(coords[1]);
-    if (!isFinite(lat) || !isFinite(lng)) return;
-    map.flyTo([lat, lng], 14, { animate: true, duration: 1.2 });
+    if (!isFinite(lat) || !isFinite(lng) || isNaN(lat) || isNaN(lng)) return;
+    try {
+      map.flyTo([lat, lng], 14, { animate: true, duration: 1.2 });
+    } catch (e) {
+      // ignore invalid coords
+    }
   }, [coords, map]);
   return null;
 }
