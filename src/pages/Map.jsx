@@ -1,10 +1,28 @@
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { ChevronUp, ChevronDown, LocateFixed, Loader2 } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from "react-leaflet";
 import L from "leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
+import { useQuery } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
+import MapFilters from "@/components/map/MapFilters";
+import MapLegend, { TYPE_CONFIG } from "@/components/map/MapLegend";
+import ResourcePopup from "@/components/map/ResourcePopup";
+import "leaflet/dist/leaflet.css";
+import "react-leaflet-cluster/lib/assets/MarkerCluster.css";
+import "react-leaflet-cluster/lib/assets/MarkerCluster.Default.css";
 
-const NEARBY_RADIUS_M = 3000; // 3 km
+const NEARBY_RADIUS_M = 3000;
+const FLINT_CENTER = [43.0125, -83.6875];
+const EMPTY_ARRAY = [];
+
+function distanceMeter(lat1, lng1, lat2, lng2) {
+  const R = 6371000;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
 
 function MapInitializer() {
   const map = useMap();
@@ -34,24 +52,6 @@ function FlyToLocation({ coords }) {
   }, [coords, map]);
   return null;
 }
-import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
-import MapFilters from "@/components/map/MapFilters";
-import MapLegend, { TYPE_CONFIG } from "@/components/map/MapLegend";
-import ResourcePopup from "@/components/map/ResourcePopup";
-import "leaflet/dist/leaflet.css";
-import "react-leaflet-cluster/lib/assets/MarkerCluster.css";
-import "react-leaflet-cluster/lib/assets/MarkerCluster.Default.css";
-
-const FLINT_CENTER = [43.0125, -83.6875];
-
-function distanceMeter(lat1, lng1, lat2, lng2) {
-  const R = 6371000;
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLng = (lng2 - lng1) * Math.PI / 180;
-  const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
 
 export default function Map() {
   const [search, setSearch] = useState("");
@@ -72,16 +72,9 @@ export default function Map() {
     return () => observer.disconnect();
   }, []);
 
-  const { data: resources = [], isLoading } = useQuery({
+  const { data: resources, isLoading } = useQuery({
     queryKey: ["food-resources"],
-    queryFn: async () => {
-      try {
-        return await base44.entities.FoodResource.filter({ is_active: true }, "name", 2000);
-      } catch (error) {
-        console.error("Failed to load resources:", error);
-        return [];
-      }
-    },
+    queryFn: () => base44.entities.FoodResource.filter({ is_active: true }, "name", 2000),
   });
 
   const toggleType = (type) =>
@@ -95,31 +88,23 @@ export default function Map() {
     setLocating(true);
     setLocError(null);
     navigator.geolocation.getCurrentPosition(
-      pos => {
-        setUserLocation([pos.coords.latitude, pos.coords.longitude]);
-        setLocating(false);
-      },
-      () => {
-        setLocError("Could not get your location.");
-        setLocating(false);
-      }
+      pos => { setUserLocation([pos.coords.latitude, pos.coords.longitude]); setLocating(false); },
+      () => { setLocError("Could not get your location."); setLocating(false); }
     );
   };
 
-  // Deduplicate by source_id, keeping one record per unique source
   const deduped = useMemo(() => {
+    const list = resources || EMPTY_ARRAY;
     const seen = new Map();
-    for (const r of resources) {
+    for (const r of list) {
       const key = r.source_id || r.id;
-      if (!seen.has(key)) {
-        seen.set(key, r);
-      }
+      if (!seen.has(key)) seen.set(key, r);
     }
     return Array.from(seen.values());
   }, [resources]);
 
   const filtered = useMemo(() => {
-    const results = deduped.filter(r => {
+    return deduped.filter(r => {
       if (!r.lat || !r.lng) return false;
       if (activeTypes.length > 0 && !activeTypes.includes(r.type)) return false;
       if (activeBenefits.length > 0 && !activeBenefits.every(b => r[b])) return false;
@@ -129,7 +114,6 @@ export default function Map() {
       }
       return true;
     });
-    return results;
   }, [deduped, activeTypes, activeBenefits, search]);
 
   const nearbyIds = useMemo(() => {
@@ -186,18 +170,14 @@ export default function Map() {
             const cfg = TYPE_CONFIG[resource.type] || TYPE_CONFIG.Other;
             const isNearby = nearbyIds && nearbyIds.has(resource.id);
             const icon = L.divIcon({
-              html: `<span style="font-size:22px;line-height:1;${isNearby ? "filter:drop-shadow(0 0 4px #16a34a);" : "opacity:${nearbyIds ? 0.45 : 1};"}">${cfg.emoji}</span>`,
+              html: `<span style="font-size:22px;line-height:1;${isNearby ? "filter:drop-shadow(0 0 4px #16a34a);" : `opacity:${nearbyIds ? 0.45 : 1};`}">${cfg.emoji}</span>`,
               className: "",
               iconSize: [28, 28],
               iconAnchor: [14, 14],
               popupAnchor: [0, -14],
             });
             return (
-              <Marker
-                key={resource.id}
-                position={[resource.lat, resource.lng]}
-                icon={icon}
-              >
+              <Marker key={resource.id} position={[resource.lat, resource.lng]} icon={icon}>
                 <Popup maxWidth={280}>
                   <ResourcePopup resource={resource} />
                 </Popup>
@@ -214,9 +194,7 @@ export default function Map() {
           disabled={locating}
           className="flex items-center gap-2 bg-white rounded-xl shadow-lg px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition disabled:opacity-60"
         >
-          {locating
-            ? <Loader2 className="w-4 h-4 animate-spin text-green-700" />
-            : <LocateFixed className="w-4 h-4 text-green-700" />}
+          {locating ? <Loader2 className="w-4 h-4 animate-spin text-green-700" /> : <LocateFixed className="w-4 h-4 text-green-700" />}
           {locating ? "Locating…" : "Find My Location"}
         </button>
         {locError && <p className="mt-1 text-xs text-red-500 bg-white rounded-lg px-2 py-1 shadow">{locError}</p>}
