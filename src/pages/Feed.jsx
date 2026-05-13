@@ -24,7 +24,7 @@ export default function Feed() {
     queryFn: () => base44.auth.me().catch(() => null),
   });
 
-  const { data: isAuthenticated } = useQuery({
+  const { data: isAuthenticated, isLoading: isAuthLoading } = useQuery({
     queryKey: ["isAuthenticated"],
     queryFn: () => base44.auth.isAuthenticated(),
   });
@@ -70,6 +70,14 @@ export default function Feed() {
     });
 
   const showPullIndicator = pullDistance > 10 || isPulling || (isFetching && pullDistance > 0);
+
+  if (isAuthLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="w-8 h-8 border-4 border-green-200 border-t-green-700 rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (isAuthenticated === false) {
     return (
