@@ -1,9 +1,8 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ChevronUp, ChevronDown, LocateFixed, Loader2 } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from "react-leaflet";
 import L from "leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
-import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import MapFilters from "@/components/map/MapFilters";
 import MapLegend, { TYPE_CONFIG } from "@/components/map/MapLegend";
@@ -14,7 +13,6 @@ import "react-leaflet-cluster/lib/assets/MarkerCluster.Default.css";
 
 const NEARBY_RADIUS_M = 3000;
 const FLINT_CENTER = [43.0125, -83.6875];
-const EMPTY_ARRAY = [];
 
 function distanceMeter(lat1, lng1, lat2, lng2) {
   const R = 6371000;
@@ -29,7 +27,6 @@ function MapInitializer() {
   useEffect(() => {
     setTimeout(() => map.invalidateSize(), 100);
     setTimeout(() => map.invalidateSize(), 500);
-    setTimeout(() => map.invalidateSize(), 1000);
   }, [map]);
   return null;
 }
@@ -39,21 +36,15 @@ function FlyToLocation({ coords }) {
   useEffect(() => {
     if (!coords) return;
     const [lat, lng] = coords;
-    if (typeof lat !== 'number' || typeof lng !== 'number' || !isFinite(lat) || !isFinite(lng)) return;
-    const size = map.getSize();
-    if (!size || size.x === 0 || size.y === 0) {
-      setTimeout(() => {
-        map.invalidateSize();
-        map.flyTo([lat, lng], 14, { animate: true, duration: 1.2 });
-      }, 300);
-    } else {
-      map.flyTo([lat, lng], 14, { animate: true, duration: 1.2 });
-    }
+    if (typeof lat !== "number" || typeof lng !== "number") return;
+    map.flyTo([lat, lng], 14, { animate: true, duration: 1.2 });
   }, [coords, map]);
   return null;
 }
 
 export default function Map() {
+  const [resources, setResources] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [activeTypes, setActiveTypes] = useState([]);
   const [activeBenefits, setActiveBenefits] = useState([]);
@@ -64,6 +55,41 @@ export default function Map() {
   const [locError, setLocError] = useState(null);
   const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains("dark"));
 
+  // Load resources once on mount
+  useEffect(() => {
+    base44.entities.FoodResource.filter({ is_active: true }, "name", 2000)
+      .then(raw => {
+        const clean = raw.map(r => ({
+          id: r.id,
+          name: r.name,
+          address: r.address,
+          phone: r.phone,
+          lat: r.lat,
+          lng: r.lng,
+          type: r.type,
+          hours: r.hours,
+          notes: r.notes,
+          ebt_accepted: r.ebt_accepted,
+          dufb_offered: r.dufb_offered,
+          wic_accepted: r.wic_accepted,
+          email: r.email,
+          url: r.url,
+          image_url: r.image_url,
+          source_id: r.source_id,
+          is_active: r.is_active,
+        }));
+        // Deduplicate by source_id or id
+        const seen = new Map();
+        for (const r of clean) {
+          const key = r.source_id || r.id;
+          if (!seen.has(key)) seen.set(key, r);
+        }
+        setResources(Array.from(seen.values()));
+      })
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  // Dark mode observer
   useEffect(() => {
     const observer = new MutationObserver(() => {
       setIsDark(document.documentElement.classList.contains("dark"));
@@ -72,34 +98,6 @@ export default function Map() {
     return () => observer.disconnect();
   }, []);
 
-  const { data: resources, isLoading } = useQuery({
-    queryKey: ["food-resources"],
-    queryFn: async () => {
-      const raw = await base44.entities.FoodResource.filter({ is_active: true }, "name", 2000);
-      // Sanitize to plain objects to avoid circular reference issues with React Query serialization
-      return raw.map(r => ({
-        id: r.id,
-        name: r.name,
-        address: r.address,
-        phone: r.phone,
-        lat: r.lat,
-        lng: r.lng,
-        type: r.type,
-        hours: r.hours,
-        notes: r.notes,
-        ebt_accepted: r.ebt_accepted,
-        dufb_offered: r.dufb_offered,
-        wic_accepted: r.wic_accepted,
-        email: r.email,
-        url: r.url,
-        image_url: r.image_url,
-        source_id: r.source_id,
-        is_active: r.is_active,
-      }));
-    },
-    staleTime: 5 * 60 * 1000,
-  });
-
   const toggleType = (type) =>
     setActiveTypes(prev => prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]);
 
@@ -107,7 +105,7 @@ export default function Map() {
     setActiveBenefits(prev => prev.includes(benefit) ? prev.filter(b => b !== benefit) : [...prev, benefit]);
 
   const handleLocate = () => {
-    if (!navigator.geolocation) { setLocError("Geolocation not supported by your browser."); return; }
+    if (!navigator.geolocation) { setLocError("Geolocation not supported."); return; }
     setLocating(true);
     setLocError(null);
     navigator.geolocation.getCurrentPosition(
@@ -116,37 +114,25 @@ export default function Map() {
     );
   };
 
-  const deduped = useMemo(() => {
-    const list = resources || EMPTY_ARRAY;
-    const seen = new Map();
-    for (const r of list) {
-      const key = r.source_id || r.id;
-      if (!seen.has(key)) seen.set(key, r);
+  // Plain filtering — no useMemo
+  const filtered = resources.filter(r => {
+    if (!r.lat || !r.lng) return false;
+    if (activeTypes.length > 0 && !activeTypes.includes(r.type)) return false;
+    if (activeBenefits.length > 0 && !activeBenefits.every(b => r[b])) return false;
+    if (search) {
+      const q = search.toLowerCase();
+      if (!r.name?.toLowerCase().includes(q) && !r.address?.toLowerCase().includes(q) && !r.notes?.toLowerCase().includes(q)) return false;
     }
-    return Array.from(seen.values());
-  }, [resources]);
+    return true;
+  });
 
-  const filtered = useMemo(() => {
-    return deduped.filter(r => {
-      if (!r.lat || !r.lng) return false;
-      if (activeTypes.length > 0 && !activeTypes.includes(r.type)) return false;
-      if (activeBenefits.length > 0 && !activeBenefits.every(b => r[b])) return false;
-      if (search) {
-        const q = search.toLowerCase();
-        if (!r.name?.toLowerCase().includes(q) && !r.address?.toLowerCase().includes(q) && !r.notes?.toLowerCase().includes(q)) return false;
-      }
-      return true;
-    });
-  }, [deduped, activeTypes, activeBenefits, search]);
-
-  const nearbyIds = useMemo(() => {
-    if (!userLocation) return null;
-    return new Set(
-      deduped
-        .filter(r => r.lat && r.lng && distanceMeter(userLocation[0], userLocation[1], r.lat, r.lng) <= NEARBY_RADIUS_M)
-        .map(r => r.id)
-    );
-  }, [userLocation, deduped]);
+  const nearbyIds = userLocation
+    ? new Set(
+        resources
+          .filter(r => r.lat && r.lng && distanceMeter(userLocation[0], userLocation[1], r.lat, r.lng) <= NEARBY_RADIUS_M)
+          .map(r => r.id)
+      )
+    : null;
 
   return (
     <div className="relative h-[calc(100vh-128px)] md:h-[calc(100vh-64px)]">
@@ -229,7 +215,7 @@ export default function Map() {
       </div>
 
       {/* Filters panel */}
-      <div className="absolute top-3 left-3 z-[500] max-w-sm" style={{ maxWidth: "360px" }}>
+      <div className="absolute top-3 left-3 z-[500]" style={{ maxWidth: "360px" }}>
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           <button
             onClick={() => setFiltersOpen(o => !o)}
