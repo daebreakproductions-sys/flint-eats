@@ -34,9 +34,10 @@ function MapInitializer() {
 function FlyToLocation({ coords }) {
   const map = useMap();
   useEffect(() => {
-    if (!coords) return;
-    const [lat, lng] = coords;
-    if (typeof lat !== "number" || typeof lng !== "number" || isNaN(lat) || isNaN(lng)) return;
+    if (!Array.isArray(coords) || coords.length < 2) return;
+    const lat = Number(coords[0]);
+    const lng = Number(coords[1]);
+    if (!isFinite(lat) || !isFinite(lng)) return;
     map.flyTo([lat, lng], 14, { animate: true, duration: 1.2 });
   }, [coords, map]);
   return null;
@@ -101,7 +102,7 @@ export default function MapPage() {
       pos => {
         const lat = Number(pos.coords.latitude);
         const lng = Number(pos.coords.longitude);
-        if (!isNaN(lat) && !isNaN(lng)) setUserLocation([lat, lng]);
+        if (isFinite(lat) && isFinite(lng)) setUserLocation([lat, lng]);
         setLocating(false);
       },
       () => { setLocError("Could not get your location."); setLocating(false); }
