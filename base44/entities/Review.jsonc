@@ -1,0 +1,37 @@
+{
+  "name": "Review",
+  "type": "object",
+  "properties": {
+    "food_resource_id": {
+      "type": "string",
+      "description": "ID of the FoodResource being reviewed"
+    },
+    "rating": {
+      "type": "number",
+      "description": "Star rating from 1 to 5"
+    },
+    "content": {
+      "type": "string",
+      "description": "Long-form review text"
+    },
+    "user_email": {
+      "type": "string"
+    },
+    "user_name": {
+      "type": "string"
+    },
+    "is_flagged": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "food_resource_id",
+    "rating",
+    "content",
+    "user_email"
+  ],
+  "x-base44-rls": {
+    "public_read": true
+  }
+}
