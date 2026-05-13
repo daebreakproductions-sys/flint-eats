@@ -36,7 +36,7 @@ function FlyToLocation({ coords }) {
   useEffect(() => {
     if (!coords) return;
     const [lat, lng] = coords;
-    if (typeof lat !== "number" || typeof lng !== "number") return;
+    if (typeof lat !== "number" || typeof lng !== "number" || isNaN(lat) || isNaN(lng)) return;
     map.flyTo([lat, lng], 14, { animate: true, duration: 1.2 });
   }, [coords, map]);
   return null;
@@ -109,7 +109,12 @@ export default function MapPage() {
     setLocating(true);
     setLocError(null);
     navigator.geolocation.getCurrentPosition(
-      pos => { setUserLocation([pos.coords.latitude, pos.coords.longitude]); setLocating(false); },
+      pos => {
+        const lat = Number(pos.coords.latitude);
+        const lng = Number(pos.coords.longitude);
+        if (!isNaN(lat) && !isNaN(lng)) setUserLocation([lat, lng]);
+        setLocating(false);
+      },
       () => { setLocError("Could not get your location."); setLocating(false); }
     );
   };
