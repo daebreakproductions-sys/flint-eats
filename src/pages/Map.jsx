@@ -53,8 +53,6 @@ export default function MapPage() {
   const [userLocation, setUserLocation] = useState(null);
   const [locating, setLocating] = useState(false);
   const [locError, setLocError] = useState(null);
-  const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains("dark"));
-
   // Load resources once on mount
   useEffect(() => {
     base44.entities.FoodResource.filter({ is_active: true }, "name", 2000)
@@ -87,15 +85,6 @@ export default function MapPage() {
         setResources(Array.from(seen.values()));
       })
       .finally(() => setIsLoading(false));
-  }, []);
-
-  // Dark mode observer
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
-    return () => observer.disconnect();
   }, []);
 
   const toggleType = (type) =>
@@ -155,12 +144,8 @@ export default function MapPage() {
       >
         <MapInitializer />
         <TileLayer
-          key={isDark ? "dark" : "light"}
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
-          url={isDark
-            ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-            : "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-          }
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         />
         {userLocation && <FlyToLocation coords={userLocation} />}
         {userLocation && (
