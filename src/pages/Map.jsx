@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { ChevronUp, ChevronDown, LocateFixed, Loader2 } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from "react-leaflet";
 import L from "leaflet";
@@ -42,7 +42,7 @@ function FlyToLocation({ coords }) {
   return null;
 }
 
-export default function Map() {
+export default function MapPage() {
   const [resources, setResources] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -79,7 +79,7 @@ export default function Map() {
           is_active: r.is_active,
         }));
         // Deduplicate by source_id or id
-        const seen = new Map();
+        const seen = new globalThis.Map();
         for (const r of clean) {
           const key = r.source_id || r.id;
           if (!seen.has(key)) seen.set(key, r);
