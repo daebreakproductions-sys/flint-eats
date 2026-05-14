@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Image, Send, X } from "lucide-react";
+import { Image, Send, X, Upload } from "lucide-react";
 import { toast } from "sonner";
 import {
   RecipeFields, EventFields, ResourceTipFields,
@@ -81,14 +81,14 @@ export default function CreatePost({ user }) {
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("General");
   const [imageUrl, setImageUrl] = useState("");
-  const [showImageInput, setShowImageInput] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [extra, setExtra] = useState({});
 
   const mutation = useMutation({
     mutationFn: (data) => base44.entities.Post.create(data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["feed-posts"] });
-      setContent(""); setImageUrl(""); setShowImageInput(false);
+      setContent(""); setImageUrl("");
       setCategory("General"); setExtra({});
       toast.success("Posted!");
     },
@@ -157,25 +157,38 @@ export default function CreatePost({ user }) {
             </div>
           )}
 
-          {showImageInput && (
-            <div className="flex gap-2">
-              <input
-                type="text"
-                placeholder="Paste image URL..."
-                value={imageUrl}
-                onChange={e => setImageUrl(e.target.value)}
-                className="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-green-400"
-              />
-              <button onClick={() => { setShowImageInput(false); setImageUrl(""); }} className="text-gray-400 hover:text-gray-600">
-                <X className="w-4 h-4" />
+          {imageUrl && (
+            <div className="relative inline-block">
+              <img src={imageUrl} alt="Preview" className="h-24 w-auto rounded-lg object-cover border" />
+              <button
+                onClick={() => setImageUrl("")}
+                className="absolute -top-1.5 -right-1.5 bg-white rounded-full shadow p-0.5 text-gray-400 hover:text-red-500"
+              >
+                <X className="w-3.5 h-3.5" />
               </button>
             </div>
           )}
 
           <div className="flex items-center justify-between flex-wrap gap-2 pt-1">
-            <button onClick={() => setShowImageInput(v => !v)} className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-green-600 transition-colors">
-              <Image className="w-4 h-4" /> Photo
-            </button>
+            <label className="cursor-pointer flex items-center gap-1.5 text-xs text-gray-500 hover:text-green-600 transition-colors">
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  setUploadingImage(true);
+                  const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                  setImageUrl(file_url);
+                  setUploadingImage(false);
+                }}
+              />
+              {uploadingImage
+                ? <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                : <Image className="w-4 h-4" />}
+              {uploadingImage ? "Uploading..." : "Photo"}
+            </label>
             <Button
               onClick={handlePost}
               disabled={!content.trim() || mutation.isPending}
