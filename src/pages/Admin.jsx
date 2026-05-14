@@ -134,26 +134,23 @@ export default function Admin() {
   );
 
   const handleDeduplication = async () => {
-    // Group by source_id, keep the oldest (first created), delete the rest
-    const bySourceId = {};
+    // Group all records by source_id
+    const groups = {};
     for (const r of resources) {
-      const key = r.source_id || r.id; // fallback to id if no source_id
-      if (!r.source_id) continue; // skip records without source_id
-      if (!bySourceId[key]) {
-        bySourceId[key] = r;
-      } else {
-        // Keep whichever was created first
-        const existing = bySourceId[key];
-        if (new Date(r.created_date) < new Date(existing.created_date)) {
-          bySourceId[key] = r; // newer becomes the one to delete later
-        }
-      }
+      if (!r.source_id) continue;
+      if (!groups[r.source_id]) groups[r.source_id] = [];
+      groups[r.source_id].push(r);
     }
-    // Collect IDs to delete (all duplicates)
-    const keepIds = new Set(Object.values(bySourceId).map(r => r.id));
-    const toDelete = resources.filter(r => r.source_id && !keepIds.has(r.id));
+    // For each group with duplicates, keep the oldest, collect the rest for deletion
+    const toDelete = [];
+    for (const group of Object.values(groups)) {
+      if (group.length <= 1) continue;
+      // Sort ascending by created_date — first is oldest (keep it)
+      group.sort((a, b) => new Date(a.created_date) - new Date(b.created_date));
+      toDelete.push(...group.slice(1));
+    }
     if (toDelete.length === 0) { toast.info("No duplicates found!"); return; }
-    if (!window.confirm(`Found ${toDelete.length} duplicate records. Delete them?`)) return;
+    if (!window.confirm(`Found ${toDelete.length} duplicate records. Delete them now?`)) return;
     for (const r of toDelete) {
       await base44.entities.FoodResource.delete(r.id);
     }
