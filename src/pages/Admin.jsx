@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import UsersTab from "@/components/admin/UsersTab";
 import NewsletterTab from "@/components/admin/NewsletterTab";
 import MetricsTab from "@/components/admin/MetricsTab";
+import EducationTab from "@/components/admin/EducationTab";
 
 const EMPTY_RESOURCE = {
   name: "", address: "", phone: "", lat: "", lng: "",
@@ -113,11 +114,6 @@ export default function Admin() {
     queryFn: () => base44.entities.FoodResource.list("name", 1000),
   });
 
-  const { data: edResources = [] } = useQuery({
-    queryKey: ["education-resources"],
-    queryFn: () => base44.entities.EducationResource.list("-created_date", 100),
-  });
-
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.FoodResource.create(data),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["food-resources-admin"] }); qc.invalidateQueries({ queryKey: ["food-resources"] }); setShowNewForm(false); toast.success("Location added!"); }
@@ -147,7 +143,7 @@ export default function Admin() {
             <MapPin className="w-4 h-4" /> Food Resources ({resources.length})
           </TabsTrigger>
           <TabsTrigger value="education" className="flex items-center gap-1.5">
-            <BookOpen className="w-4 h-4" /> Education ({edResources.length})
+            <BookOpen className="w-4 h-4" /> Education
           </TabsTrigger>
           <TabsTrigger value="users" className="flex items-center gap-1.5">
             <Users className="w-4 h-4" /> Users
@@ -229,28 +225,7 @@ export default function Admin() {
         </TabsContent>
 
         <TabsContent value="education">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Education Resources</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-500">Education resources can be added via the database. Use the Admin panel to manage videos, articles, and guides shown on the Learn page.</p>
-              <div className="mt-4 space-y-2">
-                {edResources.map(r => (
-                  <div key={r.id} className="flex items-center justify-between p-3 border rounded-lg">
-                    <div>
-                      <p className="font-medium text-sm">{r.title}</p>
-                      <p className="text-xs text-gray-500">{r.category} · {r.content_type}</p>
-                    </div>
-                    <Badge className={r.is_published ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-600"}>
-                      {r.is_published ? "Published" : "Draft"}
-                    </Badge>
-                  </div>
-                ))}
-                {edResources.length === 0 && <p className="text-sm text-gray-400">No education resources yet.</p>}
-              </div>
-            </CardContent>
-          </Card>
+          <EducationTab />
         </TabsContent>
 
         <TabsContent value="users">
