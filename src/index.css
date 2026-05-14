@@ -84,5 +84,46 @@
 
   body {
     @apply bg-background text-foreground;
+    font-size: 16px;
+  }
+}
+
+/* ── Mobile accessibility: touch targets & font sizes ─────────────────────── */
+@media (max-width: 767px) {
+  /* Minimum 44×44px touch targets for interactive elements */
+  button,
+  [role="button"],
+  a,
+  input,
+  select,
+  textarea,
+  label[for] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Inputs and textareas don't need to be 44px wide by default */
+  input,
+  textarea,
+  select {
+    min-width: unset;
+    min-height: 44px;
+    font-size: 16px; /* prevents iOS auto-zoom */
+  }
+
+  /* Body text floor */
+  p, li, td, th, span, div {
+    font-size: max(16px, 1em);
+  }
+
+  /* Secondary / helper text floor at 14px — override only if smaller */
+  .text-xs {
+    font-size: 14px !important;
+    line-height: 1.4;
+  }
+
+  /* Allow truly non-critical decorative labels to stay small */
+  .text-xs.mobile-label-ok {
+    font-size: 12px !important;
   }
 }

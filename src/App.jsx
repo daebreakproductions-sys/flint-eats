@@ -10,19 +10,31 @@ import AppLayout from '@/components/layout/AppLayout';
 import Map from '@/pages/Map';
 import Directory from '@/pages/Directory';
 import Learn from '@/pages/Learn';
-import Admin from '@/pages/Admin';
 import Profile from '@/pages/Profile';
 import Feed from '@/pages/Feed';
 import Landing from '@/pages/Landing';
 import AuthGateway from '@/pages/AuthGateway';
-import GeocodingTool from '@/pages/GeocodingTool';
-import DiagnosticTest from '@/pages/DiagnosticTest';
+import { lazy, Suspense } from 'react';
+
+const Admin = lazy(() => import('@/pages/Admin'));
+const GeocodingTool = lazy(() => import('@/pages/GeocodingTool'));
+const DiagnosticTest = lazy(() => import('@/pages/DiagnosticTest'));
+
+const PageSpinner = () => (
+  <div className="flex justify-center items-center py-20">
+    <div className="w-8 h-8 border-4 border-green-200 border-t-green-700 rounded-full animate-spin" />
+  </div>
+);
 
 const AdminRoute = () => {
   const { data: user, isLoading } = useQuery({ queryKey: ["me"], queryFn: () => base44.auth.me() });
-  if (isLoading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-4 border-green-200 border-t-green-700 rounded-full animate-spin" /></div>;
+  if (isLoading) return <PageSpinner />;
   if (user?.role !== "admin") return <Navigate to="/Feed" replace />;
-  return <Admin />;
+  return (
+    <Suspense fallback={<PageSpinner />}>
+      <Admin />
+    </Suspense>
+  );
 };
 
 const AuthenticatedApp = () => {
@@ -65,8 +77,8 @@ const AuthenticatedApp = () => {
       <Route path="/" element={<Navigate to="/Feed" replace />} />
       <Route path="/Landing" element={<Landing />} />
       <Route path="/AuthGateway" element={<AuthGateway />} />
-      <Route path="/GeocodingTool" element={<GeocodingTool />} />
-      <Route path="/DiagnosticTest" element={<DiagnosticTest />} />
+      <Route path="/GeocodingTool" element={<Suspense fallback={<PageSpinner />}><GeocodingTool /></Suspense>} />
+      <Route path="/DiagnosticTest" element={<Suspense fallback={<PageSpinner />}><DiagnosticTest /></Suspense>} />
       <Route element={<AppLayout />}>
         <Route path="/Map" element={<Map />} />
         <Route path="/Directory" element={<Directory />} />
