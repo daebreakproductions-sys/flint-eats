@@ -195,9 +195,9 @@ export default function Profile() {
               </div>
 
               <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-500">
-                <button onClick={copyEmail} className="flex items-center gap-1 hover:text-green-700 transition">
+                <button onClick={copyEmail} className="flex items-center gap-1 hover:text-green-700 transition min-h-[44px] py-2">
                   <Mail className="w-3.5 h-3.5" /> {user?.email}
-                  {copied ? <Check className="w-3 h-3 text-green-600" /> : <Copy className="w-3 h-3 opacity-50" />}
+                  {copied ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Copy className="w-3.5 h-3.5 opacity-50" />}
                 </button>
                 {user?.phone && <span className="flex items-center gap-1"><Phone className="w-3.5 h-3.5" />{user.phone}</span>}
                 {user?.organization && <span className="flex items-center gap-1"><Building2 className="w-3.5 h-3.5" />{user.organization}</span>}
@@ -225,7 +225,7 @@ export default function Profile() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {QUICK_LINKS.map(({ label, icon: Icon, to, color }) => (
             <Link key={label} to={to}
-              className={`flex items-center justify-between gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition hover:shadow-sm ${color}`}>
+              className={`flex items-center justify-between gap-2 rounded-xl border px-4 py-3 min-h-[52px] text-sm font-medium transition hover:shadow-sm ${color}`}>
               <div className="flex items-center gap-2"><Icon className="w-4 h-4" />{label}</div>
               <ChevronRight className="w-3.5 h-3.5 opacity-50" />
             </Link>
@@ -303,7 +303,15 @@ export default function Profile() {
               <Button size="sm"
                 className="flex-1 bg-red-600 hover:bg-red-700 text-white"
                 disabled={deleteInput !== "DELETE"}
-                onClick={() => { toast.info("Account deletion requested. Please contact support to complete this process."); setShowDeleteConfirm(false); setDeleteInput(""); }}>
+                onClick={async () => {
+                  try {
+                    await base44.functions.invoke("deleteAccount", {});
+                    toast.success("Account permanently deleted.");
+                    base44.auth.logout("/");
+                  } catch (err) {
+                    toast.error("Failed to delete account. Please try again.");
+                  }
+                }}>
                 <Trash2 className="w-3.5 h-3.5 mr-1" /> Permanently Delete
               </Button>
             </div>
