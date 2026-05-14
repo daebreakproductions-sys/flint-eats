@@ -111,7 +111,7 @@ export default function Admin() {
 
   const { data: resources = [], isLoading } = useQuery({
     queryKey: ["food-resources-admin"],
-    queryFn: () => base44.entities.FoodResource.list("name", 1000),
+    queryFn: () => base44.entities.FoodResource.list("name", 2000),
   });
 
   const createMutation = useMutation({
