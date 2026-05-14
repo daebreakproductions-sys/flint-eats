@@ -152,7 +152,7 @@ export default function Admin() {
     if (toDelete.length === 0) { toast.info("No duplicates found!"); return; }
     if (!window.confirm(`Found ${toDelete.length} duplicate records. Delete them now?`)) return;
     for (const r of toDelete) {
-      await base44.entities.FoodResource.delete(r.id);
+      try { await base44.entities.FoodResource.delete(r.id); } catch { /* already deleted */ }
     }
     qc.invalidateQueries({ queryKey: ["food-resources-admin"] });
     qc.invalidateQueries({ queryKey: ["food-resources"] });
