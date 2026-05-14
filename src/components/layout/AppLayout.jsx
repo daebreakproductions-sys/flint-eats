@@ -4,7 +4,7 @@ import UserMenu from "@/components/layout/UserMenu";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import Feed from "@/pages/Feed";
 import MapPage from "@/pages/Map";
 import Directory from "@/pages/Directory";
@@ -49,6 +49,16 @@ export default function AppLayout() {
   useEffect(() => {
     document.body.style.overscrollBehavior = "none";
   }, []);
+
+  const [activeTab, setActiveTab] = useState(location.pathname);
+  const prevTab = useRef(location.pathname);
+
+  useEffect(() => {
+    if (TAB_ROUTES.includes(location.pathname) && location.pathname !== prevTab.current) {
+      prevTab.current = location.pathname;
+      setActiveTab(location.pathname);
+    }
+  }, [location.pathname]);
 
   const { data: user } = useQuery({
     queryKey: ["me"],
@@ -133,14 +143,23 @@ export default function AppLayout() {
       {/* Page content */}
       <main className="flex-1 pb-20 md:pb-0">
         {/* Persistent tab pages — kept mounted to preserve scroll & state */}
-        {TAB_ROUTES.map(route => (
-          <div key={route} style={{ display: location.pathname === route ? "block" : "none" }} className="h-full">
-            {route === "/Feed" && <Feed />}
-            {route === "/Map" && <MapPage />}
-            {route === "/Directory" && <Directory />}
-            {route === "/Learn" && <Learn />}
-          </div>
-        ))}
+        {TAB_ROUTES.map(route => {
+          const isActive = location.pathname === route;
+          return (
+            <motion.div
+              key={route}
+              animate={{ opacity: isActive ? 1 : 0 }}
+              transition={{ duration: 0.18, ease: "easeInOut" }}
+              style={{ display: isActive ? "block" : "none" }}
+              className="h-full"
+            >
+              {route === "/Feed" && <Feed />}
+              {route === "/Map" && <MapPage />}
+              {route === "/Directory" && <Directory />}
+              {route === "/Learn" && <Learn />}
+            </motion.div>
+          );
+        })}
 
         {/* Non-tab routes (Admin, Profile, etc.) get animated transition */}
         {!TAB_ROUTES.includes(location.pathname) && (
