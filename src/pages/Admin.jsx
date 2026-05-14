@@ -151,8 +151,12 @@ export default function Admin() {
     }
     if (toDelete.length === 0) { toast.info("No duplicates found!"); return; }
     if (!window.confirm(`Found ${toDelete.length} duplicate records. Delete them now?`)) return;
-    for (const r of toDelete) {
-      try { await base44.entities.FoodResource.delete(r.id); } catch { /* already deleted */ }
+    toast.info(`Removing ${toDelete.length} duplicates, please wait...`);
+    const BATCH_SIZE = 5;
+    for (let i = 0; i < toDelete.length; i += BATCH_SIZE) {
+      const batch = toDelete.slice(i, i + BATCH_SIZE);
+      await Promise.all(batch.map(r => base44.entities.FoodResource.delete(r.id).catch(() => {})));
+      if (i + BATCH_SIZE < toDelete.length) await new Promise(res => setTimeout(res, 500));
     }
     qc.invalidateQueries({ queryKey: ["food-resources-admin"] });
     qc.invalidateQueries({ queryKey: ["food-resources"] });
