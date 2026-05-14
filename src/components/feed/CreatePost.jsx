@@ -131,7 +131,7 @@ export default function CreatePost({ user }) {
               <button
                 key={cat.value}
                 onClick={() => { setCategory(cat.value); setExtra({}); }}
-                className={`flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border font-medium transition-all ${
+                className={`flex items-center gap-1 text-xs px-3 py-2 rounded-full border font-medium transition-all min-h-[44px] ${
                   category === cat.value
                     ? cat.color + " shadow-sm scale-105"
                     : "bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100"

@@ -241,11 +241,11 @@ export default function Admin() {
                           <div className="flex items-center gap-2 shrink-0 ml-2">
                             {!r.is_active && <Badge variant="outline" className="text-xs text-gray-400">Inactive</Badge>}
                             {r.ebt_accepted && <Badge className="bg-blue-100 text-blue-800 text-xs">EBT</Badge>}
-                            <Button variant="ghost" size="icon" className="w-7 h-7" onClick={() => setEditingResource(r)}>
-                              <Pencil className="w-3.5 h-3.5" />
+                            <Button variant="ghost" size="icon" className="w-11 h-11" onClick={() => setEditingResource(r)}>
+                              <Pencil className="w-4 h-4" />
                             </Button>
-                            <Button variant="ghost" size="icon" className="w-7 h-7 text-red-400 hover:text-red-600" onClick={() => deleteMutation.mutate(r.id)}>
-                              <Trash2 className="w-3.5 h-3.5" />
+                            <Button variant="ghost" size="icon" className="w-11 h-11 text-red-400 hover:text-red-600" onClick={() => deleteMutation.mutate(r.id)}>
+                              <Trash2 className="w-4 h-4" />
                             </Button>
                           </div>
                         </div>
