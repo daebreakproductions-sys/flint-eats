@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
-import { Pencil, Trash2, Plus, MapPin, BookOpen, Save, X, Users, Mail, BarChart2 } from "lucide-react";
+import { Pencil, Trash2, Plus, MapPin, BookOpen, Save, X, Users, Mail, BarChart2, ShieldCheck } from "lucide-react";
 import { TYPE_CONFIG } from "@/components/map/MapLegend";
 import { toast } from "sonner";
 import UsersTab from "@/components/admin/UsersTab";
@@ -133,6 +133,35 @@ export default function Admin() {
     !resourceSearch || r.name?.toLowerCase().includes(resourceSearch.toLowerCase()) || r.address?.toLowerCase().includes(resourceSearch.toLowerCase())
   );
 
+  const handleDeduplication = async () => {
+    // Group by source_id, keep the oldest (first created), delete the rest
+    const bySourceId = {};
+    for (const r of resources) {
+      const key = r.source_id || r.id; // fallback to id if no source_id
+      if (!r.source_id) continue; // skip records without source_id
+      if (!bySourceId[key]) {
+        bySourceId[key] = r;
+      } else {
+        // Keep whichever was created first
+        const existing = bySourceId[key];
+        if (new Date(r.created_date) < new Date(existing.created_date)) {
+          bySourceId[key] = r; // newer becomes the one to delete later
+        }
+      }
+    }
+    // Collect IDs to delete (all duplicates)
+    const keepIds = new Set(Object.values(bySourceId).map(r => r.id));
+    const toDelete = resources.filter(r => r.source_id && !keepIds.has(r.id));
+    if (toDelete.length === 0) { toast.info("No duplicates found!"); return; }
+    if (!window.confirm(`Found ${toDelete.length} duplicate records. Delete them?`)) return;
+    for (const r of toDelete) {
+      await base44.entities.FoodResource.delete(r.id);
+    }
+    qc.invalidateQueries({ queryKey: ["food-resources-admin"] });
+    qc.invalidateQueries({ queryKey: ["food-resources"] });
+    toast.success(`Removed ${toDelete.length} duplicate records.`);
+  };
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-6 pb-20 md:pb-6">
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Admin Dashboard</h1>
@@ -160,9 +189,14 @@ export default function Admin() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-3">
               <CardTitle className="text-lg">Manage Locations</CardTitle>
-              <Button onClick={() => setShowNewForm(true)} className="bg-green-700 hover:bg-green-800" size="sm">
-                <Plus className="w-4 h-4 mr-1" /> Add Location
-              </Button>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={handleDeduplication}>
+                  <ShieldCheck className="w-4 h-4 mr-1" /> Remove Duplicates
+                </Button>
+                <Button onClick={() => setShowNewForm(true)} className="bg-green-700 hover:bg-green-800" size="sm">
+                  <Plus className="w-4 h-4 mr-1" /> Add Location
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
               {showNewForm && (
