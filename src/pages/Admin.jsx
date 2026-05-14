@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import SelectDrawer from "@/components/ui/SelectDrawer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Pencil, Trash2, Plus, MapPin, BookOpen, Save, X, Users, Mail, BarChart2, ShieldCheck } from "lucide-react";
@@ -40,14 +40,13 @@ function ResourceForm({ resource, onSave, onCancel }) {
         </div>
         <div>
           <Label>Type</Label>
-          <Select value={form.type} onValueChange={v => set("type", v)}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>
-              {Object.entries(TYPE_CONFIG).map(([k, { label }]) => (
-                <SelectItem key={k} value={k}>{label}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <SelectDrawer
+            value={form.type}
+            onValueChange={v => set("type", v)}
+            placeholder="Resource Type"
+            triggerClassName="w-full"
+            options={Object.entries(TYPE_CONFIG).map(([k, { label }]) => ({ value: k, label }))}
+          />
         </div>
         <div>
           <Label>Phone</Label>

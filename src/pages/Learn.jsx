@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Play, BookOpen, FileText, Image, Clock, Star, Filter, Check } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger, DrawerClose } from "@/components/ui/drawer";
+import SelectDrawer from "@/components/ui/SelectDrawer";
+import PullToRefresh from "@/components/ui/PullToRefresh";
 
 const CONTENT_ICONS = {
   Video: Play,
@@ -129,10 +130,21 @@ function MobileFilterDrawer({ category, setCategory, contentType, setContentType
   );
 }
 
+const CATEGORY_OPTIONS = [
+  { value: "all", label: "All Categories" },
+  ...CATEGORIES_LIST.map(c => ({ value: c, label: c })),
+];
+
+const CONTENT_TYPE_OPTIONS = [
+  { value: "all", label: "All Types" },
+  ...CONTENT_TYPES_LIST.map(t => ({ value: t, label: t })),
+];
+
 export default function Learn() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [contentType, setContentType] = useState("all");
+  const qc = useQueryClient();
 
   const { data: dbResources = [] } = useQuery({
     queryKey: ["education-resources"],
@@ -152,6 +164,7 @@ export default function Learn() {
   const rest = filtered.filter(r => !r.is_featured);
 
   return (
+    <PullToRefresh onRefresh={() => qc.invalidateQueries({ queryKey: ["education-resources"] })}>
     <div className="max-w-5xl mx-auto px-4 py-6 pb-20 md:pb-6">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Education & Resources</h1>
@@ -169,28 +182,20 @@ export default function Learn() {
         </div>
         {/* Desktop: inline selects */}
         <div className="hidden sm:flex gap-2">
-          <Select value={category} onValueChange={setCategory}>
-            <SelectTrigger className="w-44">
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              {CATEGORIES_LIST.map(c => (
-                <SelectItem key={c} value={c}>{c}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={contentType} onValueChange={setContentType}>
-            <SelectTrigger className="w-36">
-              <SelectValue placeholder="Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              {CONTENT_TYPES_LIST.map(t => (
-                <SelectItem key={t} value={t}>{t}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <SelectDrawer
+            value={category}
+            onValueChange={setCategory}
+            placeholder="All Categories"
+            triggerClassName="w-44"
+            options={CATEGORY_OPTIONS}
+          />
+          <SelectDrawer
+            value={contentType}
+            onValueChange={setContentType}
+            placeholder="All Types"
+            triggerClassName="w-36"
+            options={CONTENT_TYPE_OPTIONS}
+          />
         </div>
       </div>
 
@@ -221,5 +226,6 @@ export default function Learn() {
         </div>
       )}
     </div>
+    </PullToRefresh>
   );
 }

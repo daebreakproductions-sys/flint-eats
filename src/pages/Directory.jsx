@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -7,8 +7,9 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Search, Phone, MapPin, Clock, ExternalLink, Filter, Check } from "lucide-react";
 import { TYPE_CONFIG } from "@/components/map/MapLegend";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger, DrawerClose } from "@/components/ui/drawer";
+import SelectDrawer from "@/components/ui/SelectDrawer";
+import PullToRefresh from "@/components/ui/PullToRefresh";
 
 const BENEFIT_BADGES = [
   { key: "ebt_accepted", label: "EBT/SNAP", cls: "bg-blue-100 text-blue-800" },
@@ -124,10 +125,16 @@ function MobileFilterDrawer({ typeFilter, setTypeFilter, benefitFilter, setBenef
   );
 }
 
+const TYPE_OPTIONS = [
+  { value: "all", label: "All Types" },
+  ...Object.entries(TYPE_CONFIG).map(([k, { label }]) => ({ value: k, label })),
+];
+
 export default function Directory() {
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [benefitFilter, setBenefitFilter] = useState("all");
+  const qc = useQueryClient();
 
   const { data: resources = [], isLoading } = useQuery({
     queryKey: ["food-resources"],
@@ -165,6 +172,7 @@ export default function Directory() {
   }, [resources, typeFilter, benefitFilter, search]);
 
   return (
+    <PullToRefresh onRefresh={() => qc.invalidateQueries({ queryKey: ["food-resources"] })}>
     <div className="max-w-4xl mx-auto px-4 py-6 pb-20 md:pb-6">
       <h1 className="text-2xl font-bold text-gray-900 mb-4">Food Resource Directory</h1>
 
@@ -184,28 +192,20 @@ export default function Directory() {
         </div>
         {/* Desktop: inline selects */}
         <div className="hidden sm:flex gap-2">
-          <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger className="w-44">
-              <SelectValue placeholder="All Types" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              {Object.entries(TYPE_CONFIG).map(([type, { label }]) => (
-                <SelectItem key={type} value={type}>{label}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={benefitFilter} onValueChange={setBenefitFilter}>
-            <SelectTrigger className="w-44">
-              <SelectValue placeholder="All Benefits" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Benefits</SelectItem>
-              <SelectItem value="ebt_accepted">EBT/SNAP</SelectItem>
-              <SelectItem value="dufb_offered">Double Up $</SelectItem>
-              <SelectItem value="wic_accepted">WIC</SelectItem>
-            </SelectContent>
-          </Select>
+          <SelectDrawer
+            value={typeFilter}
+            onValueChange={setTypeFilter}
+            placeholder="All Types"
+            triggerClassName="w-44"
+            options={TYPE_OPTIONS}
+          />
+          <SelectDrawer
+            value={benefitFilter}
+            onValueChange={setBenefitFilter}
+            placeholder="All Benefits"
+            triggerClassName="w-44"
+            options={BENEFIT_OPTIONS}
+          />
         </div>
       </div>
 
@@ -227,5 +227,6 @@ export default function Directory() {
         </div>
       )}
     </div>
+    </PullToRefresh>
   );
 }

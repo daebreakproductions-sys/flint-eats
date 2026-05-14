@@ -1,11 +1,12 @@
-import { useState, useRef, useCallback } from "react";
+import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import CreatePost from "@/components/feed/CreatePost";
 import PostCard from "@/components/feed/PostCard";
 import EventsSidebar from "@/components/feed/EventsSidebar";
 import CommunityCalendar from "@/components/feed/CommunityCalendar";
-import { Flame, Clock, CalendarDays, RefreshCw } from "lucide-react";
+import PullToRefresh from "@/components/ui/PullToRefresh";
+import { Flame, Clock, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const CATEGORIES = ["All", "Recipe", "Resource Tip", "Community News", "Event", "Question", "Success Story", "General"];
@@ -14,9 +15,6 @@ export default function Feed() {
   const [tab, setTab] = useState("feed"); // feed | calendar
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [sortBy, setSortBy] = useState("newest");
-  const [isPulling, setIsPulling] = useState(false);
-  const [pullDistance, setPullDistance] = useState(0);
-  const touchStartY = useRef(null);
   const qc = useQueryClient();
 
   const { data: user } = useQuery({
@@ -35,31 +33,6 @@ export default function Feed() {
     enabled: isAuthenticated,
   });
 
-  const handleTouchStart = useCallback((e) => {
-    if (window.scrollY === 0) {
-      touchStartY.current = e.touches[0].clientY;
-    }
-  }, []);
-
-  const handleTouchMove = useCallback((e) => {
-    if (touchStartY.current === null) return;
-    const delta = e.touches[0].clientY - touchStartY.current;
-    if (delta > 0 && window.scrollY === 0) {
-      setPullDistance(Math.min(delta * 0.4, 72));
-    }
-  }, []);
-
-  const handleTouchEnd = useCallback(() => {
-    if (pullDistance >= 60) {
-      setIsPulling(true);
-      qc.invalidateQueries({ queryKey: ["feed-posts"] }).then(() => {
-        setIsPulling(false);
-      });
-    }
-    touchStartY.current = null;
-    setPullDistance(0);
-  }, [pullDistance, qc]);
-
   const filtered = posts
     .filter(p => categoryFilter === "All" || p.category === categoryFilter)
     .sort((a, b) => {
@@ -68,8 +41,6 @@ export default function Feed() {
       if (sortBy === "popular") return (b.likes || 0) - (a.likes || 0);
       return new Date(b.created_date) - new Date(a.created_date);
     });
-
-  const showPullIndicator = pullDistance > 10 || isPulling || (isFetching && pullDistance > 0);
 
   if (isAuthLoading) {
     return (
@@ -102,22 +73,8 @@ export default function Feed() {
   }
 
   return (
-    <div
-      className="max-w-6xl mx-auto px-4 py-6 pb-24 md:pb-8"
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-    >
-      {/* Pull-to-refresh indicator */}
-      {showPullIndicator && (
-        <div
-          className="flex justify-center items-center gap-2 text-sm text-green-700 overflow-hidden transition-all duration-200"
-          style={{ height: isPulling || isFetching ? 40 : pullDistance * 0.55 }}
-        >
-          <RefreshCw className={`w-4 h-4 ${isPulling || isFetching ? "animate-spin" : ""}`} />
-          <span>{isPulling || isFetching ? "Refreshing…" : pullDistance >= 60 ? "Release to refresh" : "Pull to refresh"}</span>
-        </div>
-      )}
+    <PullToRefresh onRefresh={() => qc.invalidateQueries({ queryKey: ["feed-posts"] })}>
+    <div className="max-w-6xl mx-auto px-4 py-6 pb-24 md:pb-8">
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Main Feed */}
         <div className="flex-1 min-w-0 space-y-4">
@@ -197,5 +154,6 @@ export default function Feed() {
         </div>
       </div>
     </div>
+    </PullToRefresh>
   );
 }
