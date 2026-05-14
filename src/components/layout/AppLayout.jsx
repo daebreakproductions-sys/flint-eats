@@ -1,5 +1,5 @@
-import { Outlet, Link, useLocation } from "react-router-dom";
-import { Flame, Map, BookOpen, List, ShieldCheck, User } from "lucide-react";
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
+import { Flame, Map, BookOpen, List, ShieldCheck, User, ChevronLeft } from "lucide-react";
 import UserMenu from "@/components/layout/UserMenu";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
@@ -25,8 +25,16 @@ const pageVariants = {
   exit: { x: -24, opacity: 0, transition: { duration: 0.15, ease: "easeIn" } },
 };
 
+const NON_TAB_TITLES = {
+  "/Profile": "Profile",
+  "/Admin": "Admin Dashboard",
+  "/GeocodingTool": "Geocoding Tool",
+  "/DiagnosticTest": "Diagnostic",
+};
+
 export default function AppLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Respect system dark mode
   useEffect(() => {
@@ -92,16 +100,35 @@ export default function AppLayout() {
       </header>
 
       {/* Mobile top bar */}
-      <header
-        className="bg-gradient-to-r from-green-700 to-emerald-800 shadow-md sticky top-0 z-50 md:hidden flex items-center justify-between px-4 h-12"
-        style={{ paddingTop: "env(safe-area-inset-top)" }}
-      >
-        <Link to="/Feed" className="flex items-center gap-1.5 select-none">
-          <span className="text-xl">🌿</span>
-          <span className="font-bold text-white text-base">Flint Eats</span>
-        </Link>
-        <UserMenu />
-      </header>
+      {TAB_ROUTES.includes(location.pathname) ? (
+        <header
+          className="bg-gradient-to-r from-green-700 to-emerald-800 shadow-md sticky top-0 z-50 md:hidden flex items-center justify-between px-4 h-14"
+          style={{ paddingTop: "env(safe-area-inset-top)" }}
+        >
+          <Link to="/Feed" className="flex items-center gap-1.5 select-none">
+            <span className="text-xl">🌿</span>
+            <span className="font-bold text-white text-base">Flint Eats</span>
+          </Link>
+          <UserMenu />
+        </header>
+      ) : (
+        <header
+          className="bg-gradient-to-r from-green-700 to-emerald-800 shadow-md sticky top-0 z-50 md:hidden flex items-center gap-3 px-2 h-14"
+          style={{ paddingTop: "env(safe-area-inset-top)" }}
+        >
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center justify-center w-11 h-11 rounded-full text-white hover:bg-white/15 active:bg-white/25 transition-colors"
+            aria-label="Go back"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          <span className="font-semibold text-white text-base flex-1 truncate">
+            {NON_TAB_TITLES[location.pathname] || "Flint Eats"}
+          </span>
+          <div className="pr-1"><UserMenu /></div>
+        </header>
+      )}
 
       {/* Page content */}
       <main className="flex-1 pb-20 md:pb-0">
@@ -143,11 +170,13 @@ export default function AppLayout() {
             <Link
               key={to}
               to={to}
-              className={`flex-1 flex flex-col items-center justify-center min-h-[56px] gap-0.5 text-[10px] font-medium transition-all select-none active:bg-gray-100 dark:active:bg-gray-800 rounded-lg ${
+              className={`flex-1 flex flex-col items-center justify-center min-h-[60px] py-2 gap-0.5 text-[10px] font-medium transition-all select-none active:bg-gray-100 dark:active:bg-gray-800 ${
                 active ? "text-green-700 dark:text-green-400" : "text-gray-400 dark:text-gray-500"
               }`}
             >
-              <Icon className={`w-5 h-5 ${active ? "text-green-700 dark:text-green-400" : ""}`} />
+              <div className={`w-10 h-6 flex items-center justify-center rounded-full transition-colors ${active ? "bg-green-100 dark:bg-green-900/40" : ""}`}>
+                <Icon className="w-5 h-5" />
+              </div>
               <span>{label}</span>
             </Link>
           );

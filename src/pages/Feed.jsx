@@ -140,11 +140,11 @@ export default function Feed() {
 
             {tab === "feed" && (
               <div className="flex items-center gap-2">
-                <button onClick={() => setSortBy("newest")} className={`flex items-center gap-1 text-xs px-3 py-1.5 rounded-full border transition-colors ${sortBy === "newest" ? "bg-green-700 text-white border-green-700" : "bg-white text-gray-600 border-gray-200 hover:border-green-400"}`}>
-                  <Clock className="w-3 h-3" /> New
+                <button onClick={() => setSortBy("newest")} className={`flex items-center gap-1 text-xs px-4 py-2 rounded-full border transition-colors min-h-[36px] ${sortBy === "newest" ? "bg-green-700 text-white border-green-700" : "bg-white text-gray-600 border-gray-200 hover:border-green-400"}`}>
+                  <Clock className="w-3.5 h-3.5" /> New
                 </button>
-                <button onClick={() => setSortBy("popular")} className={`flex items-center gap-1 text-xs px-3 py-1.5 rounded-full border transition-colors ${sortBy === "popular" ? "bg-green-700 text-white border-green-700" : "bg-white text-gray-600 border-gray-200 hover:border-green-400"}`}>
-                  <Flame className="w-3 h-3" /> Hot
+                <button onClick={() => setSortBy("popular")} className={`flex items-center gap-1 text-xs px-4 py-2 rounded-full border transition-colors min-h-[36px] ${sortBy === "popular" ? "bg-green-700 text-white border-green-700" : "bg-white text-gray-600 border-gray-200 hover:border-green-400"}`}>
+                  <Flame className="w-3.5 h-3.5" /> Hot
                 </button>
               </div>
             )}
@@ -158,7 +158,7 @@ export default function Feed() {
               <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
                 {CATEGORIES.map(cat => (
                   <button key={cat} onClick={() => setCategoryFilter(cat)}
-                    className={`shrink-0 text-xs px-3 py-1.5 rounded-full border font-medium transition-colors ${categoryFilter === cat ? "bg-green-700 text-white border-green-700" : "bg-white text-gray-600 border-gray-200 hover:border-green-400"}`}>
+                    className={`shrink-0 text-xs px-3 py-2 rounded-full border font-medium transition-colors min-h-[36px] ${categoryFilter === cat ? "bg-green-700 text-white border-green-700" : "bg-white text-gray-600 border-gray-200 hover:border-green-400"}`}>
                     {cat}
                   </button>
                 ))}
