@@ -80,27 +80,27 @@ export default function Feed() {
         <div className="flex-1 min-w-0 space-y-4">
           {/* Tab switcher */}
           <div className="flex items-center justify-between flex-wrap gap-2">
-            <div className="flex gap-1 bg-gray-100 rounded-xl p-1">
+            <div className="flex gap-1 bg-muted rounded-xl p-1">
               <button
                 onClick={() => setTab("feed")}
-                className={`flex items-center gap-1.5 text-sm px-4 py-1.5 rounded-lg font-medium transition-colors ${tab === "feed" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
+                className={`flex items-center gap-1.5 text-sm px-4 py-1.5 rounded-lg font-medium transition-colors ${tab === "feed" ? "bg-green-700 text-white shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
               >
-                <Flame className="w-4 h-4 text-orange-500" /> Feed
+                <Flame className="w-4 h-4" /> Feed
               </button>
               <button
                 onClick={() => setTab("calendar")}
-                className={`flex items-center gap-1.5 text-sm px-4 py-1.5 rounded-lg font-medium transition-colors ${tab === "calendar" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
+                className={`flex items-center gap-1.5 text-sm px-4 py-1.5 rounded-lg font-medium transition-colors ${tab === "calendar" ? "bg-green-700 text-white shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
               >
-                <CalendarDays className="w-4 h-4 text-pink-500" /> Calendar
+                <CalendarDays className="w-4 h-4" /> Calendar
               </button>
             </div>
 
             {tab === "feed" && (
               <div className="flex items-center gap-2">
-                <button onClick={() => setSortBy("newest")} className={`flex items-center gap-1 text-xs px-4 py-2 rounded-full border transition-colors min-h-[36px] ${sortBy === "newest" ? "bg-green-700 text-white border-green-700" : "bg-white text-gray-600 border-gray-200 hover:border-green-400"}`}>
+                <button onClick={() => setSortBy("newest")} className={`flex items-center gap-1 text-xs px-4 py-2 rounded-full border-0 transition-colors min-h-[36px] ${sortBy === "newest" ? "bg-green-700 text-white" : "bg-muted text-muted-foreground hover:text-foreground"}`}>
                   <Clock className="w-3.5 h-3.5" /> New
                 </button>
-                <button onClick={() => setSortBy("popular")} className={`flex items-center gap-1 text-xs px-4 py-2 rounded-full border transition-colors min-h-[36px] ${sortBy === "popular" ? "bg-green-700 text-white border-green-700" : "bg-white text-gray-600 border-gray-200 hover:border-green-400"}`}>
+                <button onClick={() => setSortBy("popular")} className={`flex items-center gap-1 text-xs px-4 py-2 rounded-full border-0 transition-colors min-h-[36px] ${sortBy === "popular" ? "bg-green-700 text-white" : "bg-muted text-muted-foreground hover:text-foreground"}`}>
                   <Flame className="w-3.5 h-3.5" /> Hot
                 </button>
               </div>
@@ -115,7 +115,7 @@ export default function Feed() {
               <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
                 {CATEGORIES.map(cat => (
                   <button key={cat} onClick={() => setCategoryFilter(cat)}
-                    className={`shrink-0 text-xs px-3 py-2 rounded-full border font-medium transition-colors min-h-[36px] ${categoryFilter === cat ? "bg-green-700 text-white border-green-700" : "bg-white text-gray-600 border-gray-200 hover:border-green-400"}`}>
+                    className={`shrink-0 text-xs px-3 py-2 rounded-full border-0 font-medium transition-colors min-h-[36px] ${categoryFilter === cat ? "bg-green-700 text-white" : "bg-muted text-muted-foreground hover:text-foreground"}`}>
                     {cat}
                   </button>
                 ))}
@@ -130,7 +130,7 @@ export default function Feed() {
                   <div className="w-8 h-8 border-4 border-green-200 border-t-green-700 rounded-full animate-spin" />
                 </div>
               ) : filtered.length === 0 ? (
-                <div className="bg-white rounded-2xl border border-gray-100 py-16 text-center">
+                <div className="bg-card rounded-2xl border border-border py-16 text-center">
                   <p className="text-4xl mb-3">🥦</p>
                   <p className="text-gray-500 font-medium">No posts yet in this category.</p>
                   <p className="text-sm text-gray-400 mt-1">Be the first to share something!</p>

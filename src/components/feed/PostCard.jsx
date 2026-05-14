@@ -18,11 +18,11 @@ function CommentItem({ comment }) {
         <span className="text-xs font-bold text-green-700">{initials}</span>
       </div>
       <div className="flex-1 min-w-0">
-        <div className="bg-gray-50 rounded-xl px-3 py-2">
-          <p className="text-xs font-semibold text-gray-800">{comment.author_name || comment.author_email?.split("@")[0]}</p>
-          <p className="text-sm text-gray-700 mt-0.5">{comment.content}</p>
+        <div className="bg-muted rounded-xl px-3 py-2">
+          <p className="text-xs font-semibold text-foreground">{comment.author_name || comment.author_email?.split("@")[0]}</p>
+          <p className="text-sm text-foreground mt-0.5">{comment.content}</p>
         </div>
-        <p className="text-xs text-gray-400 mt-1 pl-2">
+        <p className="text-xs text-muted-foreground mt-1 pl-2">
           {comment.created_date ? formatDistanceToNow(new Date(comment.created_date), { addSuffix: true }) : ""}
         </p>
       </div>
@@ -108,7 +108,7 @@ export default function PostCard({ post, currentUser }) {
   const canDelete = currentUser?.email === post.author_email || currentUser?.role === "admin";
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
       {/* Header */}
       <div className="p-4 pb-3">
         <div className="flex items-start justify-between gap-2">
@@ -118,15 +118,15 @@ export default function PostCard({ post, currentUser }) {
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <p className="font-semibold text-gray-900 text-sm">{post.author_name || post.author_email?.split("@")[0]}</p>
-                <Badge className={roleCfg.color + " text-xs py-0"}>{roleCfg.label}</Badge>
+                <p className="font-semibold text-foreground text-sm">{post.author_name || post.author_email?.split("@")[0]}</p>
+                <Badge className={roleCfg.color + " text-xs py-0 rounded-full border-0"}>{roleCfg.label}</Badge>
               </div>
               <div className="flex items-center gap-2 mt-0.5">
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-muted-foreground">
                   {post.created_date ? formatDistanceToNow(new Date(post.created_date), { addSuffix: true }) : ""}
                 </p>
                 {post.county && (
-                  <span className="flex items-center gap-0.5 text-xs text-gray-400">
+                  <span className="flex items-center gap-0.5 text-xs text-muted-foreground">
                     <MapPin className="w-3 h-3" /> {post.county} County, MI
                   </span>
                 )}
@@ -134,11 +134,11 @@ export default function PostCard({ post, currentUser }) {
             </div>
           </div>
           <div className="flex items-center gap-1">
-            <Badge className={(CATEGORY_COLORS[post.category] || "bg-gray-100 text-gray-700") + " text-xs"}>
+            <Badge className="bg-muted text-muted-foreground text-xs rounded-full border-0">
               {post.category}
             </Badge>
             {canDelete && (
-              <button onClick={() => deleteMutation.mutate()} className="ml-1 text-gray-300 hover:text-red-400 transition-colors">
+              <button onClick={() => deleteMutation.mutate()} className="ml-1 text-muted-foreground/50 hover:text-red-400 transition-colors">
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
             )}
@@ -146,7 +146,7 @@ export default function PostCard({ post, currentUser }) {
         </div>
 
         {/* Content */}
-        <p className="mt-3 text-gray-800 text-sm leading-relaxed whitespace-pre-wrap">{post.content}</p>
+        <p className="mt-3 text-foreground text-sm leading-relaxed whitespace-pre-wrap">{post.content}</p>
       </div>
 
       {/* Image */}
@@ -157,17 +157,17 @@ export default function PostCard({ post, currentUser }) {
       )}
 
       {/* Actions */}
-      <div className="px-4 py-2 border-t border-gray-50 flex items-center gap-4">
+      <div className="px-4 py-2 border-t border-border flex items-center gap-4">
         <button
           onClick={() => likeMutation.mutate()}
-          className={`flex items-center gap-1.5 text-sm transition-colors active:scale-90 ${liked ? "text-red-500" : "text-gray-500 hover:text-red-400"}`}
+          className={`flex items-center gap-1.5 text-sm transition-colors active:scale-90 ${liked ? "text-red-500" : "text-muted-foreground hover:text-red-400"}`}
         >
           <Heart className={`w-4 h-4 ${liked ? "fill-current" : ""}`} />
           <span>{post.likes || 0}</span>
         </button>
         <button
           onClick={() => setShowComments(v => !v)}
-          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-green-600 transition-colors active:scale-90"
+          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-green-500 transition-colors active:scale-90"
         >
           <MessageCircle className="w-4 h-4" />
           <span>{showComments ? comments.length : (post.comment_count || 0)}</span>
@@ -177,10 +177,10 @@ export default function PostCard({ post, currentUser }) {
 
       {/* Comments */}
       {showComments && (
-        <div className="px-4 pb-4 border-t border-gray-50">
+        <div className="px-4 pb-4 border-t border-border">
           <div className="space-y-0 max-h-64 overflow-y-auto">
             {comments.map(c => <CommentItem key={c.id} comment={c} />)}
-            {comments.length === 0 && <p className="text-xs text-gray-400 py-3 text-center">No comments yet. Be the first!</p>}
+            {comments.length === 0 && <p className="text-xs text-muted-foreground py-3 text-center">No comments yet. Be the first!</p>}
           </div>
           <div className="flex gap-2 mt-2">
             <div className="w-7 h-7 rounded-full bg-green-100 flex items-center justify-center shrink-0 mt-1">
@@ -194,7 +194,7 @@ export default function PostCard({ post, currentUser }) {
                 value={commentText}
                 onChange={e => setCommentText(e.target.value)}
                 rows={1}
-                className="resize-none text-sm rounded-xl border-gray-200 min-h-0 py-2"
+                className="resize-none text-sm rounded-xl border-border bg-[hsl(var(--input-bg))] text-[hsl(var(--input-text))] min-h-0 py-2"
                 onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey && commentText.trim()) { e.preventDefault(); commentMutation.mutate(commentText.trim()); } }}
               />
               <Button

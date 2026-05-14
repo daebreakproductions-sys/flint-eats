@@ -11,12 +11,12 @@ import { UserPlus, Search, Mail, Building2, Phone, Shield, Save, X } from "lucid
 import { toast } from "sonner";
 
 export const ROLE_CONFIG = {
-  admin: { label: "Admin", color: "bg-red-100 text-red-800", description: "Full platform access, manages all data and users" },
-  resource_manager: { label: "Resource Manager", color: "bg-purple-100 text-purple-800", description: "Can add/edit food resource locations" },
-  partner_org: { label: "Partner Organization", color: "bg-blue-100 text-blue-800", description: "Represents a food bank, pantry, or community partner" },
-  volunteer: { label: "Volunteer", color: "bg-green-100 text-green-800", description: "Community volunteer helping with outreach" },
-  resident: { label: "Resident", color: "bg-yellow-100 text-yellow-800", description: "Genesee County resident seeking resources" },
-  user: { label: "General User", color: "bg-gray-100 text-gray-700", description: "Basic account access" },
+  admin: { label: "Admin", color: "bg-green-700 text-white", description: "Full platform access, manages all data and users" },
+  resource_manager: { label: "Resource Manager", color: "bg-muted text-muted-foreground", description: "Can add/edit food resource locations" },
+  partner_org: { label: "Partner Organization", color: "bg-muted text-muted-foreground", description: "Represents a food bank, pantry, or community partner" },
+  volunteer: { label: "Volunteer", color: "bg-muted text-muted-foreground", description: "Community volunteer helping with outreach" },
+  resident: { label: "Resident", color: "bg-muted text-muted-foreground", description: "Genesee County resident seeking resources" },
+  user: { label: "General User", color: "bg-muted text-muted-foreground", description: "Basic account access" },
 };
 
 function InviteForm({ onClose }) {
@@ -86,7 +86,7 @@ function UserRow({ user, onRoleChange }) {
   };
 
   return (
-    <div className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 gap-3 flex-wrap">
+    <div className="flex items-center justify-between p-3 border border-border rounded-lg hover:bg-muted/50 gap-3 flex-wrap">
       <div className="flex items-center gap-3 min-w-0 flex-1">
         <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center shrink-0">
           <span className="text-sm font-bold text-green-700">
@@ -94,12 +94,12 @@ function UserRow({ user, onRoleChange }) {
           </span>
         </div>
         <div className="min-w-0">
-          <p className="font-medium text-sm text-gray-900 truncate">{user.full_name || "—"}</p>
-          <p className="text-xs text-gray-500 truncate flex items-center gap-1">
+          <p className="font-medium text-sm text-foreground truncate">{user.full_name || "—"}</p>
+          <p className="text-xs text-muted-foreground truncate flex items-center gap-1">
             <Mail className="w-3 h-3" /> {user.email}
           </p>
           {user.organization && (
-            <p className="text-xs text-gray-400 truncate flex items-center gap-1">
+            <p className="text-xs text-muted-foreground truncate flex items-center gap-1">
               <Building2 className="w-3 h-3" /> {user.organization}
             </p>
           )}
@@ -183,7 +183,7 @@ export default function UsersTab() {
               <button
                 key={role}
                 onClick={() => setRoleFilter(roleFilter === role ? "all" : role)}
-                className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-all ${color} ${roleFilter === role ? "ring-2 ring-offset-1 ring-gray-400" : ""}`}
+                className={`px-2.5 py-1 rounded-full text-xs font-medium border-0 transition-all ${color} ${roleFilter === role ? "ring-2 ring-offset-1 ring-green-600" : ""}`}
               >
                 {label} · {roleCounts[role]}
               </button>
@@ -193,7 +193,7 @@ export default function UsersTab() {
 
         <div className="flex gap-2 mb-3">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
             <Input placeholder="Search users..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
           </div>
           <Select value={roleFilter} onValueChange={setRoleFilter}>
@@ -207,7 +207,7 @@ export default function UsersTab() {
           </Select>
         </div>
 
-        <p className="text-xs text-gray-400 mb-2">{filtered.length} of {users.length} users</p>
+        <p className="text-xs text-muted-foreground mb-2">{filtered.length} of {users.length} users</p>
 
         {isLoading ? (
           <div className="flex justify-center py-10">
@@ -219,19 +219,19 @@ export default function UsersTab() {
               <UserRow key={u.id} user={u} onRoleChange={(id, role) => updateRoleMutation.mutate({ id, role })} />
             ))}
             {filtered.length === 0 && (
-              <p className="text-center py-10 text-gray-400 text-sm">No users found.</p>
+              <p className="text-center py-10 text-muted-foreground text-sm">No users found.</p>
             )}
           </div>
         )}
 
         {/* Role legend */}
         <div className="mt-6 pt-4 border-t">
-          <p className="text-xs font-semibold text-gray-500 mb-2">ACCOUNT TYPES</p>
+          <p className="text-xs font-semibold text-muted-foreground mb-2">ACCOUNT TYPES</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {Object.entries(ROLE_CONFIG).map(([role, { label, color, description }]) => (
               <div key={role} className="flex items-start gap-2">
                 <Badge className={color + " text-xs shrink-0 mt-0.5"}>{label}</Badge>
-                <p className="text-xs text-gray-500">{description}</p>
+                <p className="text-xs text-muted-foreground">{description}</p>
               </div>
             ))}
           </div>

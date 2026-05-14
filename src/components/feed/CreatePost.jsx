@@ -118,7 +118,7 @@ export default function CreatePost({ user }) {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
+    <div className="bg-card rounded-2xl shadow-sm border border-border p-4">
       <div className="flex gap-3">
         <div className="w-10 h-10 rounded-full bg-green-700 flex items-center justify-center shrink-0">
           <span className="text-sm font-bold text-white">{initials}</span>
@@ -131,10 +131,10 @@ export default function CreatePost({ user }) {
               <button
                 key={cat.value}
                 onClick={() => { setCategory(cat.value); setExtra({}); }}
-                className={`flex items-center gap-1 text-xs px-3 py-2 rounded-full border font-medium transition-all min-h-[44px] ${
+                className={`flex items-center gap-1 text-xs px-3 py-2 rounded-full border-0 font-medium transition-all min-h-[44px] ${
                   category === cat.value
-                    ? cat.color + " shadow-sm scale-105"
-                    : "bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100"
+                    ? "bg-green-700 text-white shadow-sm scale-105"
+                    : "bg-muted text-muted-foreground hover:text-foreground"
                 }`}
               >
                 <span>{cat.emoji}</span> {cat.value}
@@ -147,12 +147,12 @@ export default function CreatePost({ user }) {
             value={content}
             onChange={e => setContent(e.target.value)}
             rows={3}
-            className="resize-none border-gray-200 focus:border-green-400 rounded-xl text-sm"
+            className="resize-none bg-[hsl(var(--input-bg))] text-[hsl(var(--input-text))] border-border focus:border-green-500 rounded-xl text-sm"
           />
 
           {/* Dynamic type-specific fields */}
           {ExtraFields && (
-            <div className={`rounded-xl border p-3 ${activeCat.color.split(" ").slice(0,1)[0].replace("bg-", "bg-").replace("100", "50")} border-${activeCat.color.split(" ")[0].replace("bg-", "").replace("-100","")}-100`}>
+            <div className="rounded-xl border border-border bg-muted p-3">
               <ExtraFields extra={extra} setExtra={setExtra} />
             </div>
           )}
@@ -162,7 +162,7 @@ export default function CreatePost({ user }) {
               <img src={imageUrl} alt="Preview" className="h-24 w-auto rounded-lg object-cover border" />
               <button
                 onClick={() => setImageUrl("")}
-                className="absolute -top-1.5 -right-1.5 bg-white rounded-full shadow p-0.5 text-gray-400 hover:text-red-500"
+                className="absolute -top-1.5 -right-1.5 bg-background rounded-full shadow p-0.5 text-muted-foreground hover:text-red-500"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -170,7 +170,7 @@ export default function CreatePost({ user }) {
           )}
 
           <div className="flex items-center justify-between flex-wrap gap-2 pt-1">
-            <label className="cursor-pointer flex items-center gap-1.5 text-xs text-gray-500 hover:text-green-600 transition-colors">
+            <label className="cursor-pointer flex items-center gap-1.5 text-xs text-muted-foreground hover:text-green-500 transition-colors">
               <input
                 type="file"
                 accept="image/*"
