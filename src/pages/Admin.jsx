@@ -9,11 +9,12 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
-import { Pencil, Trash2, Plus, MapPin, BookOpen, Save, X, Users, Mail } from "lucide-react";
+import { Pencil, Trash2, Plus, MapPin, BookOpen, Save, X, Users, Mail, BarChart2 } from "lucide-react";
 import { TYPE_CONFIG } from "@/components/map/MapLegend";
 import { toast } from "sonner";
 import UsersTab from "@/components/admin/UsersTab";
 import NewsletterTab from "@/components/admin/NewsletterTab";
+import MetricsTab from "@/components/admin/MetricsTab";
 
 const EMPTY_RESOURCE = {
   name: "", address: "", phone: "", lat: "", lng: "",
@@ -154,6 +155,9 @@ export default function Admin() {
           <TabsTrigger value="newsletter" className="flex items-center gap-1.5">
             <Mail className="w-4 h-4" /> Newsletter
           </TabsTrigger>
+          <TabsTrigger value="metrics" className="flex items-center gap-1.5">
+            <BarChart2 className="w-4 h-4" /> Metrics
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="resources">
@@ -255,6 +259,10 @@ export default function Admin() {
 
         <TabsContent value="newsletter">
           <NewsletterTab />
+        </TabsContent>
+
+        <TabsContent value="metrics">
+          <MetricsTab />
         </TabsContent>
       </Tabs>
     </div>
