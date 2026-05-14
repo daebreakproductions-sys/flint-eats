@@ -170,7 +170,7 @@ export default function PostCard({ post, currentUser }) {
           className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-green-600 transition-colors active:scale-90"
         >
           <MessageCircle className="w-4 h-4" />
-          <span>{post.comment_count || 0}</span>
+          <span>{showComments ? comments.length : (post.comment_count || 0)}</span>
           {showComments ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
         </button>
       </div>
