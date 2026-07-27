@@ -16,6 +16,7 @@ export const ROLE_CONFIG = {
   partner_org: { label: "Partner Organization", color: "bg-muted text-muted-foreground", description: "Represents a food bank, pantry, or community partner" },
   volunteer: { label: "Volunteer", color: "bg-muted text-muted-foreground", description: "Community volunteer helping with outreach" },
   resident: { label: "Resident", color: "bg-muted text-muted-foreground", description: "Genesee County resident seeking resources" },
+  vendor: { label: "Vendor", color: "bg-amber-100 text-amber-800", description: "Local food vendor or market seller accepting EBT/DUFB" },
   user: { label: "General User", color: "bg-muted text-muted-foreground", description: "Basic account access" },
 };
 

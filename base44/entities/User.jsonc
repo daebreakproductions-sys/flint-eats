@@ -11,6 +11,7 @@
         "partner_org",
         "volunteer",
         "resident",
+        "vendor",
         "user"
       ],
       "default": "user"
@@ -38,6 +39,28 @@
     "header_image_url": {
       "type": "string",
       "description": "URL to the user's profile header/banner image"
+    },
+    "vendor_business_name": {
+      "type": "string",
+      "description": "Public business name for vendor accounts"
+    },
+    "vendor_description": {
+      "type": "string",
+      "description": "Short description of what the vendor sells or offers"
+    },
+    "vendor_website": {
+      "type": "string",
+      "description": "Vendor's website or social link"
+    },
+    "vendor_accepts_ebt": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the vendor accepts EBT/SNAP payments"
+    },
+    "vendor_accepts_dufb": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the vendor participates in Double Up Food Bucks"
     }
   },
   "required": [

@@ -8,7 +8,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import {
   Pencil, Save, X, Mail, Phone, Building2, LogOut, ShieldCheck,
-  MessageSquare, Calendar, BookOpen, Map, ChevronRight, Copy, Check, Trash2, AlertTriangle
+  MessageSquare, Calendar, BookOpen, Map, ChevronRight, Copy, Check, Trash2, AlertTriangle,
+  Store, Globe, BadgeCheck
 } from "lucide-react";
 import { toast } from "sonner";
 import { ROLE_CONFIG } from "@/components/admin/UsersTab";
@@ -63,6 +64,11 @@ export default function Profile() {
       bio: user.bio || "",
       header_image_url: user.header_image_url || "",
       profile_image_url: user.profile_image_url || "",
+      vendor_business_name: user.vendor_business_name || "",
+      vendor_description: user.vendor_description || "",
+      vendor_website: user.vendor_website || "",
+      vendor_accepts_ebt: user.vendor_accepts_ebt || false,
+      vendor_accepts_dufb: user.vendor_accepts_dufb || false,
     });
   }, [user]);
 
@@ -190,6 +196,35 @@ export default function Profile() {
                 <Label>Bio</Label>
                 <Textarea value={form.bio} onChange={e => setForm(f => ({ ...f, bio: e.target.value }))} placeholder="Tell us a little about yourself..." rows={3} />
               </div>
+              {user?.role === "vendor" && (
+                <>
+                  <div className="md:col-span-2 border-t pt-3">
+                    <p className="text-xs font-semibold text-amber-700 uppercase tracking-wide mb-3 flex items-center gap-1"><Store className="w-3.5 h-3.5" /> Vendor Information</p>
+                  </div>
+                  <div>
+                    <Label>Business Name</Label>
+                    <Input value={form.vendor_business_name} onChange={e => setForm(f => ({ ...f, vendor_business_name: e.target.value }))} placeholder="e.g. Smith's Fresh Produce" />
+                  </div>
+                  <div>
+                    <Label>Website / Social Link</Label>
+                    <Input value={form.vendor_website} onChange={e => setForm(f => ({ ...f, vendor_website: e.target.value }))} placeholder="https://..." />
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label>What do you sell or offer?</Label>
+                    <Textarea value={form.vendor_description} onChange={e => setForm(f => ({ ...f, vendor_description: e.target.value }))} placeholder="Describe your products or services..." rows={2} />
+                  </div>
+                  <div className="md:col-span-2 flex flex-wrap gap-4">
+                    <label className="flex items-center gap-2 cursor-pointer min-h-[44px]">
+                      <input type="checkbox" checked={form.vendor_accepts_ebt} onChange={e => setForm(f => ({ ...f, vendor_accepts_ebt: e.target.checked }))} className="w-4 h-4 accent-amber-600" />
+                      <span className="text-sm">Accepts EBT / SNAP</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer min-h-[44px]">
+                      <input type="checkbox" checked={form.vendor_accepts_dufb} onChange={e => setForm(f => ({ ...f, vendor_accepts_dufb: e.target.checked }))} className="w-4 h-4 accent-amber-600" />
+                      <span className="text-sm">Participates in Double Up Food Bucks</span>
+                    </label>
+                  </div>
+                </>
+              )}
             </div>
           ) : (
             <>
@@ -224,6 +259,61 @@ export default function Profile() {
         <StatCard value={totalLikes} label="Total Likes" color="text-pink-600" />
         <StatCard value={myPosts.filter(p => p.category === "Recipe").length} label="Recipes Shared" color="text-orange-600" />
       </div>
+
+      {/* Vendor Dashboard */}
+      {user?.role === "vendor" && (
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 space-y-4">
+          <div className="flex items-center gap-2">
+            <Store className="w-5 h-5 text-amber-700" />
+            <h3 className="text-base font-semibold text-amber-900">Vendor Dashboard</h3>
+            <Badge className="bg-amber-100 text-amber-800 text-xs ml-auto">Vendor Account</Badge>
+          </div>
+
+          {user.vendor_business_name ? (
+            <div className="space-y-2">
+              <p className="text-sm font-semibold text-gray-800">{user.vendor_business_name}</p>
+              {user.vendor_description && (
+                <p className="text-sm text-gray-600">{user.vendor_description}</p>
+              )}
+              <div className="flex flex-wrap gap-2 mt-2">
+                {user.vendor_accepts_ebt && (
+                  <span className="inline-flex items-center gap-1 bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded-full">
+                    <BadgeCheck className="w-3.5 h-3.5" /> EBT / SNAP Accepted
+                  </span>
+                )}
+                {user.vendor_accepts_dufb && (
+                  <span className="inline-flex items-center gap-1 bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-1 rounded-full">
+                    <BadgeCheck className="w-3.5 h-3.5" /> Double Up Food Bucks
+                  </span>
+                )}
+              </div>
+              {user.vendor_website && (
+                <a href={user.vendor_website} target="_blank" rel="noreferrer"
+                  className="inline-flex items-center gap-1 text-sm text-amber-700 hover:underline mt-1">
+                  <Globe className="w-3.5 h-3.5" /> {user.vendor_website}
+                </a>
+              )}
+            </div>
+          ) : (
+            <div className="text-sm text-amber-700 bg-amber-100 rounded-lg px-4 py-3">
+              Complete your vendor profile by clicking <strong>Edit Profile</strong> above — add your business name, products, and payment options.
+            </div>
+          )}
+
+          <div className="grid grid-cols-2 gap-3 pt-1">
+            <Link to="/Feed?category=Resource+Tip"
+              className="flex items-center justify-between gap-2 rounded-xl border border-amber-200 bg-white px-4 py-3 text-sm font-medium text-amber-800 hover:shadow-sm transition min-h-[52px]">
+              <div className="flex items-center gap-2"><MessageSquare className="w-4 h-4" /> Post an Update</div>
+              <ChevronRight className="w-3.5 h-3.5 opacity-50" />
+            </Link>
+            <Link to="/Map"
+              className="flex items-center justify-between gap-2 rounded-xl border border-amber-200 bg-white px-4 py-3 text-sm font-medium text-amber-800 hover:shadow-sm transition min-h-[52px]">
+              <div className="flex items-center gap-2"><Map className="w-4 h-4" /> View Map</div>
+              <ChevronRight className="w-3.5 h-3.5 opacity-50" />
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Quick Links */}
       <div>
