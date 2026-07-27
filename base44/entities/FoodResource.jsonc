@@ -1,0 +1,76 @@
+{
+  "name": "FoodResource",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the food resource"
+    },
+    "address": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "lat": {
+      "type": "number"
+    },
+    "lng": {
+      "type": "number"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "FoodPantry",
+        "GroceryStore",
+        "FarmersMarket",
+        "MobileMarket",
+        "SeniorMealSite",
+        "Pharmacy",
+        "Convenience",
+        "Other"
+      ],
+      "default": "Other"
+    },
+    "hours": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "ebt_accepted": {
+      "type": "boolean",
+      "default": false
+    },
+    "dufb_offered": {
+      "type": "boolean",
+      "default": false
+    },
+    "wic_accepted": {
+      "type": "boolean",
+      "default": false
+    },
+    "email": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "source_id": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "x-base44-rls": {
+    "public_read": true
+  }
+}

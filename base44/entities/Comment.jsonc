@@ -1,0 +1,26 @@
+{
+  "name": "Comment",
+  "type": "object",
+  "properties": {
+    "post_id": {
+      "type": "string"
+    },
+    "author_email": {
+      "type": "string"
+    },
+    "author_name": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "post_id",
+    "content",
+    "author_email"
+  ],
+  "x-base44-rls": {
+    "public_read": true
+  }
+}

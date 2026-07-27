@@ -1,0 +1,28 @@
+{
+  "name": "RSVP",
+  "type": "object",
+  "properties": {
+    "post_id": {
+      "type": "string"
+    },
+    "user_email": {
+      "type": "string"
+    },
+    "user_name": {
+      "type": "string"
+    },
+    "event_title": {
+      "type": "string"
+    },
+    "event_date": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "post_id",
+    "user_email"
+  ],
+  "x-base44-rls": {
+    "public_read": true
+  }
+}

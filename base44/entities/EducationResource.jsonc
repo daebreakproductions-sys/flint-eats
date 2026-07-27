@@ -1,0 +1,63 @@
+{
+  "name": "EducationResource",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Nutrition",
+        "Cooking",
+        "Food Safety",
+        "Benefits & Programs",
+        "Community",
+        "Other"
+      ],
+      "default": "Nutrition"
+    },
+    "content_type": {
+      "type": "string",
+      "enum": [
+        "Video",
+        "Article",
+        "Guide",
+        "Infographic"
+      ],
+      "default": "Article"
+    },
+    "url": {
+      "type": "string"
+    },
+    "thumbnail_url": {
+      "type": "string"
+    },
+    "duration_minutes": {
+      "type": "number"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "is_featured": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_published": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "title"
+  ],
+  "x-base44-rls": {
+    "public_read": true
+  }
+}

@@ -25,8 +25,19 @@ function distanceMeter(lat1, lng1, lat2, lng2) {
 function MapInitializer() {
   const map = useMap();
   useEffect(() => {
-    setTimeout(() => map.invalidateSize(), 100);
-    setTimeout(() => map.invalidateSize(), 500);
+    const container = map.getContainer();
+    if (container.clientHeight > 0) {
+      map.invalidateSize();
+      return;
+    }
+    const observer = new ResizeObserver(() => {
+      if (container.clientHeight > 0) {
+        map.invalidateSize();
+        observer.disconnect();
+      }
+    });
+    observer.observe(container);
+    return () => observer.disconnect();
   }, [map]);
   return null;
 }

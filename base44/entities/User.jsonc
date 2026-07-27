@@ -1,0 +1,33 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "description": "The role of the user in the app",
+      "enum": [
+        "admin",
+        "resource_manager",
+        "partner_org",
+        "volunteer",
+        "resident",
+        "user"
+      ],
+      "default": "user"
+    },
+    "organization": {
+      "type": "string",
+      "description": "Organization or agency the user represents"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "bio": {
+      "type": "string",
+      "description": "Short description or notes about the user"
+    }
+  },
+  "required": [
+    "role"
+  ]
+}

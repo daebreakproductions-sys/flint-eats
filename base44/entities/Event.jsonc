@@ -1,0 +1,58 @@
+{
+  "name": "Event",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "time": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "county": {
+      "type": "string",
+      "default": "Genesee"
+    },
+    "organizer": {
+      "type": "string"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "Farmers Market",
+        "Food Distribution",
+        "Workshop",
+        "Community Meal",
+        "Volunteer",
+        "Other"
+      ],
+      "default": "Other"
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "rsvp_url": {
+      "type": "string"
+    },
+    "is_published": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "title",
+    "date"
+  ],
+  "x-base44-rls": {
+    "public_read": true
+  }
+}
