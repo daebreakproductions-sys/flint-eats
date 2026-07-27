@@ -2,6 +2,7 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { appParams } from '@/lib/app-params';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
+import { toast } from 'sonner';
 
 const AuthContext = createContext();
 
@@ -61,27 +62,25 @@ export const AuthProvider = ({ children }) => {
               type: 'user_not_registered',
               message: 'User not registered for this app'
             });
+            toast.error('Your account is not registered for this app. Please contact support.');
           } else {
-            setAuthError({
-              type: reason,
-              message: appError.message
-            });
+            const errMsg = appError.message || 'An error occurred';
+            setAuthError({ type: reason, message: errMsg });
+            toast.error(errMsg);
           }
         } else {
-          setAuthError({
-            type: 'unknown',
-            message: appError.message || 'Failed to load app'
-          });
+          const errMsg = appError.message || 'Failed to load app';
+          setAuthError({ type: 'unknown', message: errMsg });
+          toast.error(errMsg);
         }
         setIsLoadingPublicSettings(false);
         setIsLoadingAuth(false);
       }
     } catch (error) {
       console.error('Unexpected error:', error);
-      setAuthError({
-        type: 'unknown',
-        message: error.message || 'An unexpected error occurred'
-      });
+      const errMsg = error.message || 'An unexpected error occurred';
+      setAuthError({ type: 'unknown', message: errMsg });
+      toast.error(errMsg);
       setIsLoadingPublicSettings(false);
       setIsLoadingAuth(false);
     }
@@ -106,6 +105,11 @@ export const AuthProvider = ({ children }) => {
           type: 'auth_required',
           message: 'Authentication required'
         });
+        toast.error('Your session has expired. Please sign in again.');
+      } else {
+        const errMsg = error.message || 'Authentication failed';
+        setAuthError({ type: 'unknown', message: errMsg });
+        toast.error(errMsg);
       }
     }
   };
