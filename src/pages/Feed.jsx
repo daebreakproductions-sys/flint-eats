@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import CreatePost from "@/components/feed/CreatePost";
@@ -15,7 +15,10 @@ export default function Feed() {
   const [tab, setTab] = useState("feed"); // feed | calendar
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [sortBy, setSortBy] = useState("newest");
+  const [highlightedPostId, setHighlightedPostId] = useState(null);
   const qc = useQueryClient();
+  const highlightedRef = useRef(null);
+  const targetPostId = new URLSearchParams(window.location.search).get("post");
 
   const { data: user } = useQuery({
     queryKey: ["me"],
@@ -41,6 +44,14 @@ export default function Feed() {
   });
 
   const avatarMap = Object.fromEntries(users.map(u => [u.email, u.profile_image_url]));
+
+  useEffect(() => {
+    if (targetPostId && posts.length > 0 && highlightedRef.current) {
+      highlightedRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      setHighlightedPostId(targetPostId);
+      setTimeout(() => setHighlightedPostId(null), 2500);
+    }
+  }, [targetPostId, posts.length]);
 
   const filtered = posts
     .filter(p => categoryFilter === "All" || p.category === categoryFilter)
@@ -147,7 +158,13 @@ export default function Feed() {
               ) : (
                 <div className="space-y-4">
                   {filtered.map(post => (
-                    <PostCard key={post.id} post={post} currentUser={user} authorImageUrl={avatarMap[post.author_email]} />
+                    <div
+                      key={post.id}
+                      ref={post.id === targetPostId ? highlightedRef : null}
+                      className={`rounded-2xl transition-all duration-700 ${highlightedPostId === post.id ? "ring-2 ring-green-500 ring-offset-2" : ""}`}
+                    >
+                      <PostCard post={post} currentUser={user} authorImageUrl={avatarMap[post.author_email]} />
+                    </div>
                   ))}
                 </div>
               )}

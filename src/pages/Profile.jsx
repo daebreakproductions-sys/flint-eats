@@ -244,7 +244,8 @@ export default function Profile() {
           <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Your Recent Posts</h3>
           <div className="space-y-2">
             {myPosts.slice(0, 3).map(post => (
-              <div key={post.id} className="bg-white rounded-xl border p-3 flex items-start gap-3 shadow-sm">
+              <Link key={post.id} to={`/Feed?post=${post.id}`}
+                className="bg-white rounded-xl border p-3 flex items-start gap-3 shadow-sm hover:shadow-md hover:border-green-200 transition-all block">
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-gray-800 line-clamp-2">{post.content}</p>
                   <div className="flex items-center gap-3 mt-1 text-xs text-gray-400">
@@ -253,7 +254,8 @@ export default function Profile() {
                     <span>{new Date(post.created_date).toLocaleDateString()}</span>
                   </div>
                 </div>
-              </div>
+                <ChevronRight className="w-4 h-4 text-gray-300 shrink-0 mt-1" />
+              </Link>
             ))}
           </div>
         </div>
