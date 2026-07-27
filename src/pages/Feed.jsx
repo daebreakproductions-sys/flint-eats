@@ -33,6 +33,15 @@ export default function Feed() {
     enabled: isAuthenticated,
   });
 
+  const { data: users = [] } = useQuery({
+    queryKey: ["users-avatars"],
+    queryFn: () => base44.entities.User.list(),
+    enabled: isAuthenticated,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const avatarMap = Object.fromEntries(users.map(u => [u.email, u.profile_image_url]));
+
   const filtered = posts
     .filter(p => categoryFilter === "All" || p.category === categoryFilter)
     .sort((a, b) => {
@@ -138,7 +147,7 @@ export default function Feed() {
               ) : (
                 <div className="space-y-4">
                   {filtered.map(post => (
-                    <PostCard key={post.id} post={post} currentUser={user} />
+                    <PostCard key={post.id} post={post} currentUser={user} authorImageUrl={avatarMap[post.author_email]} />
                   ))}
                 </div>
               )}

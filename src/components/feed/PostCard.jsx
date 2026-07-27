@@ -30,7 +30,7 @@ function CommentItem({ comment }) {
   );
 }
 
-export default function PostCard({ post, currentUser }) {
+export default function PostCard({ post, currentUser, authorImageUrl }) {
   const qc = useQueryClient();
   const [showComments, setShowComments] = useState(false);
   const [commentText, setCommentText] = useState("");
@@ -113,8 +113,11 @@ export default function PostCard({ post, currentUser }) {
       <div className="p-4 pb-3">
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-full bg-green-700 flex items-center justify-center shrink-0">
-              <span className="text-sm font-bold text-white">{initials}</span>
+            <div className="w-10 h-10 rounded-full bg-green-700 flex items-center justify-center shrink-0 overflow-hidden">
+              {authorImageUrl
+                ? <img src={authorImageUrl} alt="" className="w-full h-full object-cover" onError={e => { e.target.style.display = "none"; e.target.nextSibling.style.display = "flex"; }} />
+                : null}
+              <span className={`text-sm font-bold text-white ${authorImageUrl ? "hidden" : "flex"} items-center justify-center w-full h-full`}>{initials}</span>
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
