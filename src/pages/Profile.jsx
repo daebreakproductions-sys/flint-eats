@@ -68,8 +68,9 @@ export default function Profile() {
 
   const updateMutation = useMutation({
     mutationFn: (data) => base44.auth.updateMe(data),
-    onSuccess: async () => {
-      await qc.refetchQueries({ queryKey: ["me"] });
+    onSuccess: (updatedUser) => {
+      // Immediately seed the cache with the server response — no stale data flash
+      qc.setQueryData(["me"], updatedUser);
       setEditing(false);
       toast.success("Profile updated!");
     },
