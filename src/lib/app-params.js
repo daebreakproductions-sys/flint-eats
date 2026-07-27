@@ -1,6 +1,30 @@
 const isNode = typeof window === 'undefined';
 const windowObj = isNode ? { localStorage: new Map() } : window;
-const storage = windowObj.localStorage;
+
+// Safely get storage, falling back gracefully if blocked (iOS ITP / private mode)
+const getStorage = (type) => {
+	try {
+		const s = windowObj[type];
+		s.setItem('__test__', '1');
+		s.removeItem('__test__');
+		return s;
+	} catch {
+		return null;
+	}
+};
+
+const localStorage_ = isNode ? new Map() : getStorage('localStorage');
+const sessionStorage_ = isNode ? null : getStorage('sessionStorage');
+
+const storageGet = (key) => {
+	return localStorage_?.getItem(key) ?? sessionStorage_?.getItem(key) ?? null;
+};
+
+const storageSet = (key, value) => {
+	// Write to both so the token survives across iOS redirect boundaries
+	localStorage_?.setItem(key, value);
+	sessionStorage_?.setItem(key, value);
+};
 
 const toSnakeCase = (str) => {
 	return str.replace(/([A-Z])/g, '_$1').toLowerCase();
@@ -13,31 +37,38 @@ const getAppParamValue = (paramName, { defaultValue = undefined, removeFromUrl =
 	const storageKey = `base44_${toSnakeCase(paramName)}`;
 	const urlParams = new URLSearchParams(window.location.search);
 	const searchParam = urlParams.get(paramName);
-	if (removeFromUrl) {
-		urlParams.delete(paramName);
-		const newUrl = `${window.location.pathname}${urlParams.toString() ? `?${urlParams.toString()}` : ""
-			}${window.location.hash}`;
-		window.history.replaceState({}, document.title, newUrl);
-	}
+
+	// Store the value BEFORE removing it from the URL so it's persisted first
 	if (searchParam) {
-		storage.setItem(storageKey, searchParam);
+		storageSet(storageKey, searchParam);
+	}
+
+	if (removeFromUrl && searchParam) {
+		urlParams.delete(paramName);
+		const newUrl = `${window.location.pathname}${urlParams.toString() ? `?${urlParams.toString()}` : ""}${window.location.hash}`;
+		try {
+			window.history.replaceState({}, document.title, newUrl);
+		} catch {
+			// replaceState can fail in some WKWebView contexts — ignore
+		}
+	}
+
+	if (searchParam) {
 		return searchParam;
 	}
 	if (defaultValue) {
-		storage.setItem(storageKey, defaultValue);
+		storageSet(storageKey, defaultValue);
 		return defaultValue;
 	}
-	const storedValue = storage.getItem(storageKey);
-	if (storedValue) {
-		return storedValue;
-	}
-	return null;
+	return storageGet(storageKey);
 }
 
 const getAppParams = () => {
 	if (getAppParamValue("clear_access_token") === 'true') {
-		storage.removeItem('base44_access_token');
-		storage.removeItem('token');
+		localStorage_?.removeItem('base44_access_token');
+		localStorage_?.removeItem('token');
+		sessionStorage_?.removeItem('base44_access_token');
+		sessionStorage_?.removeItem('token');
 	}
 	return {
 		appId: getAppParamValue("app_id", { defaultValue: import.meta.env.VITE_BASE44_APP_ID }),
