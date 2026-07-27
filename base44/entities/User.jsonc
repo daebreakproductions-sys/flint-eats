@@ -25,6 +25,19 @@
     "bio": {
       "type": "string",
       "description": "Short description or notes about the user"
+    },
+    "county": {
+      "type": "string",
+      "default": "Genesee",
+      "description": "User's county for localized content"
+    },
+    "profile_image_url": {
+      "type": "string",
+      "description": "URL to the user's profile photo"
+    },
+    "header_image_url": {
+      "type": "string",
+      "description": "URL to the user's profile header/banner image"
     }
   },
   "required": [

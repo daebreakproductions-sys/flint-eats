@@ -68,7 +68,12 @@ export default function Profile() {
 
   const updateMutation = useMutation({
     mutationFn: (data) => base44.auth.updateMe(data),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["me"] }); setEditing(false); toast.success("Profile updated!"); },
+    onSuccess: async () => {
+      await qc.refetchQueries({ queryKey: ["me"] });
+      setEditing(false);
+      toast.success("Profile updated!");
+    },
+    onError: () => toast.error("Failed to save profile. Please try again."),
   });
 
   const copyEmail = () => {
