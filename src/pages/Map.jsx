@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ChevronUp, ChevronDown, LocateFixed, Loader2 } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from "react-leaflet";
 import L from "leaflet";
@@ -58,6 +58,15 @@ function FlyToLocation({ coords }) {
   return null;
 }
 
+function FlyToResource({ resource }) {
+  const map = useMap();
+  useEffect(() => {
+    if (!map || !resource?.lat || !resource?.lng) return;
+    map.flyTo([resource.lat, resource.lng], 16, { animate: true, duration: 1.2 });
+  }, [resource, map]);
+  return null;
+}
+
 export default function MapPage() {
   const [resources, setResources] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -69,6 +78,15 @@ export default function MapPage() {
   const [userLocation, setUserLocation] = useState(null);
   const [locating, setLocating] = useState(false);
   const [locError, setLocError] = useState(null);
+  const [highlightId, setHighlightId] = useState(null);
+  const markerRefs = useRef({});
+
+  // Read ?id= URL param and fly to that resource once data is loaded
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+    if (id) setHighlightId(id);
+  }, []);
   // Load resources once on mount
   useEffect(() => {
     base44.entities.FoodResource.filter({ is_active: true }, "name", 2000)
@@ -159,6 +177,9 @@ export default function MapPage() {
         style={{ height: "100%", width: "100%" }}
       >
         <MapInitializer />
+        {highlightId && resources.length > 0 && (
+          <FlyToResource resource={resources.find(r => r.id === highlightId)} />
+        )}
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
@@ -184,11 +205,12 @@ export default function MapPage() {
           {filtered.map(resource => {
             const cfg = TYPE_CONFIG[resource.type] || TYPE_CONFIG.Other;
             const isNearby = nearbyIds && nearbyIds.has(resource.id);
+            const isHighlighted = resource.id === highlightId;
             const icon = L.divIcon({
-              html: `<span style="font-size:22px;line-height:1;${isNearby ? "filter:drop-shadow(0 0 4px #16a34a);" : `opacity:${nearbyIds ? 0.45 : 1};`}">${cfg.emoji}</span>`,
+              html: `<span style="font-size:${isHighlighted ? "32px" : "22px"};line-height:1;${isHighlighted ? "filter:drop-shadow(0 0 6px #16a34a) drop-shadow(0 0 12px #16a34a);" : isNearby ? "filter:drop-shadow(0 0 4px #16a34a);" : `opacity:${nearbyIds ? 0.45 : 1};`}">${cfg.emoji}</span>`,
               className: "",
-              iconSize: [28, 28],
-              iconAnchor: [14, 14],
+              iconSize: isHighlighted ? [36, 36] : [28, 28],
+              iconAnchor: isHighlighted ? [18, 18] : [14, 14],
               popupAnchor: [0, -14],
             });
             return (

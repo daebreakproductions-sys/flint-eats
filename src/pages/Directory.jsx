@@ -1,11 +1,12 @@
 import { useState, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Search, Phone, MapPin, Clock, ExternalLink, Filter, Check } from "lucide-react";
+import { Search, Phone, MapPin, Clock, ExternalLink, Filter, Check, Map } from "lucide-react";
 import { TYPE_CONFIG } from "@/components/map/MapLegend";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger, DrawerClose } from "@/components/ui/drawer";
 import SelectDrawer from "@/components/ui/SelectDrawer";
@@ -17,7 +18,7 @@ const BENEFIT_BADGES = [
   { key: "wic_accepted", label: "WIC", cls: "bg-purple-100 text-purple-800" },
 ];
 
-function ResourceCard({ resource }) {
+function ResourceCard({ resource, onViewMap }) {
   const cfg = TYPE_CONFIG[resource.type] || TYPE_CONFIG.Other;
   return (
     <Card className="p-4 hover:shadow-md transition-shadow active:bg-gray-50 active:scale-[0.99] transition-all cursor-pointer">
@@ -61,6 +62,14 @@ function ResourceCard({ resource }) {
           </div>
           {resource.notes && (
             <p className="mt-2 text-xs text-gray-500 line-clamp-2">{resource.notes}</p>
+          )}
+          {resource.lat && resource.lng && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onViewMap(resource.id); }}
+              className="mt-2 inline-flex items-center gap-1 text-xs text-green-700 hover:underline font-medium"
+            >
+              <Map className="w-3 h-3" /> View on Map
+            </button>
           )}
         </div>
       </div>
@@ -135,6 +144,11 @@ export default function Directory() {
   const [typeFilter, setTypeFilter] = useState("all");
   const [benefitFilter, setBenefitFilter] = useState("all");
   const qc = useQueryClient();
+  const navigate = useNavigate();
+
+  const handleViewOnMap = (resourceId) => {
+    navigate(`/Map?id=${resourceId}`);
+  };
 
   const { data: resources = [], isLoading } = useQuery({
     queryKey: ["food-resources"],
@@ -217,7 +231,7 @@ export default function Directory() {
         </div>
       ) : (
         <div className="space-y-3">
-          {filtered.map(r => <ResourceCard key={r.id} resource={r} />)}
+          {filtered.map(r => <ResourceCard key={r.id} resource={r} onViewMap={handleViewOnMap} />)}
           {filtered.length === 0 && (
             <div className="text-center py-16 text-gray-400">
               <Search className="w-10 h-10 mx-auto mb-2 opacity-40" />
