@@ -167,35 +167,45 @@ export default function Admin() {
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Admin Dashboard</h1>
 
       <Tabs defaultValue="resources">
-        <TabsList className="mb-4 flex-wrap">
-          <TabsTrigger value="resources" className="flex items-center gap-1.5">
-            <MapPin className="w-4 h-4" /> Food Resources ({resources.length})
-          </TabsTrigger>
-          <TabsTrigger value="education" className="flex items-center gap-1.5">
-            <BookOpen className="w-4 h-4" /> Education
-          </TabsTrigger>
-          <TabsTrigger value="users" className="flex items-center gap-1.5">
-            <Users className="w-4 h-4" /> Users
-          </TabsTrigger>
-          <TabsTrigger value="newsletter" className="flex items-center gap-1.5">
-            <Mail className="w-4 h-4" /> Newsletter
-          </TabsTrigger>
-          <TabsTrigger value="metrics" className="flex items-center gap-1.5">
-            <BarChart2 className="w-4 h-4" /> Metrics
-          </TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto mb-4">
+          <TabsList className="inline-flex w-max min-w-full">
+            <TabsTrigger value="resources" className="flex items-center gap-1.5 whitespace-nowrap">
+              <MapPin className="w-4 h-4" />
+              <span className="hidden sm:inline">Food Resources ({resources.length})</span>
+              <span className="sm:hidden">Resources</span>
+            </TabsTrigger>
+            <TabsTrigger value="education" className="flex items-center gap-1.5 whitespace-nowrap">
+              <BookOpen className="w-4 h-4" />
+              <span>Education</span>
+            </TabsTrigger>
+            <TabsTrigger value="users" className="flex items-center gap-1.5 whitespace-nowrap">
+              <Users className="w-4 h-4" />
+              <span>Users</span>
+            </TabsTrigger>
+            <TabsTrigger value="newsletter" className="flex items-center gap-1.5 whitespace-nowrap">
+              <Mail className="w-4 h-4" />
+              <span>Newsletter</span>
+            </TabsTrigger>
+            <TabsTrigger value="metrics" className="flex items-center gap-1.5 whitespace-nowrap">
+              <BarChart2 className="w-4 h-4" />
+              <span>Metrics</span>
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="resources">
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-3">
-              <CardTitle className="text-lg">Manage Locations</CardTitle>
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={handleDeduplication}>
-                  <ShieldCheck className="w-4 h-4 mr-1" /> Remove Duplicates
-                </Button>
-                <Button onClick={() => setShowNewForm(true)} className="bg-green-700 hover:bg-green-800" size="sm">
-                  <Plus className="w-4 h-4 mr-1" /> Add Location
-                </Button>
+            <CardHeader className="pb-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <CardTitle className="text-lg">Manage Locations</CardTitle>
+                <div className="flex gap-2 flex-wrap">
+                  <Button variant="outline" size="sm" onClick={handleDeduplication}>
+                    <ShieldCheck className="w-4 h-4 mr-1" /> Remove Duplicates
+                  </Button>
+                  <Button onClick={() => setShowNewForm(true)} className="bg-green-700 hover:bg-green-800" size="sm">
+                    <Plus className="w-4 h-4 mr-1" /> Add Location
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             <CardContent>
