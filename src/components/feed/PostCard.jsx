@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Heart, MessageCircle, MapPin, Send, ChevronDown, ChevronUp, Trash2 } from "lucide-react";
+import { Heart, MessageCircle, MapPin, Send, ChevronDown, ChevronUp, Trash2, Pencil, X, Check } from "lucide-react";
 import { CATEGORY_COLORS } from "./CreatePost";
 import { ROLE_CONFIG } from "@/components/admin/UsersTab";
 import { formatDistanceToNowStrict } from "date-fns";
@@ -53,6 +53,8 @@ export default function PostCard({ post, currentUser, authorImageUrl }) {
   const qc = useQueryClient();
   const [showComments, setShowComments] = useState(false);
   const [commentText, setCommentText] = useState("");
+  const [editing, setEditing] = useState(false);
+  const [editText, setEditText] = useState(post.content);
 
   const liked = post.liked_by?.includes(currentUser?.email);
   const initials = (post.author_name || post.author_email || "?").split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
@@ -125,6 +127,12 @@ export default function PostCard({ post, currentUser, authorImageUrl }) {
   });
 
   const canDelete = currentUser?.email === post.author_email || currentUser?.role === "admin";
+  const canEdit = currentUser?.email === post.author_email;
+
+  const editMutation = useMutation({
+    mutationFn: (content) => base44.entities.Post.update(post.id, { content }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["feed-posts"] }); setEditing(false); },
+  });
 
   return (
     <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
@@ -159,6 +167,11 @@ export default function PostCard({ post, currentUser, authorImageUrl }) {
             <Badge className="bg-muted text-muted-foreground text-xs rounded-full border-0">
               {post.category}
             </Badge>
+            {canEdit && !editing && (
+              <button onClick={() => { setEditText(post.content); setEditing(true); }} className="text-muted-foreground/50 hover:text-green-600 transition-colors">
+                <Pencil className="w-3.5 h-3.5" />
+              </button>
+            )}
             {canDelete && (
               <button onClick={() => deleteMutation.mutate()} className="ml-1 text-muted-foreground/50 hover:text-red-400 transition-colors">
                 <Trash2 className="w-3.5 h-3.5" />
@@ -168,7 +181,29 @@ export default function PostCard({ post, currentUser, authorImageUrl }) {
         </div>
 
         {/* Content */}
-        <p className="mt-3 text-foreground text-sm leading-relaxed whitespace-pre-wrap">{post.content}</p>
+        {editing ? (
+          <div className="mt-3 space-y-2">
+            <Textarea
+              value={editText}
+              onChange={e => setEditText(e.target.value)}
+              rows={4}
+              className="resize-none text-sm rounded-xl border-border bg-[hsl(var(--input-bg))] text-[hsl(var(--input-text))]"
+              autoFocus
+            />
+            <div className="flex gap-2 justify-end">
+              <Button size="sm" variant="ghost" onClick={() => setEditing(false)} className="h-8 px-3 text-xs">
+                <X className="w-3.5 h-3.5 mr-1" /> Cancel
+              </Button>
+              <Button size="sm" className="h-8 px-3 text-xs bg-green-700 hover:bg-green-800"
+                disabled={!editText.trim() || editMutation.isPending}
+                onClick={() => editMutation.mutate(editText.trim())}>
+                <Check className="w-3.5 h-3.5 mr-1" /> Save
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <p className="mt-3 text-foreground text-sm leading-relaxed whitespace-pre-wrap">{post.content}</p>
+        )}
       </div>
 
       {/* Image */}
