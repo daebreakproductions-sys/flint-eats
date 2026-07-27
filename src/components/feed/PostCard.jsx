@@ -7,7 +7,26 @@ import { Textarea } from "@/components/ui/textarea";
 import { Heart, MessageCircle, MapPin, Send, ChevronDown, ChevronUp, Trash2 } from "lucide-react";
 import { CATEGORY_COLORS } from "./CreatePost";
 import { ROLE_CONFIG } from "@/components/admin/UsersTab";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNowStrict } from "date-fns";
+
+function timeAgo(dateStr) {
+  if (!dateStr) return "";
+  const str = formatDistanceToNowStrict(new Date(dateStr));
+  return str
+    .replace(" seconds", "s")
+    .replace(" second", "s")
+    .replace(" minutes", " min")
+    .replace(" minute", " min")
+    .replace(" hours", " hr")
+    .replace(" hour", " hr")
+    .replace(" days", "d")
+    .replace(" day", "d")
+    .replace(" months", " mo")
+    .replace(" month", " mo")
+    .replace(" years", " yr")
+    .replace(" year", " yr")
+    + " ago";
+}
 import { toast } from "sonner";
 
 function CommentItem({ comment }) {
@@ -23,7 +42,7 @@ function CommentItem({ comment }) {
           <p className="text-sm text-foreground mt-0.5">{comment.content}</p>
         </div>
         <p className="text-xs text-muted-foreground mt-1 pl-2">
-          {comment.created_date ? formatDistanceToNow(new Date(comment.created_date), { addSuffix: true }) : ""}
+          {timeAgo(comment.created_date)}
         </p>
       </div>
     </div>
@@ -126,7 +145,7 @@ export default function PostCard({ post, currentUser, authorImageUrl }) {
               </div>
               <div className="flex items-center gap-2 mt-0.5">
                 <p className="text-xs text-muted-foreground">
-                  {post.created_date ? formatDistanceToNow(new Date(post.created_date), { addSuffix: true }) : ""}
+                  {timeAgo(post.created_date)}
                 </p>
                 {post.county && (
                   <span className="flex items-center gap-0.5 text-xs text-muted-foreground">
