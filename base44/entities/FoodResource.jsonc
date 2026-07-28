@@ -24,9 +24,9 @@
         "FoodPantry",
         "GroceryStore",
         "FarmersMarket",
-        "MobileMarket",
         "SeniorMealSite",
         "Pharmacy",
+        "GasStation",
         "Convenience",
         "Other"
       ],
