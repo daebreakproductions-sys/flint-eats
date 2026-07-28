@@ -19,7 +19,7 @@ import EducationTab from "@/components/admin/EducationTab";
 
 const EMPTY_RESOURCE = {
   name: "", address: "", phone: "", lat: "", lng: "",
-  type: "Other", hours: "", notes: "", email: "", url: "",
+  type: "GroceryStore", hours: "", notes: "", email: "", url: "",
   ebt_accepted: false, dufb_offered: false, wic_accepted: false, is_active: true
 };
 
@@ -242,7 +242,7 @@ export default function Admin() {
                       ) : (
                         <div className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50">
                           <div className="flex items-center gap-3 min-w-0">
-                            <span className="text-lg">{(TYPE_CONFIG[r.type] || TYPE_CONFIG.Other).emoji}</span>
+                            <span className="text-lg">{(TYPE_CONFIG[r.type] || TYPE_CONFIG.Convenience).emoji}</span>
                             <div className="min-w-0">
                               <p className="font-medium text-sm truncate">{r.name}</p>
                               <p className="text-xs text-gray-500 truncate">{r.address}</p>
