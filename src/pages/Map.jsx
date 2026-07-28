@@ -72,10 +72,14 @@ function HighlightedMarker({ resource }) {
 
   useEffect(() => {
     if (!map || !resource?.lat || !resource?.lng) return;
-    map.flyTo([resource.lat, resource.lng], 16, { animate: true, duration: 1.2 });
-    const timer = setTimeout(() => {
-      markerRef.current?.openPopup();
-    }, 1500);
+    const fly = () => {
+      map.flyTo([resource.lat, resource.lng], 16, { animate: true, duration: 1.2 });
+      map.once("moveend", () => {
+        markerRef.current?.openPopup();
+      });
+    };
+    // Small delay ensures MapInitializer has finished invalidateSize
+    const timer = setTimeout(fly, 300);
     return () => clearTimeout(timer);
   }, [resource?.id, map]);
 
