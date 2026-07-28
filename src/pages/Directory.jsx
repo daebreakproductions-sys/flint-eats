@@ -33,8 +33,16 @@ function ResourceCard({ resource, onViewMap }) {
           </div>
           {resource.address && (
             <div className="flex gap-1.5 mt-1 text-sm text-gray-600">
-              <MapPin className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-              <span>{resource.address}</span>
+              <MapPin className="w-3.5 h-3.5 mt-0.5 shrink-0 text-green-700" />
+              <a
+                href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(resource.address)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={e => e.stopPropagation()}
+                className="text-green-700 hover:underline"
+              >
+                {resource.address}
+              </a>
             </div>
           )}
           {resource.hours && (
