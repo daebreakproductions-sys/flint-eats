@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef, createRef } from "react";
-import { createRoot } from "react-dom/client";
+import { useState, useEffect, useRef } from "react";
 import { ChevronUp, ChevronDown, LocateFixed, Loader2 } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from "react-leaflet";
 import L from "leaflet";
@@ -66,15 +65,6 @@ function FlyToResource({ resource }) {
     setTimeout(() => {
       map.flyTo([resource.lat, resource.lng], 16, { animate: true, duration: 1.2 });
     }, 300);
-    setTimeout(() => {
-      const container = document.createElement("div");
-      const root = createRoot(container);
-      root.render(<ResourcePopup resource={resource} />);
-      L.popup({ maxWidth: 300, offset: [0, -10] })
-        .setLatLng([resource.lat, resource.lng])
-        .setContent(container)
-        .openOn(map);
-    }, 1700);
   }, [resource?.id, map]);
   return null;
 }
@@ -189,9 +179,17 @@ export default function MapPage() {
         style={{ height: "100%", width: "100%" }}
       >
         <MapInitializer />
-        {highlightId && resources.length > 0 && (
-          <FlyToResource resource={resources.find(r => r.id === highlightId)} />
-        )}
+        {highlightId && resources.length > 0 && (() => {
+          const hr = resources.find(r => r.id === highlightId);
+          return hr ? (
+            <>
+              <FlyToResource resource={hr} />
+              <Popup position={[hr.lat, hr.lng]} maxWidth={300}>
+                <ResourcePopup resource={hr} />
+              </Popup>
+            </>
+          ) : null;
+        })()}
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
           url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
