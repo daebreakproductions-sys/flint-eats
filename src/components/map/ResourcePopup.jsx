@@ -8,6 +8,13 @@ import { base44 } from "@/api/base44Client";
 import StarRatingInput from "./StarRatingInput";
 import { toast } from "sonner";
 
+function normalizeUrl(url) {
+  if (!url) return null;
+  const trimmed = url.trim();
+  if (!trimmed) return null;
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+}
+
 export default function ResourcePopup({ resource }) {
   const cfg = TYPE_CONFIG[resource.type] || TYPE_CONFIG.Other;
   const [user, setUser] = useState(null);
@@ -92,10 +99,10 @@ export default function ResourcePopup({ resource }) {
               <a href={`tel:${resource.phone}`} className="text-green-700 hover:underline">{resource.phone}</a>
             </div>
           )}
-          {resource.url && (
+          {normalizeUrl(resource.url) && (
             <div className="flex gap-1.5 text-gray-600 mt-1">
               <Globe className="w-3 h-3 mt-0.5 flex-shrink-0" />
-              <a href={resource.url} target="_blank" rel="noopener noreferrer" className="text-green-700 hover:underline truncate">Website</a>
+              <a href={normalizeUrl(resource.url)} target="_blank" rel="noopener noreferrer" className="text-green-700 hover:underline truncate">Website</a>
             </div>
           )}
 

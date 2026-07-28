@@ -12,6 +12,13 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger, Drawer
 import SelectDrawer from "@/components/ui/SelectDrawer";
 import PullToRefresh from "@/components/ui/PullToRefresh";
 
+function normalizeUrl(url) {
+  if (!url) return null;
+  const trimmed = url.trim();
+  if (!trimmed) return null;
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+}
+
 const BENEFIT_BADGES = [
   { key: "ebt_accepted", label: "EBT/SNAP", cls: "bg-blue-100 text-blue-800" },
   { key: "dufb_offered", label: "Double Up $", cls: "bg-orange-100 text-orange-800" },
@@ -61,8 +68,8 @@ function ResourceCard({ resource, onViewMap }) {
             {BENEFIT_BADGES.filter(b => resource[b.key]).map(b => (
               <Badge key={b.key} className={b.cls + " text-xs"}>{b.label}</Badge>
             ))}
-            {resource.url && (
-              <a href={resource.url} target="_blank" rel="noopener noreferrer"
+            {normalizeUrl(resource.url) && (
+              <a href={normalizeUrl(resource.url)} target="_blank" rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 text-xs text-green-700 hover:underline">
                 <ExternalLink className="w-3 h-3" /> Website
               </a>
