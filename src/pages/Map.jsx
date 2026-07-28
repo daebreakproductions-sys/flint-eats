@@ -58,13 +58,16 @@ function FlyToLocation({ coords }) {
   return null;
 }
 
-function FlyToResource({ resource }) {
+function FlyToResource({ resource, onReady }) {
   const map = useMap();
   useEffect(() => {
     if (!map || !resource?.lat || !resource?.lng) return;
     setTimeout(() => {
       map.flyTo([resource.lat, resource.lng], 16, { animate: true, duration: 1.2 });
     }, 300);
+    // Open popup after fly animation completes (~1.5s after start)
+    const timer = setTimeout(() => onReady(), 1700);
+    return () => clearTimeout(timer);
   }, [resource?.id, map]);
   return null;
 }
@@ -81,6 +84,7 @@ export default function MapPage() {
   const [locating, setLocating] = useState(false);
   const [locError, setLocError] = useState(null);
   const [highlightId, setHighlightId] = useState(null);
+  const [popupReady, setPopupReady] = useState(false);
   const markerRefs = useRef({});
 
   // Read ?id= URL param and fly to that resource once data is loaded
@@ -183,10 +187,12 @@ export default function MapPage() {
           const hr = resources.find(r => r.id === highlightId);
           return hr ? (
             <>
-              <FlyToResource resource={hr} />
-              <Popup position={[hr.lat, hr.lng]} maxWidth={300}>
-                <ResourcePopup resource={hr} />
-              </Popup>
+              <FlyToResource resource={hr} onReady={() => setPopupReady(true)} />
+              {popupReady && (
+                <Popup position={[hr.lat, hr.lng]} maxWidth={300}>
+                  <ResourcePopup resource={hr} />
+                </Popup>
+              )}
             </>
           ) : null;
         })()}
