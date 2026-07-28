@@ -143,9 +143,12 @@ export default function UsersTab() {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
 
-  const { data: users = [], isLoading } = useQuery({
+  const { data: users = [], isLoading, error } = useQuery({
     queryKey: ["users-admin"],
-    queryFn: () => base44.entities.User.list("-created_date", 5000),
+    queryFn: async () => {
+      const res = await base44.functions.invoke("listAllUsers", {});
+      return res.data.users || [];
+    },
   });
 
   const updateRoleMutation = useMutation({
@@ -209,7 +212,6 @@ export default function UsersTab() {
         </div>
 
         <p className="text-xs text-muted-foreground mb-2">{filtered.length} of {users.length} users</p>
-
         {isLoading ? (
           <div className="flex justify-center py-10">
             <div className="w-8 h-8 border-4 border-green-200 border-t-green-700 rounded-full animate-spin" />
