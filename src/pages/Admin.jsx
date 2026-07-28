@@ -107,6 +107,7 @@ export default function Admin() {
   const [editingResource, setEditingResource] = useState(null);
   const [showNewForm, setShowNewForm] = useState(false);
   const [resourceSearch, setResourceSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState("all");
 
   const { data: resources = [], isLoading } = useQuery({
     queryKey: ["food-resources-admin"],
@@ -128,9 +129,11 @@ export default function Admin() {
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["food-resources-admin"] }); qc.invalidateQueries({ queryKey: ["food-resources"] }); toast.success("Location deleted."); }
   });
 
-  const filteredResources = resources.filter(r =>
-    !resourceSearch || r.name?.toLowerCase().includes(resourceSearch.toLowerCase()) || r.address?.toLowerCase().includes(resourceSearch.toLowerCase())
-  );
+  const filteredResources = resources.filter(r => {
+    const matchesSearch = !resourceSearch || r.name?.toLowerCase().includes(resourceSearch.toLowerCase()) || r.address?.toLowerCase().includes(resourceSearch.toLowerCase());
+    const matchesType = typeFilter === "all" || r.type === typeFilter;
+    return matchesSearch && matchesType;
+  });
 
   const handleDeduplication = async () => {
     // Group all records by source_id
@@ -216,12 +219,24 @@ export default function Admin() {
                 </div>
               )}
 
-              <Input
-                placeholder="Search locations..."
-                value={resourceSearch}
-                onChange={e => setResourceSearch(e.target.value)}
-                className="mb-3"
-              />
+              <div className="flex flex-wrap gap-2 mb-3">
+                <Input
+                  placeholder="Search locations..."
+                  value={resourceSearch}
+                  onChange={e => setResourceSearch(e.target.value)}
+                  className="flex-1 min-w-[180px]"
+                />
+                <SelectDrawer
+                  value={typeFilter}
+                  onValueChange={setTypeFilter}
+                  placeholder="All Types"
+                  triggerClassName="w-[180px]"
+                  options={[
+                    { value: "all", label: "All Types" },
+                    ...Object.entries(TYPE_CONFIG).map(([k, { label, emoji }]) => ({ value: k, label: `${emoji} ${label}` }))
+                  ]}
+                />
+              </div>
 
               {isLoading ? (
                 <div className="flex justify-center py-10">
