@@ -58,18 +58,34 @@ function FlyToLocation({ coords }) {
   return null;
 }
 
-function FlyToResource({ resource, onReady }) {
+function HighlightedMarker({ resource }) {
   const map = useMap();
+  const markerRef = useRef(null);
+  const cfg = TYPE_CONFIG[resource.type] || TYPE_CONFIG.Other;
+  const icon = L.divIcon({
+    html: `<span style="font-size:32px;line-height:1;filter:drop-shadow(0 0 6px #16a34a) drop-shadow(0 0 12px #16a34a);">${cfg.emoji}</span>`,
+    className: "",
+    iconSize: [36, 36],
+    iconAnchor: [18, 36],
+    popupAnchor: [0, -36],
+  });
+
   useEffect(() => {
     if (!map || !resource?.lat || !resource?.lng) return;
-    setTimeout(() => {
-      map.flyTo([resource.lat, resource.lng], 16, { animate: true, duration: 1.2 });
-    }, 300);
-    // Open popup after fly animation completes (~1.5s after start)
-    const timer = setTimeout(() => onReady(), 1700);
+    map.flyTo([resource.lat, resource.lng], 16, { animate: true, duration: 1.2 });
+    const timer = setTimeout(() => {
+      markerRef.current?.openPopup();
+    }, 1500);
     return () => clearTimeout(timer);
   }, [resource?.id, map]);
-  return null;
+
+  return (
+    <Marker ref={markerRef} position={[resource.lat, resource.lng]} icon={icon}>
+      <Popup maxWidth={300}>
+        <ResourcePopup resource={resource} />
+      </Popup>
+    </Marker>
+  );
 }
 
 export default function MapPage() {
@@ -84,7 +100,6 @@ export default function MapPage() {
   const [locating, setLocating] = useState(false);
   const [locError, setLocError] = useState(null);
   const [highlightId, setHighlightId] = useState(null);
-  const [popupReady, setPopupReady] = useState(false);
   const markerRefs = useRef({});
 
   // Read ?id= URL param and fly to that resource once data is loaded
@@ -185,16 +200,7 @@ export default function MapPage() {
         <MapInitializer />
         {highlightId && resources.length > 0 && (() => {
           const hr = resources.find(r => r.id === highlightId);
-          return hr ? (
-            <>
-              <FlyToResource resource={hr} onReady={() => setPopupReady(true)} />
-              {popupReady && (
-                <Popup position={[hr.lat, hr.lng]} maxWidth={300}>
-                  <ResourcePopup resource={hr} />
-                </Popup>
-              )}
-            </>
-          ) : null;
+          return hr ? <HighlightedMarker resource={hr} /> : null;
         })()}
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
@@ -218,7 +224,7 @@ export default function MapPage() {
           </>
         )}
         <MarkerClusterGroup chunkedLoading>
-          {filtered.map(resource => {
+          {filtered.filter(r => r.id !== highlightId).map(resource => {
             const cfg = TYPE_CONFIG[resource.type] || TYPE_CONFIG.Other;
             const isNearby = nearbyIds && nearbyIds.has(resource.id);
             const isHighlighted = resource.id === highlightId;
