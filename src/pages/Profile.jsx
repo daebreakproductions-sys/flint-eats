@@ -19,7 +19,7 @@ import ImageUploadField from "@/components/profile/ImageUploadField";
 const QUICK_LINKS = [
   { label: "Browse Map", icon: Map, to: "/Map", color: "bg-green-50 text-green-700 border-green-100" },
   { label: "Community Feed", icon: MessageSquare, to: "/Feed", color: "bg-blue-50 text-blue-700 border-blue-100" },
-  { label: "Events", icon: Calendar, to: "/Feed", color: "bg-purple-50 text-purple-700 border-purple-100" },
+  { label: "Events", icon: Calendar, to: "/Feed?tab=calendar", color: "bg-purple-50 text-purple-700 border-purple-100" },
   { label: "Learn", icon: BookOpen, to: "/Learn", color: "bg-orange-50 text-orange-700 border-orange-100" },
 ];
 

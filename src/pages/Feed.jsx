@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 const CATEGORIES = ["All", "Recipe", "Resource Tip", "Community News", "Event", "Question", "Success Story", "General"];
 
 export default function Feed() {
-  const [tab, setTab] = useState("feed"); // feed | calendar
+  const [tab, setTab] = useState(() => new URLSearchParams(window.location.search).get("tab") === "calendar" ? "calendar" : "feed"); // feed | calendar
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [sortBy, setSortBy] = useState("newest");
   const [highlightedPostId, setHighlightedPostId] = useState(null);
