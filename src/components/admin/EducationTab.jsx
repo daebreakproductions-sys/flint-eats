@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import SelectDrawer from "@/components/ui/SelectDrawer";
 import { Switch } from "@/components/ui/switch";
 import { Pencil, Trash2, Plus, Save, X, Upload, Star } from "lucide-react";
 import { toast } from "sonner";
@@ -125,6 +126,8 @@ export default function EducationTab() {
   const [editing, setEditing] = useState(null);
   const [showNew, setShowNew] = useState(false);
   const [search, setSearch] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [contentTypeFilter, setContentTypeFilter] = useState("all");
 
   const { data: resources = [], isLoading } = useQuery({
     queryKey: ["education-resources-admin"],
@@ -146,9 +149,12 @@ export default function EducationTab() {
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["education-resources-admin"] }); qc.invalidateQueries({ queryKey: ["education-resources"] }); toast.success("Resource deleted."); }
   });
 
-  const filtered = resources.filter(r =>
-    !search || r.title?.toLowerCase().includes(search.toLowerCase()) || r.category?.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = resources.filter(r => {
+    const matchesSearch = !search || r.title?.toLowerCase().includes(search.toLowerCase()) || r.category?.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory = categoryFilter === "all" || r.category === categoryFilter;
+    const matchesType = contentTypeFilter === "all" || r.content_type === contentTypeFilter;
+    return matchesSearch && matchesCategory && matchesType;
+  });
 
   return (
     <Card>
@@ -166,12 +172,28 @@ export default function EducationTab() {
           </div>
         )}
 
-        <Input
-          placeholder="Search resources..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="mb-3"
-        />
+        <div className="flex flex-wrap gap-2 mb-3">
+          <Input
+            placeholder="Search resources..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="flex-1 min-w-[160px]"
+          />
+          <SelectDrawer
+            value={categoryFilter}
+            onValueChange={setCategoryFilter}
+            placeholder="All Categories"
+            triggerClassName="w-[160px]"
+            options={[{ value: "all", label: "All Categories" }, ...CATEGORIES.map(c => ({ value: c, label: c }))]}
+          />
+          <SelectDrawer
+            value={contentTypeFilter}
+            onValueChange={setContentTypeFilter}
+            placeholder="All Types"
+            triggerClassName="w-[140px]"
+            options={[{ value: "all", label: "All Types" }, ...CONTENT_TYPES.map(t => ({ value: t, label: t }))]}
+          />
+        </div>
 
         {isLoading ? (
           <div className="flex justify-center py-10">
