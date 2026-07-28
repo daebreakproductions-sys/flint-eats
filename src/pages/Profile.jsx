@@ -69,6 +69,7 @@ export default function Profile() {
       vendor_website: user.vendor_website || "",
       vendor_accepts_ebt: user.vendor_accepts_ebt || false,
       vendor_accepts_dufb: user.vendor_accepts_dufb || false,
+      favorite_foods: (user.favorite_foods || []).join(", "),
     });
   }, [user]);
 
@@ -151,9 +152,15 @@ export default function Profile() {
                 </Button>
               ) : (
                 <>
-                  <Button size="sm" className="bg-green-700 hover:bg-green-800" onClick={() => updateMutation.mutate(form)} disabled={updateMutation.isPending}>
+                  <Button size="sm" className="bg-green-700 hover:bg-green-800" onClick={() => updateMutation.mutate({
+                      ...form,
+                      favorite_foods: form.favorite_foods
+                        ? form.favorite_foods.split(",").map(s => s.trim()).filter(Boolean)
+                        : [],
+                    })} disabled={updateMutation.isPending}>
                     <Save className="w-3.5 h-3.5 mr-1" /> Save
                   </Button>
+
                   <Button size="sm" variant="outline" onClick={() => setEditing(false)}>
                     <X className="w-3.5 h-3.5" />
                   </Button>
@@ -195,6 +202,15 @@ export default function Profile() {
               <div className="md:col-span-2">
                 <Label>Bio</Label>
                 <Textarea value={form.bio} onChange={e => setForm(f => ({ ...f, bio: e.target.value }))} placeholder="Tell us a little about yourself..." rows={3} />
+              </div>
+              <div className="md:col-span-2">
+                <Label>Favorite Foods</Label>
+                <Input
+                  value={form.favorite_foods}
+                  onChange={e => setForm(f => ({ ...f, favorite_foods: e.target.value }))}
+                  placeholder="e.g. collard greens, sweet potatoes, black-eyed peas"
+                />
+                <p className="text-xs text-muted-foreground mt-1">Separate items with commas</p>
               </div>
               {user?.role === "vendor" && (
                 <>
@@ -247,6 +263,15 @@ export default function Profile() {
 
               {user?.bio && (
                 <p className="mt-3 text-sm text-gray-600 leading-relaxed border-l-4 border-green-200 pl-3 italic">{user.bio}</p>
+              )}
+              {user?.favorite_foods?.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {user.favorite_foods.map(food => (
+                    <span key={food} className="text-xs bg-green-50 text-green-800 border border-green-100 rounded-full px-2.5 py-1">
+                      {food}
+                    </span>
+                  ))}
+                </div>
               )}
             </>
           )}

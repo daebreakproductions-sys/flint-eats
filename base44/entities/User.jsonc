@@ -27,6 +27,13 @@
       "type": "string",
       "description": "Short description or notes about the user"
     },
+    "favorite_foods": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "User's favorite foods or ingredients"
+    },
     "county": {
       "type": "string",
       "default": "Genesee",
