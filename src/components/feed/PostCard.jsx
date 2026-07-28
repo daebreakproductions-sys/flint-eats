@@ -4,7 +4,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Heart, MessageCircle, MapPin, Send, ChevronDown, ChevronUp, Trash2, Pencil, X, Check } from "lucide-react";
+import { Heart, MessageCircle, MapPin, Send, ChevronDown, ChevronUp, Trash2, Pencil, X, Check, Users } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CATEGORY_COLORS } from "./CreatePost";
 import { ROLE_CONFIG } from "@/components/admin/UsersTab";
 import { formatDistanceToNowStrict } from "date-fns";
@@ -57,6 +58,9 @@ export default function PostCard({ post, currentUser, authorImageUrl }) {
   const [editText, setEditText] = useState(post.content);
 
   const liked = post.liked_by?.includes(currentUser?.email);
+  const isAuthor = currentUser?.email === post.author_email;
+  const isAdmin = currentUser?.role === "admin";
+  const newLikes = isAuthor && (post.likes || 0) > 0;
   const initials = (post.author_name || post.author_email || "?").split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
   const roleCfg = ROLE_CONFIG[post.author_role] || ROLE_CONFIG.user;
 
@@ -215,13 +219,37 @@ export default function PostCard({ post, currentUser, authorImageUrl }) {
 
       {/* Actions */}
       <div className="px-4 py-2 border-t border-border flex items-center gap-4">
-        <button
-          onClick={() => likeMutation.mutate()}
-          className={`flex items-center gap-1.5 text-sm transition-colors active:scale-90 ${liked ? "text-red-500" : "text-muted-foreground hover:text-red-400"}`}
-        >
-          <Heart className={`w-4 h-4 ${liked ? "fill-current" : ""}`} />
-          <span>{post.likes || 0}</span>
-        </button>
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={() => likeMutation.mutate()}
+            className={`flex items-center gap-1.5 text-sm transition-colors active:scale-90 relative ${liked ? "text-red-500" : "text-muted-foreground hover:text-red-400"}`}
+          >
+            <span className="relative">
+              <Heart className={`w-4 h-4 ${liked ? "fill-current" : ""}`} />
+              {isAuthor && newLikes && (
+                <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full border border-card" />
+              )}
+            </span>
+            <span>{post.likes || 0}</span>
+          </button>
+          {isAdmin && (post.liked_by?.length > 0) && (
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="text-muted-foreground/50 hover:text-green-600 transition-colors">
+                  <Users className="w-3.5 h-3.5" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-56 p-3" align="start">
+                <p className="text-xs font-semibold text-foreground mb-2">Liked by ({post.liked_by.length})</p>
+                <div className="space-y-1 max-h-40 overflow-y-auto">
+                  {post.liked_by.map(email => (
+                    <p key={email} className="text-xs text-muted-foreground truncate">{email}</p>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
+          )}
+        </div>
         <button
           onClick={() => setShowComments(v => !v)}
           className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-green-500 transition-colors active:scale-90"
