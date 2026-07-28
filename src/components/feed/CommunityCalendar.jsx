@@ -155,7 +155,7 @@ export default function CommunityCalendar({ currentUser }) {
             <button
               key={m}
               onClick={() => setViewMode(m)}
-              className={`text-xs px-3 py-1 rounded-full border capitalize transition-colors ${viewMode === m ? "bg-green-700 text-white border-green-700" : "bg-white text-gray-600 border-gray-200 hover:border-green-400"}`}
+              className={`text-xs px-3 py-1 rounded-full border capitalize transition-colors ${viewMode === m ? "bg-green-800 text-white border-green-900 font-semibold" : "bg-white text-gray-700 border-gray-300 hover:border-green-600 hover:text-green-800"}`}
             >
               {m === "month" ? "Month" : m === "week" ? "Week" : <span className="flex items-center gap-1"><List className="w-3 h-3 inline" /> List</span>}
             </button>
@@ -199,15 +199,15 @@ export default function CommunityCalendar({ currentUser }) {
                   key={i}
                   onClick={() => setSelectedDay(isSelected ? null : day)}
                   className={`min-h-[56px] p-1 border-r border-b text-left transition-colors relative ${
-                    !inMonth ? "bg-gray-50" : isSelected ? "bg-pink-50" : "hover:bg-gray-50"
+                    !inMonth ? "bg-gray-50" : isSelected ? "bg-blue-100 ring-2 ring-inset ring-blue-600" : "hover:bg-gray-50"
                   }`}
                 >
                   <span className={`text-xs font-medium w-6 h-6 flex items-center justify-center rounded-full ${
-                    isT ? "bg-green-700 text-white" : inMonth ? "text-gray-800" : "text-gray-300"
+                    isT ? "bg-green-800 text-white font-bold" : isSelected ? "text-blue-900 font-bold" : inMonth ? "text-gray-800" : "text-gray-300"
                   }`}>{format(day, "d")}</span>
                   <div className="mt-0.5 space-y-0.5">
                     {dayEvents.slice(0, 2).map(e => (
-                      <div key={e.id} className="text-[10px] bg-pink-100 text-pink-800 rounded px-1 truncate leading-tight py-0.5">{e.event_title}</div>
+                      <div key={e.id} className="text-[10px] bg-red-700 text-white rounded px-1 truncate leading-tight py-0.5">{e.event_title}</div>
                     ))}
                     {dayEvents.length > 2 && <div className="text-[10px] text-gray-400">+{dayEvents.length - 2} more</div>}
                   </div>
@@ -240,7 +240,7 @@ export default function CommunityCalendar({ currentUser }) {
                     <button
                       key={e.id}
                       onClick={() => setSelectedDay(isSameDay(day, selectedDay) ? null : day)}
-                      className="w-full text-left text-[10px] bg-pink-100 text-pink-800 rounded px-1.5 py-1 truncate hover:bg-pink-200 transition"
+                      className="w-full text-left text-[10px] bg-red-700 text-white rounded px-1.5 py-1 truncate hover:bg-red-800 transition font-medium"
                     >
                       {e.event_time && <span className="font-semibold">{e.event_time} </span>}{e.event_title}
                     </button>
@@ -269,8 +269,8 @@ export default function CommunityCalendar({ currentUser }) {
 
       {/* Selected day panel */}
       {selectedDay && selectedDayEvents.length > 0 && viewMode !== "list" && (
-        <div className="border-t px-4 py-3 bg-pink-50/40 space-y-2">
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{format(selectedDay, "EEEE, MMMM d")}</p>
+        <div className="border-t px-4 py-3 bg-blue-50 space-y-2">
+          <p className="text-xs font-semibold text-blue-900 uppercase tracking-wide">{format(selectedDay, "EEEE, MMMM d")}</p>
           {selectedDayEvents.map(e => (
             <EventCard key={e.id} event={e} rsvps={rsvps} currentUser={currentUser} onRsvpToggle={(event, isRsvped) => rsvpMutation.mutate({ event, isRsvped })} />
           ))}
