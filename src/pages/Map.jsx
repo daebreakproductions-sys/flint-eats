@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, createRef } from "react";
+import { createRoot } from "react-dom/client";
 import { ChevronUp, ChevronDown, LocateFixed, Loader2 } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from "react-leaflet";
 import L from "leaflet";
@@ -65,11 +66,13 @@ function FlyToResource({ resource }) {
     setTimeout(() => {
       map.flyTo([resource.lat, resource.lng], 16, { animate: true, duration: 1.2 });
     }, 300);
-    // After fly animation completes, open a standalone popup at the location
     setTimeout(() => {
-      L.popup({ maxWidth: 280, offset: [0, -10] })
+      const container = document.createElement("div");
+      const root = createRoot(container);
+      root.render(<ResourcePopup resource={resource} />);
+      L.popup({ maxWidth: 300, offset: [0, -10] })
         .setLatLng([resource.lat, resource.lng])
-        .setContent(`<div style="font-weight:600;font-size:14px;margin-bottom:4px">${resource.name}</div><div style="font-size:12px;color:#555">${resource.address || ""}</div>`)
+        .setContent(container)
         .openOn(map);
     }, 1700);
   }, [resource?.id, map]);
