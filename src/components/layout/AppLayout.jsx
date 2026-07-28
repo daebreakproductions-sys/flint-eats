@@ -5,6 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import PovBanner from "@/components/admin/PovBanner";
+import { usePov } from "@/lib/PovContext";
 import Feed from "@/pages/Feed";
 import MapPage from "@/pages/Map";
 import Directory from "@/pages/Directory";
@@ -65,14 +67,23 @@ export default function AppLayout() {
     queryFn: () => base44.auth.me(),
   });
 
+  const { povRole, exitPov: handleExitPov } = usePov();
+
+  // Effective role: pov overrides unless the real user is admin (admins always keep access, pov just changes the view)
+  const effectiveRole = povRole || user?.role;
+  const isRealAdmin = user?.role === "admin";
+
   const allLinks = [
     ...NAV_LINKS,
-    ...(user?.role === "admin" ? [{ to: "/Admin", label: "Admin", icon: ShieldCheck }] : []),
+    ...(isRealAdmin && !povRole ? [{ to: "/Admin", label: "Admin", icon: ShieldCheck }] : []),
     { to: "/Profile", label: "Profile", icon: User },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
+      <PovBanner povRole={povRole} onExit={handleExitPov} />
+      {/* Spacer so header doesn't hide under the POV banner */}
+      {povRole && <div className="h-10" />}
       {/* Desktop top header */}
       <header className="bg-gradient-to-r from-green-700 to-emerald-800 shadow-md sticky top-0 z-50 hidden md:block">
         <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
@@ -94,7 +105,7 @@ export default function AppLayout() {
                 </Link>
               );
             })}
-            {user?.role === "admin" && (
+            {isRealAdmin && !povRole && (
               <Link to="/Admin"
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors select-none ${
                   location.pathname === "/Admin" ? "bg-white/20 text-white" : "text-green-100 hover:bg-white/10 hover:text-white"

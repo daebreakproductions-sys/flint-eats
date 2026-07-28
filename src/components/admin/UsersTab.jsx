@@ -7,8 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { UserPlus, Search, Mail, Building2, Phone, Shield, Save, X } from "lucide-react";
+import { UserPlus, Search, Mail, Building2, Shield, Save, X, Eye } from "lucide-react";
 import { toast } from "sonner";
+import { setPovRole } from "@/components/admin/PovBanner";
+import { useNavigate } from "react-router-dom";
 
 export const ROLE_CONFIG = {
   admin: { label: "Admin", color: "bg-green-700 text-white", description: "Full platform access, manages all data and users" },
@@ -76,7 +78,7 @@ function InviteForm({ onClose }) {
   );
 }
 
-function UserRow({ user, onRoleChange }) {
+function UserRow({ user, onRoleChange, onViewAs }) {
   const [editing, setEditing] = useState(false);
   const [selectedRole, setSelectedRole] = useState(user.role || "user");
   const cfg = ROLE_CONFIG[user.role] || ROLE_CONFIG.user;
@@ -130,6 +132,9 @@ function UserRow({ user, onRoleChange }) {
             <Button variant="ghost" size="sm" className="h-8 text-xs" onClick={() => setEditing(true)}>
               <Shield className="w-3.5 h-3.5 mr-1" /> Change Role
             </Button>
+            <Button variant="ghost" size="sm" className="h-8 text-xs text-amber-600 hover:text-amber-700 hover:bg-amber-50" onClick={() => onViewAs(user.role || "user")}>
+              <Eye className="w-3.5 h-3.5 mr-1" /> View As
+            </Button>
           </>
         )}
       </div>
@@ -139,6 +144,7 @@ function UserRow({ user, onRoleChange }) {
 
 export default function UsersTab() {
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const [showInvite, setShowInvite] = useState(false);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
@@ -150,6 +156,12 @@ export default function UsersTab() {
       return res.data.users || [];
     },
   });
+
+  const handleViewAs = (role) => {
+    setPovRole(role);
+    navigate("/Feed");
+    window.location.reload();
+  };
 
   const updateRoleMutation = useMutation({
     mutationFn: ({ id, role }) => base44.entities.User.update(id, { role }),
@@ -219,7 +231,7 @@ export default function UsersTab() {
         ) : (
           <div className="space-y-2 max-h-[600px] overflow-y-auto">
             {filtered.map(u => (
-              <UserRow key={u.id} user={u} onRoleChange={(id, role) => updateRoleMutation.mutate({ id, role })} />
+              <UserRow key={u.id} user={u} onRoleChange={(id, role) => updateRoleMutation.mutate({ id, role })} onViewAs={handleViewAs} />
             ))}
             {filtered.length === 0 && (
               <p className="text-center py-10 text-muted-foreground text-sm">No users found.</p>

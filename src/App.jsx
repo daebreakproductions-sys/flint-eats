@@ -16,6 +16,7 @@ import Feed from '@/pages/Feed';
 import Landing from '@/pages/Landing';
 import AuthGateway from '@/pages/AuthGateway';
 import { lazy, Suspense } from 'react';
+import { PovProvider } from '@/lib/PovContext';
 
 const Admin = lazy(() => import('@/pages/Admin'));
 const GeocodingTool = lazy(() => import('@/pages/GeocodingTool'));
@@ -98,10 +99,12 @@ function App() {
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <AuthProvider>
         <QueryClientProvider client={queryClientInstance}>
-          <Router>
-            <AuthenticatedApp />
-          </Router>
-          <Toaster />
+          <PovProvider>
+            <Router>
+              <AuthenticatedApp />
+            </Router>
+            <Toaster />
+          </PovProvider>
         </QueryClientProvider>
       </AuthProvider>
     </ThemeProvider>
