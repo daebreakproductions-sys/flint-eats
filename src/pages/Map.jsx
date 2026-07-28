@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import { ChevronUp, ChevronDown, LocateFixed, Loader2 } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from "react-leaflet";
 import L from "leaflet";
@@ -99,15 +100,9 @@ export default function MapPage() {
   const [userLocation, setUserLocation] = useState(null);
   const [locating, setLocating] = useState(false);
   const [locError, setLocError] = useState(null);
-  const [highlightId, setHighlightId] = useState(null);
+  const [searchParams] = useSearchParams();
+  const highlightId = searchParams.get("id") || null;
   const markerRefs = useRef({});
-
-  // Read ?id= URL param and fly to that resource once data is loaded
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
-    if (id) setHighlightId(id);
-  }, []);
   // Load resources once on mount
   useEffect(() => {
     base44.entities.FoodResource.filter({ is_active: true }, "name", 2000)
