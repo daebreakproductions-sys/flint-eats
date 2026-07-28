@@ -145,7 +145,7 @@ export default function UsersTab() {
 
   const { data: users = [], isLoading } = useQuery({
     queryKey: ["users-admin"],
-    queryFn: () => base44.entities.User.list("-created_date", 500),
+    queryFn: () => base44.entities.User.list("-created_date", 5000),
   });
 
   const updateRoleMutation = useMutation({
