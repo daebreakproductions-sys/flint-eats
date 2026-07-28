@@ -65,6 +65,13 @@ function FlyToResource({ resource }) {
     setTimeout(() => {
       map.flyTo([resource.lat, resource.lng], 16, { animate: true, duration: 1.2 });
     }, 300);
+    // After fly animation completes, open a standalone popup at the location
+    setTimeout(() => {
+      L.popup({ maxWidth: 280, offset: [0, -10] })
+        .setLatLng([resource.lat, resource.lng])
+        .setContent(`<div style="font-weight:600;font-size:14px;margin-bottom:4px">${resource.name}</div><div style="font-size:12px;color:#555">${resource.address || ""}</div>`)
+        .openOn(map);
+    }, 1700);
   }, [resource?.id, map]);
   return null;
 }
@@ -220,7 +227,6 @@ export default function MapPage() {
                 key={resource.id}
                 position={[resource.lat, resource.lng]}
                 icon={icon}
-                ref={isHighlighted ? (ref) => { if (ref) setTimeout(() => ref.openPopup(), 1500); } : null}
               >
                 <Popup maxWidth={280}>
                   <ResourcePopup resource={resource} />
