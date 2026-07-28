@@ -244,7 +244,7 @@ export default function MapPage() {
 
       {/* Filters panel */}
       <div className="absolute top-3 left-3 z-[500]" style={{ maxWidth: "360px" }}>
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden" style={{ colorScheme: "light" }}>
           <button
             onClick={() => setFiltersOpen(o => !o)}
             className="w-full flex items-center justify-between px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition"

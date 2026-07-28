@@ -27,7 +27,7 @@ export default function MapFilters({ search, setSearch, activeTypes, toggleType,
           placeholder="Search by name or item..."
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="pl-8 text-sm h-9"
+          className="pl-8 text-sm h-9 bg-white text-gray-900 border-gray-200 placeholder:text-gray-400"
         />
         {search && (
           <button onClick={() => setSearch("")} className="absolute right-2 top-2">
