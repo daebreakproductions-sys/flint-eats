@@ -62,8 +62,10 @@ function FlyToResource({ resource }) {
   const map = useMap();
   useEffect(() => {
     if (!map || !resource?.lat || !resource?.lng) return;
-    map.flyTo([resource.lat, resource.lng], 16, { animate: true, duration: 1.2 });
-  }, [resource, map]);
+    setTimeout(() => {
+      map.flyTo([resource.lat, resource.lng], 16, { animate: true, duration: 1.2 });
+    }, 300);
+  }, [resource?.id, map]);
   return null;
 }
 
@@ -214,7 +216,12 @@ export default function MapPage() {
               popupAnchor: [0, -14],
             });
             return (
-              <Marker key={resource.id} position={[resource.lat, resource.lng]} icon={icon}>
+              <Marker
+                key={resource.id}
+                position={[resource.lat, resource.lng]}
+                icon={icon}
+                ref={isHighlighted ? (ref) => { if (ref) setTimeout(() => ref.openPopup(), 1500); } : null}
+              >
                 <Popup maxWidth={280}>
                   <ResourcePopup resource={resource} />
                 </Popup>
