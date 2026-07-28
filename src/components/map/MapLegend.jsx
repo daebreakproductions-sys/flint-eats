@@ -6,7 +6,6 @@ export const TYPE_CONFIG = {
   Pharmacy:       { color: "#0891b2", emoji: "💊", label: "Pharmacy" },
   GasStation:     { color: "#ea580c", emoji: "⛽", label: "Gas Station" },
   Convenience:    { color: "#ca8a04", emoji: "🏪", label: "Convenience Store" },
-  Other:          { color: "#6b7280", emoji: "📍", label: "Other" },
 };
 
 export default function MapLegend() {

@@ -27,10 +27,9 @@
         "SeniorMealSite",
         "Pharmacy",
         "GasStation",
-        "Convenience",
-        "Other"
+        "Convenience"
       ],
-      "default": "Other"
+      "default": "Convenience"
     },
     "hours": {
       "type": "string"
