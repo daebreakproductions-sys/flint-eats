@@ -225,7 +225,7 @@ export default function MapPage() {
       </MapContainer>
 
       {/* Find My Location button */}
-      <div className="absolute top-3 right-3 z-[500]">
+      <div className="absolute top-14 md:top-3 right-3 z-[500]">
         <button
           onClick={handleLocate}
           disabled={locating}
@@ -243,7 +243,7 @@ export default function MapPage() {
       </div>
 
       {/* Filters panel */}
-      <div className="absolute top-3 left-3 z-[500]" style={{ maxWidth: "360px" }}>
+      <div className="absolute top-14 md:top-3 left-3 z-[500]" style={{ maxWidth: "360px" }}>
         <div className="bg-white rounded-xl shadow-lg overflow-hidden" style={{ colorScheme: "light" }}>
           <button
             onClick={() => setFiltersOpen(o => !o)}
