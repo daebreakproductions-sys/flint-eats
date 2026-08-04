@@ -1,5 +1,6 @@
 import { Toaster } from "@/components/ui/toaster"
 import { ThemeProvider } from "next-themes"
+import { AnimatePresence } from "framer-motion"
 import { QueryClientProvider, useQuery } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
@@ -43,51 +44,54 @@ const AdminRoute = () => {
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
+  let content;
   if (isLoadingPublicSettings || isLoadingAuth) {
-    return <SplashScreen />;
-  }
-
-  if (authError) {
-    if (authError.type === 'user_not_registered') {
-      return <UserNotRegisteredError />;
-    } else if (authError.type === 'auth_required') {
-      // Allow public access to map, directory, and learn - auth only required for posting/interaction
-      return (
-        <Routes>
-          <Route path="/" element={<Navigate to="/Map" replace />} />
-          <Route path="/Landing" element={<Landing />} />
-          <Route path="/AuthGateway" element={<AuthGateway />} />
-          <Route element={<AppLayout />}>
-            <Route path="/Map" element={<Map />} />
-            <Route path="/Directory" element={<Directory />} />
-            <Route path="/Learn" element={<Learn />} />
-            <Route path="/Feed" element={<Landing />} />
-            <Route path="/Profile" element={<Landing />} />
-            <Route path="/Admin" element={<Landing />} />
-          </Route>
-          <Route path="*" element={<Navigate to="/Map" replace />} />
-        </Routes>
-      );
-    }
+    content = <SplashScreen key="splash" />;
+  } else if (authError?.type === 'user_not_registered') {
+    content = <UserNotRegisteredError key="app" />;
+  } else if (authError?.type === 'auth_required') {
+    // Allow public access to map, directory, and learn - auth only required for posting/interaction
+    content = (
+      <Routes key="app">
+        <Route path="/" element={<Navigate to="/Map" replace />} />
+        <Route path="/Landing" element={<Landing />} />
+        <Route path="/AuthGateway" element={<AuthGateway />} />
+        <Route element={<AppLayout />}>
+          <Route path="/Map" element={<Map />} />
+          <Route path="/Directory" element={<Directory />} />
+          <Route path="/Learn" element={<Learn />} />
+          <Route path="/Feed" element={<Landing />} />
+          <Route path="/Profile" element={<Landing />} />
+          <Route path="/Admin" element={<Landing />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/Map" replace />} />
+      </Routes>
+    );
+  } else if (!authError) {
+    content = (
+      <Routes key="app">
+        <Route path="/" element={<Navigate to="/Feed" replace />} />
+        <Route path="/Landing" element={<Landing />} />
+        <Route path="/AuthGateway" element={<AuthGateway />} />
+        <Route path="/GeocodingTool" element={<Suspense fallback={<PageSpinner />}><GeocodingTool /></Suspense>} />
+        <Route path="/DiagnosticTest" element={<Suspense fallback={<PageSpinner />}><DiagnosticTest /></Suspense>} />
+        <Route element={<AppLayout />}>
+          <Route path="/Map" element={<Map />} />
+          <Route path="/Directory" element={<Directory />} />
+          <Route path="/Learn" element={<Learn />} />
+          <Route path="/Admin" element={<AdminRoute />} />
+          <Route path="/Profile" element={<Profile />} />
+          <Route path="/Feed" element={<Feed />} />
+        </Route>
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
+    );
   }
 
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/Feed" replace />} />
-      <Route path="/Landing" element={<Landing />} />
-      <Route path="/AuthGateway" element={<AuthGateway />} />
-      <Route path="/GeocodingTool" element={<Suspense fallback={<PageSpinner />}><GeocodingTool /></Suspense>} />
-      <Route path="/DiagnosticTest" element={<Suspense fallback={<PageSpinner />}><DiagnosticTest /></Suspense>} />
-      <Route element={<AppLayout />}>
-        <Route path="/Map" element={<Map />} />
-        <Route path="/Directory" element={<Directory />} />
-        <Route path="/Learn" element={<Learn />} />
-        <Route path="/Admin" element={<AdminRoute />} />
-        <Route path="/Profile" element={<Profile />} />
-        <Route path="/Feed" element={<Feed />} />
-      </Route>
-      <Route path="*" element={<PageNotFound />} />
-    </Routes>
+    <AnimatePresence mode="wait">
+      {content}
+    </AnimatePresence>
   );
 };
 
