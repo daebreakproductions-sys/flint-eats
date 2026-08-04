@@ -1,4 +1,4 @@
-const LOGO_URL = "https://media.base44.com/images/public/69b73bf820481df67e8a6ca5/9257a242e_35BF6E58-6CC5-488B-A9A8-88780E351F47.jpeg";
+const LOGO_URL = "https://media.base44.com/images/public/69b73bf820481df67e8a6ca5/a280ac1c0_1000029970.png";
 
 export { LOGO_URL };
 
