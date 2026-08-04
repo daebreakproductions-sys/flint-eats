@@ -11,6 +11,7 @@ import Feed from "@/pages/Feed";
 import MapPage from "@/pages/Map";
 import Directory from "@/pages/Directory";
 import Learn from "@/pages/Learn";
+import Logo from "@/components/layout/Logo";
 
 const NAV_LINKS = [
   { to: "/Feed", label: "Feed", icon: Flame },
@@ -88,7 +89,7 @@ export default function AppLayout() {
       <header className="bg-gradient-to-r from-green-700 to-emerald-800 shadow-md sticky top-0 z-50 hidden md:block">
         <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
           <Link to="/Feed" className="flex items-center gap-2 shrink-0 select-none">
-            <span className="text-2xl">🌿</span>
+            <Logo size={32} />
             <span className="font-bold text-white text-lg">Flint Eats</span>
           </Link>
 
@@ -127,7 +128,7 @@ export default function AppLayout() {
           style={{ paddingTop: "env(safe-area-inset-top)" }}
         >
           <Link to="/Feed" className="flex items-center gap-1.5 select-none">
-            <span className="text-xl">🌿</span>
+            <Logo size={28} />
             <span className="font-bold text-white text-base">Flint Eats</span>
           </Link>
           <UserMenu />

@@ -5,6 +5,7 @@ import {
   Leaf, ArrowRight, MapPin, Users, BookOpen, Star,
   CheckCircle2, Shield, Zap, ChevronLeft, Heart
 } from "lucide-react";
+import Logo from "@/components/layout/Logo";
 
 const TESTIMONIALS = [
   { name: "Maria R.", role: "Flint Resident", quote: "Found a food pantry 2 blocks from my house I never knew about. This app changed everything.", avatar: "M" },
@@ -190,7 +191,7 @@ export default function AuthGateway() {
 
         <div className="relative">
           <div className="flex items-center gap-2.5 mb-8 lg:mb-16">
-            <span className="text-3xl">🌿</span>
+            <Logo size={40} />
             <span className="text-2xl font-extrabold tracking-tight">Flint Eats</span>
           </div>
 

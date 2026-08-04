@@ -2,6 +2,7 @@ import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { Leaf, MapPin, Users, BookOpen, ArrowRight, Heart, Calendar, Clock, ChevronRight } from "lucide-react";
 import { format, parseISO, isFuture } from "date-fns";
+import Logo from "@/components/layout/Logo";
 
 const FEATURES = [
   {
@@ -108,7 +109,7 @@ export default function Landing() {
       {/* Nav */}
       <header className="bg-gradient-to-r from-green-700 to-emerald-800 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-2">
-          <span className="text-2xl">🌿</span>
+          <Logo size={32} />
           <span className="text-white font-bold text-xl">Flint Eats</span>
         </div>
         <a
@@ -226,7 +227,7 @@ export default function Landing() {
       {/* Footer */}
       <footer className="bg-gray-900 text-gray-400 px-6 py-8 text-center text-sm">
         <div className="flex items-center justify-center gap-2 mb-2">
-          <span className="text-lg">🌿</span>
+          <Logo size={24} />
           <span className="text-white font-semibold">Flint Eats</span>
         </div>
         <p>Connecting Flint &amp; Genesee County to the food they deserve.</p>
