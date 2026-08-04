@@ -8,6 +8,7 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import AppLayout from '@/components/layout/AppLayout';
+import SplashScreen from '@/components/layout/SplashScreen';
 import Map from '@/pages/Map';
 import Directory from '@/pages/Directory';
 import Learn from '@/pages/Learn';
@@ -43,11 +44,7 @@ const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
   if (isLoadingPublicSettings || isLoadingAuth) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-slate-200 border-t-green-700 rounded-full animate-spin"></div>
-      </div>
-    );
+    return <SplashScreen />;
   }
 
   if (authError) {
