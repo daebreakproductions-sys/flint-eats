@@ -8,26 +8,7 @@ import { Heart, MessageCircle, MapPin, Send, ChevronDown, ChevronUp, Trash2, Pen
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CATEGORY_COLORS } from "./CreatePost";
 import { ROLE_CONFIG } from "@/components/admin/UsersTab";
-import { formatDistanceToNowStrict } from "date-fns";
-
-function timeAgo(dateStr) {
-  if (!dateStr) return "";
-  const str = formatDistanceToNowStrict(new Date(dateStr));
-  return str
-    .replace(" seconds", "s")
-    .replace(" second", "s")
-    .replace(" minutes", " min")
-    .replace(" minute", " min")
-    .replace(" hours", " hr")
-    .replace(" hour", " hr")
-    .replace(" days", "d")
-    .replace(" day", "d")
-    .replace(" months", " mo")
-    .replace(" month", " mo")
-    .replace(" years", " yr")
-    .replace(" year", " yr")
-    + " ago";
-}
+import TimeAgo from "./TimeAgo";
 import { toast } from "sonner";
 
 function CommentItem({ comment }) {
@@ -43,7 +24,7 @@ function CommentItem({ comment }) {
           <p className="text-sm text-foreground mt-0.5">{comment.content}</p>
         </div>
         <p className="text-xs text-muted-foreground mt-1 pl-2">
-          {timeAgo(comment.created_date)}
+          <TimeAgo date={comment.created_date} />
         </p>
       </div>
     </div>
@@ -157,8 +138,8 @@ export default function PostCard({ post, currentUser, authorImageUrl }) {
               </div>
               <div className="flex items-center gap-2 mt-0.5">
                 <p className="text-xs text-muted-foreground">
-                  {timeAgo(post.created_date)}
-                </p>
+                   <TimeAgo date={post.created_date} />
+                 </p>
                 {post.county && (
                   <span className="flex items-center gap-0.5 text-xs text-muted-foreground">
                     <MapPin className="w-3 h-3" /> {post.county} County, MI
