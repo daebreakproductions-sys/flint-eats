@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { ROLE_CONFIG } from "@/components/admin/UsersTab";
 import { Link } from "react-router-dom";
 import ImageUploadField from "@/components/profile/ImageUploadField";
+import { ACCOUNT_TYPES, getAccountType } from "@/lib/accountTypes";
 
 const QUICK_LINKS = [
   { label: "Browse Map", icon: Map, to: "/Map", color: "bg-green-50 text-green-700 border-green-100" },
@@ -69,6 +70,7 @@ export default function Profile() {
       vendor_website: user.vendor_website || "",
       vendor_accepts_ebt: user.vendor_accepts_ebt || false,
       vendor_accepts_dufb: user.vendor_accepts_dufb || false,
+      account_type: user.account_type || "resident",
       favorite_foods: (user.favorite_foods || []).join(", "),
     });
   }, [user]);
@@ -187,6 +189,25 @@ export default function Profile() {
                   previewClassName="w-32 h-32"
                 />
               </div>
+              <div className="md:col-span-2">
+                <Label>Account Type</Label>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-1">
+                  {ACCOUNT_TYPES.map(opt => (
+                    <button
+                      type="button"
+                      key={opt.value}
+                      onClick={() => setForm(f => ({ ...f, account_type: opt.value }))}
+                      className={`flex items-center gap-2 p-2.5 rounded-xl border-2 text-left text-sm transition-all min-h-[44px] ${
+                        form.account_type === opt.value
+                          ? "border-green-600 bg-green-50 text-green-800 font-medium"
+                          : "border-gray-200 hover:border-gray-300 text-gray-700"
+                      }`}
+                    >
+                      <span>{opt.icon}</span> {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
               <div>
                 <Label>Full Name</Label>
                 <Input value={form.full_name} onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))} />
@@ -247,9 +268,12 @@ export default function Profile() {
               <div className="flex flex-wrap items-center gap-2 mb-1">
                 <h2 className="text-xl font-bold text-gray-900">{user?.full_name || "Your Name"}</h2>
                 <Badge className={roleCfg.color + " flex items-center gap-1 text-xs"}>
-                  <ShieldCheck className="w-3 h-3" /> {roleCfg.label}
-                </Badge>
-              </div>
+                   <ShieldCheck className="w-3 h-3" /> {roleCfg.label}
+                 </Badge>
+                <Badge className="bg-green-50 text-green-700 border border-green-100 flex items-center gap-1 text-xs">
+                   {getAccountType(user.account_type).icon} {getAccountType(user.account_type).label}
+                 </Badge>
+                </div>
 
               <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-500">
                 <button onClick={copyEmail} className="flex items-center gap-1 hover:text-green-700 transition min-h-[44px] py-2">

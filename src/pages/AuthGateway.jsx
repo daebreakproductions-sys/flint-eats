@@ -6,19 +6,12 @@ import {
   CheckCircle2, Shield, Zap, ChevronLeft, Heart
 } from "lucide-react";
 import Logo from "@/components/layout/Logo";
+import { ACCOUNT_TYPES } from "@/lib/accountTypes";
 
 const TESTIMONIALS = [
   { name: "Maria R.", role: "Flint Resident", quote: "Found a food pantry 2 blocks from my house I never knew about. This app changed everything.", avatar: "M" },
   { name: "James T.", role: "Volunteer", quote: "I use it every week to find distribution events. The community here is incredible.", avatar: "J" },
   { name: "Pastor Linda K.", role: "Partner Organization", quote: "We post our meal times here and get so many more families showing up now.", avatar: "L" },
-];
-
-const ACCOUNT_TYPES = [
-  { value: "resident", label: "Resident", desc: "I'm looking for food resources near me", icon: "🏠" },
-  { value: "volunteer", label: "Volunteer", desc: "I want to help support my community", icon: "🤝" },
-  { value: "farmer", label: "Farmer / Producer", desc: "I grow or produce food locally", icon: "🌾" },
-  { value: "service_provider", label: "Service Provider", desc: "We provide food resources or services", icon: "🏛️" },
-  { value: "explorer", label: "Just Exploring", desc: "I'm curious about what Flint Eats offers", icon: "👀" },
 ];
 
 const PERKS = [
