@@ -16,6 +16,17 @@
       ],
       "default": "user"
     },
+    "account_type": {
+      "type": "string",
+      "description": "Self-selected account type chosen during signup",
+      "enum": [
+        "resident",
+        "volunteer",
+        "farmer",
+        "service_provider",
+        "explorer"
+      ]
+    },
     "organization": {
       "type": "string",
       "description": "Organization or agency the user represents"

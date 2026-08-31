@@ -94,6 +94,19 @@ export const AuthProvider = ({ children }) => {
       setUser(currentUser);
       setIsAuthenticated(true);
       setIsLoadingAuth(false);
+
+      // Persist the account type the user selected during signup (first login only)
+      try {
+        const pendingType = sessionStorage.getItem("pending_account_type");
+        if (pendingType && !currentUser.account_type) {
+          const updated = await base44.auth.updateMe({ account_type: pendingType });
+          setUser(updated || { ...currentUser, account_type: pendingType });
+        }
+      } catch (e) {
+        console.error("Failed to persist account type", e);
+      } finally {
+        sessionStorage.removeItem("pending_account_type");
+      }
     } catch (error) {
       console.error('User auth check failed:', error);
       setIsLoadingAuth(false);

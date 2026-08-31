@@ -13,11 +13,12 @@ const TESTIMONIALS = [
   { name: "Pastor Linda K.", role: "Partner Organization", quote: "We post our meal times here and get so many more families showing up now.", avatar: "L" },
 ];
 
-const ROLE_OPTIONS = [
-  { value: "resident", label: "Flint Resident", desc: "I'm looking for food resources near me", icon: "🏠" },
+const ACCOUNT_TYPES = [
+  { value: "resident", label: "Resident", desc: "I'm looking for food resources near me", icon: "🏠" },
   { value: "volunteer", label: "Volunteer", desc: "I want to help support my community", icon: "🤝" },
-  { value: "partner_org", label: "Organization / Church", desc: "We provide food resources or services", icon: "🏛️" },
-  { value: "user", label: "Just Exploring", desc: "I'm curious about what Flint Eats offers", icon: "👀" },
+  { value: "farmer", label: "Farmer / Producer", desc: "I grow or produce food locally", icon: "🌾" },
+  { value: "service_provider", label: "Service Provider", desc: "We provide food resources or services", icon: "🏛️" },
+  { value: "explorer", label: "Just Exploring", desc: "I'm curious about what Flint Eats offers", icon: "👀" },
 ];
 
 const PERKS = [
@@ -60,15 +61,17 @@ function TestimonialCarousel() {
 
 // Multi-step signup experience
 function SignUpFlow({ onBack }) {
-  const [step, setStep] = useState(0); // 0 = role select, 1 = ready
-  const [selectedRole, setSelectedRole] = useState(null);
+  const [step, setStep] = useState(0); // 0 = account type select, 1 = ready
+  const [selectedType, setSelectedType] = useState(null);
 
   const steps = ["Choose your role", "You're all set"];
 
   const handleContinue = () => {
-    if (step === 0 && selectedRole) {
+    if (step === 0 && selectedType) {
       setStep(1);
     } else if (step === 1) {
+      // Persist the chosen account type after the platform login completes
+      try { sessionStorage.setItem("pending_account_type", selectedType); } catch (e) {}
       base44.auth.redirectToLogin("/Feed");
     }
   };
@@ -94,14 +97,14 @@ function SignUpFlow({ onBack }) {
       {step === 0 && (
         <div>
           <h2 className="text-2xl font-bold text-gray-900 mb-1">What brings you here?</h2>
-          <p className="text-gray-500 text-sm mb-6">We'll personalize your experience based on your role.</p>
+          <p className="text-gray-500 text-sm mb-6">Choose your account type — we'll personalize your experience.</p>
           <div className="space-y-3">
-            {ROLE_OPTIONS.map(opt => (
+            {ACCOUNT_TYPES.map(opt => (
               <button
                 key={opt.value}
-                onClick={() => setSelectedRole(opt.value)}
+                onClick={() => setSelectedType(opt.value)}
                 className={`w-full flex items-center gap-4 p-4 rounded-2xl border-2 text-left transition-all ${
-                  selectedRole === opt.value
+                  selectedType === opt.value
                     ? "border-green-600 bg-green-50"
                     : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
                 }`}
@@ -111,7 +114,7 @@ function SignUpFlow({ onBack }) {
                   <p className="font-semibold text-gray-900">{opt.label}</p>
                   <p className="text-xs text-gray-500 mt-0.5">{opt.desc}</p>
                 </div>
-                {selectedRole === opt.value && (
+                {selectedType === opt.value && (
                   <CheckCircle2 className="w-5 h-5 text-green-600 shrink-0" />
                 )}
               </button>
@@ -145,7 +148,7 @@ function SignUpFlow({ onBack }) {
       <div className="mt-auto pt-4">
         <button
           onClick={handleContinue}
-          disabled={step === 0 && !selectedRole}
+          disabled={step === 0 && !selectedType}
           className="w-full py-3.5 rounded-2xl font-bold text-white bg-green-700 hover:bg-green-800 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {step === steps.length - 1 ? "Create My Account" : "Continue"}
