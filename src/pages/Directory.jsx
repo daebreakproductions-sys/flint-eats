@@ -11,6 +11,7 @@ import { TYPE_CONFIG } from "@/components/map/MapLegend";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger, DrawerClose } from "@/components/ui/drawer";
 import SelectDrawer from "@/components/ui/SelectDrawer";
 import PullToRefresh from "@/components/ui/PullToRefresh";
+import ResourceDetailDialog from "@/components/resources/ResourceDetailDialog";
 
 function normalizeUrl(url) {
   if (!url) return null;
@@ -25,10 +26,10 @@ const BENEFIT_BADGES = [
   { key: "wic_accepted", label: "WIC", cls: "bg-purple-100 text-purple-800" },
 ];
 
-function ResourceCard({ resource, onViewMap }) {
+function ResourceCard({ resource, onViewMap, onOpen }) {
   const cfg = TYPE_CONFIG[resource.type] || TYPE_CONFIG.Other;
   return (
-    <Card className="p-4 hover:shadow-md transition-shadow active:bg-gray-50 active:scale-[0.99] transition-all cursor-pointer">
+    <Card onClick={() => onOpen(resource)} className="p-4 hover:shadow-md transition-shadow active:bg-gray-50 active:scale-[0.99] transition-all cursor-pointer">
       <div className="flex items-start gap-3">
         <span className="text-2xl mt-0.5">{cfg.emoji}</span>
         <div className="flex-1 min-w-0">
@@ -70,6 +71,7 @@ function ResourceCard({ resource, onViewMap }) {
             ))}
             {normalizeUrl(resource.url) && (
               <a href={normalizeUrl(resource.url)} target="_blank" rel="noopener noreferrer"
+                onClick={e => e.stopPropagation()}
                 className="inline-flex items-center gap-1 text-xs text-green-700 hover:underline">
                 <ExternalLink className="w-3 h-3" /> Website
               </a>
@@ -160,6 +162,12 @@ export default function Directory() {
   const [benefitFilter, setBenefitFilter] = useState("all");
   const qc = useQueryClient();
   const navigate = useNavigate();
+  const [selected, setSelected] = useState(null);
+
+  const { data: user = null } = useQuery({
+    queryKey: ["me"],
+    queryFn: () => base44.auth.me().catch(() => null),
+  });
 
   const handleViewOnMap = (resourceId) => {
     navigate(`/Map?id=${resourceId}`);
@@ -246,7 +254,7 @@ export default function Directory() {
         </div>
       ) : (
         <div className="space-y-3">
-          {filtered.map(r => <ResourceCard key={r.id} resource={r} onViewMap={handleViewOnMap} />)}
+          {filtered.map(r => <ResourceCard key={r.id} resource={r} onViewMap={handleViewOnMap} onOpen={setSelected} />)}
           {filtered.length === 0 && (
             <div className="text-center py-16 text-gray-400">
               <Search className="w-10 h-10 mx-auto mb-2 opacity-40" />
@@ -255,6 +263,13 @@ export default function Directory() {
           )}
         </div>
       )}
+
+      <ResourceDetailDialog
+        resource={selected}
+        open={!!selected}
+        onOpenChange={open => { if (!open) setSelected(null); }}
+        user={user}
+      />
     </div>
     </PullToRefresh>
   );

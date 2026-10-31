@@ -49,6 +49,14 @@
       "type": "number",
       "default": 0
     },
+    "resource_id": {
+      "type": "string",
+      "description": "ID of the tagged FoodResource"
+    },
+    "resource_name": {
+      "type": "string",
+      "description": "Display name of the tagged FoodResource"
+    },
     "is_pinned": {
       "type": "boolean",
       "default": false

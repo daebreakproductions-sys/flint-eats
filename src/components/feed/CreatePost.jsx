@@ -9,6 +9,7 @@ import {
   RecipeFields, EventFields, ResourceTipFields,
   QuestionFields, SuccessStoryFields, CommunityNewsFields,
 } from "./PostTypeFields";
+import ResourceTagSelector from "./ResourceTagSelector";
 
 const CATEGORIES = [
   { value: "Recipe",          emoji: "🍳", color: "bg-orange-100 text-orange-700 border-orange-200" },
@@ -83,6 +84,7 @@ export default function CreatePost({ user }) {
   const [imageUrl, setImageUrl] = useState("");
   const [uploadingImage, setUploadingImage] = useState(false);
   const [extra, setExtra] = useState({});
+  const [taggedResource, setTaggedResource] = useState(null);
 
   const mutation = useMutation({
     mutationFn: (data) => base44.entities.Post.create(data),
@@ -90,6 +92,7 @@ export default function CreatePost({ user }) {
       qc.invalidateQueries({ queryKey: ["feed-posts"] });
       setContent(""); setImageUrl("");
       setCategory("General"); setExtra({});
+      setTaggedResource(null);
       toast.success("Posted!");
     },
   });
@@ -111,6 +114,8 @@ export default function CreatePost({ user }) {
       author_name: user.full_name || user.email.split("@")[0],
       author_role: user.role || "user",
       county: user.county || "Genesee",
+      resource_id: taggedResource?.id || undefined,
+      resource_name: taggedResource?.name || undefined,
       likes: 0,
       liked_by: [],
       comment_count: 0,
@@ -149,6 +154,8 @@ export default function CreatePost({ user }) {
             rows={3}
             className="resize-none bg-[hsl(var(--input-bg))] text-[hsl(var(--input-text))] border-border focus:border-green-500 rounded-xl text-sm"
           />
+
+          <ResourceTagSelector value={taggedResource} onChange={setTaggedResource} />
 
           {/* Dynamic type-specific fields */}
           {ExtraFields && (

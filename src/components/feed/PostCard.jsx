@@ -9,6 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CATEGORY_COLORS } from "./CreatePost";
 import { ROLE_CONFIG } from "@/components/admin/UsersTab";
 import TimeAgo from "./TimeAgo";
+import StoreTag from "./StoreTag";
 import { toast } from "sonner";
 
 function CommentItem({ comment }) {
@@ -189,6 +190,8 @@ export default function PostCard({ post, currentUser, authorImageUrl }) {
         ) : (
           <p className="mt-3 text-foreground text-sm leading-relaxed whitespace-pre-wrap">{post.content}</p>
         )}
+
+        {post.resource_id && <div className="mt-3"><StoreTag post={post} /></div>}
       </div>
 
       {/* Image */}
