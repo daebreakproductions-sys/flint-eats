@@ -14,6 +14,7 @@ import {
 import { toast } from "sonner";
 import { ROLE_CONFIG } from "@/components/admin/UsersTab";
 import { Link } from "react-router-dom";
+import { normalizeUrl } from "@/lib/urls";
 import ImageUploadField from "@/components/profile/ImageUploadField";
 import { ACCOUNT_TYPES, getAccountType } from "@/lib/accountTypes";
 
@@ -336,8 +337,8 @@ export default function Profile() {
                   </span>
                 )}
               </div>
-              {user.vendor_website && (
-                <a href={user.vendor_website} target="_blank" rel="noreferrer"
+              {normalizeUrl(user.vendor_website) && (
+                <a href={normalizeUrl(user.vendor_website)} target="_blank" rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 text-sm text-amber-700 hover:underline mt-1">
                   <Globe className="w-3.5 h-3.5" /> {user.vendor_website}
                 </a>

@@ -12,13 +12,7 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger, Drawer
 import SelectDrawer from "@/components/ui/SelectDrawer";
 import PullToRefresh from "@/components/ui/PullToRefresh";
 import ResourceDetailDialog from "@/components/resources/ResourceDetailDialog";
-
-function normalizeUrl(url) {
-  if (!url) return null;
-  const trimmed = url.trim();
-  if (!trimmed) return null;
-  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
-}
+import { normalizeUrl, telHref } from "@/lib/urls";
 
 const BENEFIT_BADGES = [
   { key: "ebt_accepted", label: "EBT/SNAP", cls: "bg-blue-100 text-blue-800" },
@@ -62,7 +56,7 @@ function ResourceCard({ resource, onViewMap, onOpen }) {
           {resource.phone && (
             <div className="flex gap-1.5 mt-1 text-sm text-gray-600">
               <Phone className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-              <a href={`tel:${resource.phone}`} className="text-green-700 hover:underline">{resource.phone}</a>
+              <a href={telHref(resource.phone)} onClick={e => e.stopPropagation()} className="text-green-700 hover:underline">{resource.phone}</a>
             </div>
           )}
           <div className="flex flex-wrap gap-1 mt-2">

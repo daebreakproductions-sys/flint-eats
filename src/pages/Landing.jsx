@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Leaf, MapPin, Users, BookOpen, ArrowRight, Heart, Calendar, Clock, ChevronRight } from "lucide-react";
 import { format, parseISO, isFuture } from "date-fns";
 import Logo from "@/components/layout/Logo";
+import { normalizeUrl } from "@/lib/urls";
+import { Link, useNavigate } from "react-router-dom";
 
 const FEATURES = [
   {
@@ -63,9 +65,9 @@ function EventCard({ event }) {
           </span>
         )}
       </div>
-      {event.rsvp_url && (
+      {normalizeUrl(event.rsvp_url) && (
         <a
-          href={event.rsvp_url}
+          href={normalizeUrl(event.rsvp_url)}
           target="_blank"
           rel="noopener noreferrer"
           className="text-xs font-semibold text-green-700 hover:underline mt-1 flex items-center gap-1"
@@ -78,6 +80,7 @@ function EventCard({ event }) {
 }
 
 export default function Landing() {
+  const navigate = useNavigate();
   const { data: events = [] } = useQuery({
     queryKey: ["landing-events"],
     queryFn: () => base44.entities.Event.filter({ is_published: true }, "date", 20),
@@ -112,12 +115,12 @@ export default function Landing() {
           <Logo size={32} />
           <span className="text-white font-bold text-xl">Flint Eats</span>
         </div>
-        <a
-          href="/AuthGateway"
+        <Link
+          to="/AuthGateway"
           className="text-sm font-medium text-white border border-white/40 rounded-full px-5 py-2 hover:bg-white/10 transition"
         >
           Sign In
-        </a>
+        </Link>
       </header>
 
       {/* Hero */}
@@ -135,12 +138,12 @@ export default function Landing() {
           <p className="text-green-100 text-lg mb-10 max-w-xl mx-auto">
             Flint Eats connects residents with local food resources, community knowledge, and the programs that make healthy eating possible for everyone.
           </p>
-          <a
-            href="/AuthGateway"
+          <Link
+            to="/AuthGateway"
             className="inline-flex items-center gap-2 bg-white text-green-800 font-bold px-9 py-3.5 rounded-full shadow-lg hover:shadow-xl hover:bg-green-50 transition text-base"
           >
             Get Started <ArrowRight className="w-4 h-4" />
-          </a>
+          </Link>
           <p className="text-green-200 text-sm mt-4">Free to join · No cost, ever</p>
         </div>
       </section>
@@ -163,7 +166,7 @@ export default function Landing() {
         {FEATURES.map(({ icon: Icon, title, desc, color, href }) => (
           <button
             key={title}
-            onClick={() => window.location.href = "/AuthGateway"}
+            onClick={() => navigate(href || "/AuthGateway")}
             className="text-center group cursor-pointer rounded-2xl p-6 hover:bg-green-50 transition border border-transparent hover:border-green-100"
           >
             <div className={`w-14 h-14 rounded-2xl ${color} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
@@ -188,7 +191,7 @@ export default function Landing() {
                 <p className="text-gray-500 text-sm mt-1">Join us — food, learning, and connection for everyone.</p>
               </div>
               <button
-                onClick={() => window.location.href = "/AuthGateway"}
+                onClick={() => navigate("/AuthGateway")}
                 className="text-sm font-semibold text-green-700 hover:underline flex items-center gap-1"
               >
                 View all <ChevronRight className="w-4 h-4" />

@@ -3,13 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Badge } from "@/components/ui/badge";
 import { TYPE_CONFIG } from "@/components/map/MapLegend";
 import ResourceReviews from "./ResourceReviews";
-
-function normalizeUrl(url) {
-  if (!url) return null;
-  const trimmed = url.trim();
-  if (!trimmed) return null;
-  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
-}
+import { normalizeUrl, telHref } from "@/lib/urls";
 
 export default function ResourceDetailDialog({ resource, open, onOpenChange, user }) {
   if (!resource) return null;
@@ -53,7 +47,7 @@ export default function ResourceDetailDialog({ resource, open, onOpenChange, use
           {resource.phone && (
             <div className="flex gap-2">
               <Phone className="w-4 h-4 mt-0.5 shrink-0" />
-              <a href={`tel:${resource.phone}`} className="text-green-700 hover:underline">{resource.phone}</a>
+              <a href={telHref(resource.phone)} className="text-green-700 hover:underline">{resource.phone}</a>
             </div>
           )}
           {normalizeUrl(resource.url) && (

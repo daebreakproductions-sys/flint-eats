@@ -10,6 +10,7 @@ import { CATEGORY_COLORS } from "./CreatePost";
 import { ROLE_CONFIG } from "@/components/admin/UsersTab";
 import TimeAgo from "./TimeAgo";
 import StoreTag from "./StoreTag";
+import LinkifiedText from "./LinkifiedText";
 import { toast } from "sonner";
 
 function CommentItem({ comment }) {
@@ -22,7 +23,7 @@ function CommentItem({ comment }) {
       <div className="flex-1 min-w-0">
         <div className="bg-muted rounded-xl px-3 py-2">
           <p className="text-xs font-semibold text-foreground">{comment.author_name || comment.author_email?.split("@")[0]}</p>
-          <p className="text-sm text-foreground mt-0.5">{comment.content}</p>
+          <LinkifiedText text={comment.content} className="text-sm text-foreground mt-0.5 whitespace-pre-wrap break-words" />
         </div>
         <p className="text-xs text-muted-foreground mt-1 pl-2">
           <TimeAgo date={comment.created_date} />
@@ -188,7 +189,7 @@ export default function PostCard({ post, currentUser, authorImageUrl }) {
             </div>
           </div>
         ) : (
-          <p className="mt-3 text-foreground text-sm leading-relaxed whitespace-pre-wrap">{post.content}</p>
+          <LinkifiedText text={post.content} className="mt-3 text-foreground text-sm leading-relaxed whitespace-pre-wrap break-words" />
         )}
 
         {post.resource_id && <div className="mt-3"><StoreTag post={post} /></div>}

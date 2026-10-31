@@ -4,13 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { TYPE_CONFIG } from "./MapLegend";
 import { base44 } from "@/api/base44Client";
 import ResourceReviews from "@/components/resources/ResourceReviews";
-
-function normalizeUrl(url) {
-  if (!url) return null;
-  const trimmed = url.trim();
-  if (!trimmed) return null;
-  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
-}
+import { normalizeUrl, telHref } from "@/lib/urls";
 
 export default function ResourcePopup({ resource }) {
   const cfg = TYPE_CONFIG[resource.type] || TYPE_CONFIG.Convenience;
@@ -56,7 +50,7 @@ export default function ResourcePopup({ resource }) {
       {resource.phone && (
         <div className="flex gap-1.5 text-gray-600 mt-1">
           <Phone className="w-3 h-3 mt-0.5 flex-shrink-0" />
-          <a href={`tel:${resource.phone}`} className="text-green-700 hover:underline">{resource.phone}</a>
+          <a href={telHref(resource.phone)} className="text-green-700 hover:underline">{resource.phone}</a>
         </div>
       )}
       {normalizeUrl(resource.url) && (

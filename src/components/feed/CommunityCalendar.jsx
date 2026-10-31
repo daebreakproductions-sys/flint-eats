@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, isSameMonth, isToday, parseISO, addMonths, subMonths, addWeeks, subWeeks, startOfWeek as sowFn, endOfWeek as eowFn } from "date-fns";
 import { toast } from "sonner";
+import { normalizeUrl } from "@/lib/urls";
 
 // Parse event date/time from post content (injected by EventFields formatter)
 function parseEventFromPost(post) {
@@ -18,7 +19,7 @@ function parseEventFromPost(post) {
     event_date: dateMatch ? dateMatch[1] : null,
     event_time: dateMatch ? dateMatch[2] || null : null,
     event_location: locationMatch ? locationMatch[1].trim() : null,
-    event_rsvp_url: rsvpMatch ? rsvpMatch[1].trim() : null,
+    event_rsvp_url: rsvpMatch ? rsvpMatch[1].trim().split(/\s+/)[0] : null,
     event_title: titleLine.slice(0, 80),
   };
 }
@@ -68,8 +69,8 @@ function EventCard({ event, rsvps, currentUser, onRsvpToggle }) {
           </Button>
         )}
       </div>
-      {event.event_rsvp_url && (
-        <a href={event.event_rsvp_url} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 text-xs text-blue-600 hover:underline">
+      {normalizeUrl(event.event_rsvp_url) && (
+        <a href={normalizeUrl(event.event_rsvp_url)} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 text-xs text-blue-600 hover:underline">
           External RSVP link →
         </a>
       )}

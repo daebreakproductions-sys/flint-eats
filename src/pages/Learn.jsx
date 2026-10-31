@@ -9,6 +9,7 @@ import { Search, Play, BookOpen, FileText, Image, Clock, Star, Filter, Check } f
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger, DrawerClose } from "@/components/ui/drawer";
 import SelectDrawer from "@/components/ui/SelectDrawer";
 import PullToRefresh from "@/components/ui/PullToRefresh";
+import { normalizeUrl } from "@/lib/urls";
 
 const CONTENT_ICONS = {
   Video: Play,
@@ -30,7 +31,10 @@ function ResourceCard({ item }) {
   const Icon = CONTENT_ICONS[item.content_type] || BookOpen;
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow group cursor-pointer"
-      onClick={() => item.url && window.open(item.url, "_blank")}>
+      onClick={() => {
+        const url = normalizeUrl(item.url);
+        if (url) window.open(url, "_blank", "noopener,noreferrer");
+      }}>
       {item.thumbnail_url ? (
         <div className="relative h-40 overflow-hidden bg-gray-100">
           <img src={item.thumbnail_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />

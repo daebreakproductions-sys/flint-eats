@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Calendar, MapPin, Clock, ExternalLink } from "lucide-react";
 import { format, parseISO, isPast } from "date-fns";
+import { normalizeUrl } from "@/lib/urls";
 
 const EVENT_COLORS = {
   "Farmers Market": "bg-green-100 text-green-700",
@@ -59,8 +60,8 @@ export default function EventsSidebar() {
                           <Clock className="w-3 h-3" /> {event.time}
                         </p>
                       )}
-                      {event.rsvp_url && (
-                        <a href={event.rsvp_url} target="_blank" rel="noopener noreferrer"
+                      {normalizeUrl(event.rsvp_url) && (
+                        <a href={normalizeUrl(event.rsvp_url)} target="_blank" rel="noopener noreferrer"
                           className="text-xs text-green-600 hover:underline flex items-center gap-1 mt-1">
                           <ExternalLink className="w-3 h-3" /> RSVP / Learn More
                         </a>
