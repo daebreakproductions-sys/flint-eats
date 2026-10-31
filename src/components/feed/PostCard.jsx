@@ -194,6 +194,19 @@ export default function PostCard({ post, currentUser, authorImageUrl }) {
         {post.resource_id && <div className="mt-3"><StoreTag post={post} /></div>}
       </div>
 
+      {/* Video */}
+      {post.video_url && (
+        <div className="px-4 pb-3">
+          <video
+            src={post.video_url}
+            controls
+            playsInline
+            preload="metadata"
+            className="w-full rounded-xl bg-black max-h-96"
+          />
+        </div>
+      )}
+
       {/* Image */}
       {post.image_url && (
         <div className="px-4 pb-3">

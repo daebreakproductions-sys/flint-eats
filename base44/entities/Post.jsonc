@@ -18,6 +18,10 @@
     "image_url": {
       "type": "string"
     },
+    "video_url": {
+      "type": "string",
+      "description": "URL of an uploaded video (cooking demos, etc.)"
+    },
     "category": {
       "type": "string",
       "enum": [

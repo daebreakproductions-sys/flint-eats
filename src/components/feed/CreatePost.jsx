@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Image, Send, X, Upload } from "lucide-react";
+import { Image, Send, X, Upload, Video } from "lucide-react";
 import { toast } from "sonner";
 import {
   RecipeFields, EventFields, ResourceTipFields,
@@ -83,6 +83,8 @@ export default function CreatePost({ user }) {
   const [category, setCategory] = useState("General");
   const [imageUrl, setImageUrl] = useState("");
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [videoUrl, setVideoUrl] = useState("");
+  const [uploadingVideo, setUploadingVideo] = useState(false);
   const [extra, setExtra] = useState({});
   const [taggedResource, setTaggedResource] = useState(null);
 
@@ -90,7 +92,7 @@ export default function CreatePost({ user }) {
     mutationFn: (data) => base44.entities.Post.create(data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["feed-posts"] });
-      setContent(""); setImageUrl("");
+      setContent(""); setImageUrl(""); setVideoUrl("");
       setCategory("General"); setExtra({});
       setTaggedResource(null);
       toast.success("Posted!");
@@ -110,6 +112,7 @@ export default function CreatePost({ user }) {
       content: fullContent,
       category,
       image_url: imageUrl.trim() || undefined,
+      video_url: videoUrl.trim() || undefined,
       author_email: user.email,
       author_name: user.full_name || user.email.split("@")[0],
       author_role: user.role || "user",
@@ -176,6 +179,18 @@ export default function CreatePost({ user }) {
             </div>
           )}
 
+          {videoUrl && (
+            <div className="relative inline-block">
+              <video src={videoUrl} className="h-24 w-auto rounded-lg border bg-black" controls />
+              <button
+                onClick={() => setVideoUrl("")}
+                className="absolute -top-1.5 -right-1.5 bg-background rounded-full shadow p-0.5 text-muted-foreground hover:text-red-500"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
+
           <div className="flex items-center justify-between flex-wrap gap-2 pt-1">
             <label className="cursor-pointer flex items-center gap-1.5 text-xs text-muted-foreground hover:text-green-500 transition-colors">
               <input
@@ -195,6 +210,30 @@ export default function CreatePost({ user }) {
                 ? <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
                 : <Image className="w-4 h-4" />}
               {uploadingImage ? "Uploading..." : "Photo"}
+            </label>
+            <label className="cursor-pointer flex items-center gap-1.5 text-xs text-muted-foreground hover:text-green-500 transition-colors">
+              <input
+                type="file"
+                accept="video/*"
+                className="hidden"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  setUploadingVideo(true);
+                  try {
+                    const { file_url } = await base44.integrations.Core.UploadPublicFile({ file });
+                    setVideoUrl(file_url);
+                  } catch (err) {
+                    toast.error("Video upload failed. Try a shorter or smaller video.");
+                  } finally {
+                    setUploadingVideo(false);
+                  }
+                }}
+              />
+              {uploadingVideo
+                ? <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                : <Video className="w-4 h-4" />}
+              {uploadingVideo ? "Uploading..." : "Video"}
             </label>
             <Button
               onClick={handlePost}
