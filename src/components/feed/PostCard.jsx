@@ -11,6 +11,7 @@ import { ROLE_CONFIG } from "@/components/admin/UsersTab";
 import TimeAgo from "./TimeAgo";
 import StoreTag from "./StoreTag";
 import LinkifiedText from "./LinkifiedText";
+import ShareMenu from "./ShareMenu";
 import { toast } from "sonner";
 
 function CommentItem({ comment }) {
@@ -256,6 +257,7 @@ export default function PostCard({ post, currentUser, authorImageUrl }) {
           <span>{showComments ? comments.length : (post.comment_count || 0)}</span>
           {showComments ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
         </button>
+        <ShareMenu post={post} />
       </div>
 
       {/* Comments */}

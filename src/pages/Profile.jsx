@@ -125,6 +125,8 @@ export default function Profile() {
   const initials = (user?.full_name || user?.email || "?").split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
   const totalLikes = myPosts.reduce((sum, p) => sum + (p.likes || 0), 0);
   const joinedDate = user?.created_date ? new Date(user.created_date).toLocaleDateString("en-US", { month: "long", year: "numeric" }) : null;
+  const isFarmer = user?.account_type === "farmer";
+  const isProducer = user?.role === "vendor" || isFarmer;
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 pb-24 md:pb-8 space-y-5">
@@ -234,13 +236,15 @@ export default function Profile() {
                 />
                 <p className="text-xs text-muted-foreground mt-1">Separate items with commas</p>
               </div>
-              {user?.role === "vendor" && (
+              {isProducer && (
                 <>
                   <div className="md:col-span-2 border-t pt-3">
-                    <p className="text-xs font-semibold text-amber-700 uppercase tracking-wide mb-3 flex items-center gap-1"><Store className="w-3.5 h-3.5" /> Vendor Information</p>
+                    <p className="text-xs font-semibold text-amber-700 uppercase tracking-wide mb-3 flex items-center gap-1">
+                      <Store className="w-3.5 h-3.5" /> {isFarmer ? "Farm / Producer Information" : "Vendor Information"}
+                    </p>
                   </div>
                   <div>
-                    <Label>Business Name</Label>
+                    <Label>{isFarmer ? "Farm Name" : "Business Name"}</Label>
                     <Input value={form.vendor_business_name} onChange={e => setForm(f => ({ ...f, vendor_business_name: e.target.value }))} placeholder="e.g. Smith's Fresh Produce" />
                   </div>
                   <div>
@@ -311,12 +315,12 @@ export default function Profile() {
       </div>
 
       {/* Vendor Dashboard */}
-      {user?.role === "vendor" && (
+      {isProducer && (
         <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 space-y-4">
           <div className="flex items-center gap-2">
             <Store className="w-5 h-5 text-amber-700" />
-            <h3 className="text-base font-semibold text-amber-900">Vendor Dashboard</h3>
-            <Badge className="bg-amber-100 text-amber-800 text-xs ml-auto">Vendor Account</Badge>
+            <h3 className="text-base font-semibold text-amber-900">{isFarmer ? "Producer Dashboard" : "Vendor Dashboard"}</h3>
+            <Badge className="bg-amber-100 text-amber-800 text-xs ml-auto">{isFarmer ? "Farmer Account" : "Vendor Account"}</Badge>
           </div>
 
           {user.vendor_business_name ? (
@@ -346,7 +350,7 @@ export default function Profile() {
             </div>
           ) : (
             <div className="text-sm text-amber-700 bg-amber-100 rounded-lg px-4 py-3">
-              Complete your vendor profile by clicking <strong>Edit Profile</strong> above — add your business name, products, and payment options.
+              Complete your {isFarmer ? "farm profile" : "vendor profile"} by clicking <strong>Edit Profile</strong> above — add your {isFarmer ? "farm name" : "business name"}, what you grow or offer, and payment options.
             </div>
           )}
 
