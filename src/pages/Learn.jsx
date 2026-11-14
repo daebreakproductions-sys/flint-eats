@@ -22,6 +22,8 @@ const CATEGORY_COLORS = {
   Nutrition: "bg-green-100 text-green-800",
   Cooking: "bg-orange-100 text-orange-800",
   "Food Safety": "bg-red-100 text-red-800",
+  Farming: "bg-lime-100 text-lime-800",
+  Training: "bg-teal-100 text-teal-800",
   "Benefits & Programs": "bg-blue-100 text-blue-800",
   Community: "bg-purple-100 text-purple-800",
   Other: "bg-gray-100 text-gray-800",
@@ -79,7 +81,7 @@ function ResourceCard({ item }) {
 
 
 
-const CATEGORIES_LIST = ["Nutrition", "Cooking", "Food Safety", "Benefits & Programs", "Community", "Other"];
+const CATEGORIES_LIST = ["Nutrition", "Cooking", "Food Safety", "Farming", "Training", "Benefits & Programs", "Community", "Other"];
 const CONTENT_TYPES_LIST = ["Video", "Article", "Guide", "Infographic"];
 
 function MobileFilterDrawer({ category, setCategory, contentType, setContentType }) {

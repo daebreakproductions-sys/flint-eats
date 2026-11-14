@@ -12,7 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { Pencil, Trash2, Plus, Save, X, Upload, Star } from "lucide-react";
 import { toast } from "sonner";
 
-const CATEGORIES = ["Nutrition", "Cooking", "Food Safety", "Benefits & Programs", "Community", "Other"];
+const CATEGORIES = ["Nutrition", "Cooking", "Food Safety", "Farming", "Training", "Benefits & Programs", "Community", "Other"];
 const CONTENT_TYPES = ["Video", "Article", "Guide", "Infographic"];
 
 const EMPTY = {
