@@ -105,6 +105,34 @@ export default function CreatePost({ user }) {
   const activeCat = CATEGORIES.find(c => c.value === category) || CATEGORIES[6];
   const ExtraFields = TYPE_FIELDS[category] || null;
 
+  const handleMediaPick = async (e, kind) => {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // allows re-picking the same file
+    if (!file) return;
+
+    const isVideo = kind === "video";
+    if (isVideo && !file.type.startsWith("video/")) { toast.error("Please choose a video file"); return; }
+    if (!isVideo && !file.type.startsWith("image/")) { toast.error("Please choose an image file"); return; }
+
+    const limitMb = isVideo ? 50 : 10;
+    if (file.size > limitMb * 1024 * 1024) {
+      toast.error(`${isVideo ? "Video" : "Photo"} must be under ${limitMb}MB`);
+      return;
+    }
+
+    const setBusy = isVideo ? setUploadingVideo : setUploadingImage;
+    const setUrl = isVideo ? setVideoUrl : setImageUrl;
+    setBusy(true);
+    try {
+      const res = await base44.integrations.Core.UploadPublicFile({ file });
+      setUrl(res.file_url);
+    } catch (err) {
+      toast.error(err?.message ? `Upload failed: ${err.message}` : "Upload failed — please try a smaller file");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const handlePost = () => {
     if (!content.trim()) return;
     const fullContent = content.trim() + formatExtraContent(category, extra);
@@ -197,14 +225,7 @@ export default function CreatePost({ user }) {
                 type="file"
                 accept="image/*"
                 className="hidden"
-                onChange={async (e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  setUploadingImage(true);
-                  const { file_url } = await base44.integrations.Core.UploadFile({ file });
-                  setImageUrl(file_url);
-                  setUploadingImage(false);
-                }}
+                onChange={(e) => handleMediaPick(e, "image")}
               />
               {uploadingImage
                 ? <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
@@ -216,19 +237,7 @@ export default function CreatePost({ user }) {
                 type="file"
                 accept="video/*"
                 className="hidden"
-                onChange={async (e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  setUploadingVideo(true);
-                  try {
-                    const { file_url } = await base44.integrations.Core.UploadPublicFile({ file });
-                    setVideoUrl(file_url);
-                  } catch (err) {
-                    toast.error("Video upload failed. Try a shorter or smaller video.");
-                  } finally {
-                    setUploadingVideo(false);
-                  }
-                }}
+                onChange={(e) => handleMediaPick(e, "video")}
               />
               {uploadingVideo
                 ? <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />

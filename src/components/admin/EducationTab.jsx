@@ -28,11 +28,19 @@ function EducationForm({ resource, onSave, onCancel }) {
 
   const handleImageUpload = async (e) => {
     const file = e.target.files?.[0];
+    e.target.value = "";
     if (!file) return;
+    if (!file.type.startsWith("image/")) { toast.error("Please select a valid image file"); return; }
+    if (file.size > 10 * 1024 * 1024) { toast.error("Image must be smaller than 10MB"); return; }
     setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
-    set("thumbnail_url", file_url);
-    setUploading(false);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadPublicFile({ file });
+      set("thumbnail_url", file_url);
+    } catch (err) {
+      toast.error(err?.message ? `Upload failed: ${err.message}` : "Upload failed — please try again");
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
