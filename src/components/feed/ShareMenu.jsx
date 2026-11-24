@@ -3,9 +3,12 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Share2, Mail, MessageCircle, Link2, Check, MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 
+// The published app host, so shared links open correctly even when sharing from the builder preview.
+const SHARE_BASE = "https://flinteats.base44.app";
+
 function shareUrlFor(post) {
-  // Served by a backend function so link previews carry this post's own text and photo.
-  return `${window.location.origin}/functions/sharePost?id=${post.id}`;
+  // Served by a backend function so the link shows this post's own text, photo and details.
+  return `${SHARE_BASE}/functions/sharePost?id=${post.id}`;
 }
 
 function shareTextFor(post) {
