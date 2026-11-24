@@ -12,8 +12,9 @@ function shareUrlFor(post) {
 }
 
 function shareTextFor(post) {
-  const snippet = (post.content || "").replace(/\s+/g, " ").trim().slice(0, 140);
-  return snippet ? `${snippet}${snippet.length === 140 ? "…" : ""} — via Flint Eats` : "Check this out on Flint Eats";
+  // The whole post, so the network's composer receives the actual text.
+  const body = (post.content || "").trim();
+  return body || "Check this out on Flint Eats";
 }
 
 const ROW = "flex items-center gap-2.5 w-full px-2.5 py-2 rounded-lg text-sm text-left text-foreground hover:bg-muted transition-colors";
@@ -56,6 +57,13 @@ export default function ShareMenu({ post }) {
       <PopoverContent className="w-56 p-1.5" align="start">
         <p className="px-2.5 py-1.5 text-xs font-semibold text-muted-foreground">Share to</p>
 
+        {typeof navigator !== "undefined" && navigator.share && (
+          <button className={ROW} onClick={nativeShare}>
+            <MoreHorizontal className="w-5 h-5 text-muted-foreground" />
+            Share via… (Facebook, Instagram)
+          </button>
+        )}
+
         <a
           className={ROW}
           href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`}
@@ -78,7 +86,7 @@ export default function ShareMenu({ post }) {
 
         <a
           className={ROW}
-          href={`https://wa.me/?text=${encodeURIComponent(`${text} ${url}`)}`}
+          href={`https://wa.me/?text=${encodeURIComponent(`${text}\n\n${url}`)}`}
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -99,12 +107,6 @@ export default function ShareMenu({ post }) {
           {copied ? "Link copied" : "Copy link"}
         </button>
 
-        {typeof navigator !== "undefined" && navigator.share && (
-          <button className={ROW} onClick={nativeShare}>
-            <MoreHorizontal className="w-5 h-5 text-muted-foreground" />
-            More options
-          </button>
-        )}
       </PopoverContent>
     </Popover>
   );
