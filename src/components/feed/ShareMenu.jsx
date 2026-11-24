@@ -4,7 +4,8 @@ import { Share2, Mail, MessageCircle, Link2, Check, MoreHorizontal } from "lucid
 import { toast } from "sonner";
 
 function shareUrlFor(post) {
-  return `${window.location.origin}/Feed?post=${post.id}`;
+  // Served by a backend function so link previews carry this post's own text and photo.
+  return `${window.location.origin}/functions/sharePost?id=${post.id}`;
 }
 
 function shareTextFor(post) {
