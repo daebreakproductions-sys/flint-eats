@@ -6,7 +6,7 @@ import PostCard from "@/components/feed/PostCard";
 import EventsSidebar from "@/components/feed/EventsSidebar";
 import CommunityCalendar from "@/components/feed/CommunityCalendar";
 import PullToRefresh from "@/components/ui/PullToRefresh";
-import { Flame, Clock, CalendarDays } from "lucide-react";
+import { Flame, Clock, CalendarDays, User as UserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const CATEGORIES = ["All", "Recipe", "Resource Tip", "Community News", "Event", "Question", "Success Story", "General"];
@@ -15,6 +15,7 @@ export default function Feed() {
   const [tab, setTab] = useState(() => new URLSearchParams(window.location.search).get("tab") === "calendar" ? "calendar" : "feed"); // feed | calendar
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [sortBy, setSortBy] = useState("newest");
+  const [onlyMine, setOnlyMine] = useState(false);
   const [highlightedPostId, setHighlightedPostId] = useState(null);
   const qc = useQueryClient();
   const highlightedRef = useRef(null);
@@ -55,6 +56,7 @@ export default function Feed() {
 
   const filtered = posts
     .filter(p => categoryFilter === "All" || p.category === categoryFilter)
+    .filter(p => !onlyMine || p.author_email === user?.email)
     .sort((a, b) => {
       if (a.is_pinned && !b.is_pinned) return -1;
       if (!a.is_pinned && b.is_pinned) return 1;
@@ -123,6 +125,9 @@ export default function Feed() {
                 <button onClick={() => setSortBy("popular")} className={`flex items-center gap-1 text-xs px-4 py-2 rounded-full border-0 transition-colors min-h-[36px] ${sortBy === "popular" ? "bg-green-700 text-white" : "bg-muted text-muted-foreground hover:text-foreground"}`}>
                   <Flame className="w-3.5 h-3.5" /> Hot
                 </button>
+                <button onClick={() => setOnlyMine(v => !v)} className={`flex items-center gap-1 text-xs px-4 py-2 rounded-full border-0 transition-colors min-h-[36px] ${onlyMine ? "bg-green-700 text-white" : "bg-muted text-muted-foreground hover:text-foreground"}`}>
+                  <UserIcon className="w-3.5 h-3.5" /> Mine
+                </button>
               </div>
             )}
           </div>
@@ -152,8 +157,8 @@ export default function Feed() {
               ) : filtered.length === 0 ? (
                 <div className="bg-card rounded-2xl border border-border py-16 text-center">
                   <p className="text-4xl mb-3">🥦</p>
-                  <p className="text-gray-500 font-medium">No posts yet in this category.</p>
-                  <p className="text-sm text-gray-400 mt-1">Be the first to share something!</p>
+                  <p className="text-gray-500 font-medium">{onlyMine ? "You haven't posted yet." : "No posts yet in this category."}</p>
+                  <p className="text-sm text-gray-400 mt-1">{onlyMine ? "Share your first post above." : "Be the first to share something!"}</p>
                 </div>
               ) : (
                 <div className="space-y-4">
